@@ -195,10 +195,10 @@ void ScanMatcherProcessor::processScan(const RangeReading & reading){
 			cout << "New Scan added, using odo pose" << endl;
 #endif
 			std::array<int, 360> segnet = {0};
-			m_matcher.registerScan(m_map, m_pose, plainReading, m_map, segnet.data());
+			m_matcher.registerScan(m_map, m_pose, plainReading, segnet.data());
 		} else {
 			std::array<int, 360> segnet = {0};
-			m_matcher.registerScan(m_map, newPose, plainReading, m_map, segnet.data());
+			m_matcher.registerScan(m_map, newPose, plainReading, segnet.data());
 #ifdef SCANMATHCERPROCESSOR_DEBUG
 			cout << "New Scan added, using matched pose" << endl;
 #endif

@@ -454,7 +454,7 @@ void GridSlamProcessor::setMotionModelParameters
 	  m_matcher.computeActiveArea(it->map, it->pose, plainReading);
     
     std::array<int, 360> segnet = {0};
-	  m_matcher.registerScan(it->map, it->pose, plainReading, it->map, segnet.data());
+	  m_matcher.registerScan(it->map, it->pose, plainReading, segnet.data());
 	  
 	  // cyr: not needed anymore, particles refer to the root in the beginning!
 	  TNode* node=new	TNode(it->pose, 0., it->node,  0);
