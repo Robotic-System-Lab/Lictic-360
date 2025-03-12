@@ -1,0 +1,176 @@
+[0.000000] (-) TimerEvent: {}
+[0.000564] (-) JobUnselected: {'identifier': 'segnet'}
+[0.000956] (gmapper) JobQueued: {'identifier': 'gmapper', 'dependencies': OrderedDict()}
+[0.001058] (gmapper) JobStarted: {'identifier': 'gmapper'}
+[0.012056] (gmapper) JobProgress: {'identifier': 'gmapper', 'progress': 'cmake'}
+[0.012726] (gmapper) JobProgress: {'identifier': 'gmapper', 'progress': 'build'}
+[0.013318] (gmapper) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/lamp/workspaces/segnet/build/gmapper', '--', '-j12', '-l12'], 'cwd': '/home/lamp/workspaces/segnet/build/gmapper', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'lamp'), ('GIT_ASKPASS', '/home/lamp/.vscode-server/bin/e54c774e0add60467559eb0d1e229c6452cf8447/extensions/git/dist/askpass.sh'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/lamp/workspaces/launch_ws/install/turtlebot3_msgs/lib:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk_custom_interfaces/lib:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk/lib:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_msgs/lib:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk_custom_interfaces/lib:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk/lib:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/lamp'), ('TERM_PROGRAM_VERSION', '1.97.2'), ('VSCODE_IPC_HOOK_CLI', '/run/user/1000/vscode-ipc-2d5c44f9-e964-4e28-9c27-4ec94ebc3e02.sock'), ('JETSON_L4T', ''), ('ROS_PYTHON_VERSION', '3'), ('JETSON_MODEL', ''), ('VSCODE_GIT_ASKPASS_MAIN', '/home/lamp/.vscode-server/bin/e54c774e0add60467559eb0d1e229c6452cf8447/extensions/git/dist/askpass-main.js'), ('VSCODE_GIT_ASKPASS_NODE', '/home/lamp/.vscode-server/bin/e54c774e0add60467559eb0d1e229c6452cf8447/node'), ('PYDEVD_DISABLE_FILE_VALIDATION', '1'), ('BUNDLED_DEBUGPY_PATH', '/home/lamp/.vscode-server/extensions/ms-python.debugpy-2025.4.1-linux-x64/bundled/libs/debugpy'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('WSL_DISTRO_NAME', 'Ubuntu-22.04'), ('WAYLAND_DISPLAY', 'wayland-0'), ('COLCON_PREFIX_PATH', '/home/lamp/workspaces/segnet/install:/home/lamp/workspaces/launch_ws/install:/home/lamp/workspaces/turtlebot3_ws/install'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'lamp'), ('NAME', 'LamP'), ('JETSON_MODULE', ''), ('WSL_INTEROP', '/run/WSL/13395_interop'), ('JETSON_SERIAL_NUMBER', ''), ('PULSE_SERVER', 'unix:/mnt/wslg/PulseServer'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('ROS1_INSTALL_PATH', '/home/lamp/noetic_ws/devel_isolated'), ('TERM', 'xterm-256color'), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/home/lamp/.vscode-server/bin/e54c774e0add60467559eb0d1e229c6452cf8447/bin/remote-cli:/home/lamp/.local/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Python313/Scripts/:/mnt/c/Python313/:/mnt/c/windows/system32:/mnt/c/windows:/mnt/c/windows/System32/Wbem:/mnt/c/windows/System32/WindowsPowerShell/v1.0/:/mnt/c/windows/System32/OpenSSH/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/HP/HP One Agent:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/Microsoft VS Code/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/nodejs/:/mnt/c/Users/salam/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/salam/AppData/Local/Microsoft/WinGet/Links:/mnt/c/Users/salam/AppData/Roaming/npm:/snap/bin:/home/lamp/.vscode-server/extensions/ms-python.debugpy-2025.4.1-linux-x64/bundled/scripts/noConfigScripts:/home/lamp/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand'), ('XDG_RUNTIME_DIR', '/run/user/1000/'), ('DISPLAY', ':0'), ('VSCODE_DEBUGPY_ADAPTER_ENDPOINTS', '/home/lamp/.vscode-server/extensions/ms-python.debugpy-2025.4.1-linux-x64/.noConfigDebugAdapterEndpoints/endpoint-0be7c1854e06fde9.txt'), ('LANG', 'C.UTF-8'), ('PYTHONSTARTUP', '/home/lamp/.vscode-server/data/User/workspaceStorage/4f15011c158547f4836b7e9ae95b9575/ms-python.python/pythonrc.py'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('JETSON_SOC', ''), ('VSCODE_GIT_IPC_HANDLE', '/run/user/1000/vscode-git-215a0f5f70.sock'), ('TERM_PROGRAM', 'vscode'), ('AMENT_PREFIX_PATH', '/home/lamp/workspaces/segnet/install/gmapper:/home/lamp/workspaces/segnet/install/segnet:/home/lamp/workspaces/launch_ws/install/turtlebot3:/home/lamp/workspaces/launch_ws/install/turtlebot3_teleop:/home/lamp/workspaces/launch_ws/install/turtlebot3_simulations:/home/lamp/workspaces/launch_ws/install/turtlebot3_bringup:/home/lamp/workspaces/launch_ws/install/turtlebot3_node:/home/lamp/workspaces/launch_ws/install/turtlebot3_navigation2:/home/lamp/workspaces/launch_ws/install/turtlebot3_fake_node:/home/lamp/workspaces/launch_ws/install/turtlebot3_example:/home/lamp/workspaces/launch_ws/install/turtlebot3_msgs:/home/lamp/workspaces/launch_ws/install/turtlebot3_gazebo:/home/lamp/workspaces/launch_ws/install/turtlebot3_description:/home/lamp/workspaces/launch_ws/install/turtlebot3_cartographer:/home/lamp/workspaces/launch_ws/install/segtect:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk_examples:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk_custom_interfaces:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk:/home/lamp/workspaces/launch_ws/install/autonomous_exploration:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_teleop:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_simulations:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_bringup:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_node:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_navigation2:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_fake_node:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_example:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_msgs:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_gazebo:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_description:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_cartographer:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk_examples:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk_custom_interfaces:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('ROS_MASTER_URI', 'http://localhost:11311'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('VSCODE_GIT_ASKPASS_EXTRA_ARGS', ''), ('JETSON_CUDA_ARCH_BIN', ''), ('PWD', '/home/lamp/workspaces/segnet/build/gmapper'), ('TURTLEBOT3_MODEL', 'custom'), ('XDG_DATA_DIRS', '/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/lamp/workspaces/segnet/build/segnet:/home/lamp/workspaces/segnet/install/segnet/lib/python3.10/site-packages:/home/lamp/workspaces/launch_ws/install/turtlebot3_teleop/lib/python3.10/site-packages:/home/lamp/workspaces/launch_ws/install/turtlebot3_example/lib/python3.10/site-packages:/home/lamp/workspaces/launch_ws/install/turtlebot3_msgs/local/lib/python3.10/dist-packages:/home/lamp/workspaces/launch_ws/install/segtect/lib/python3.10/site-packages:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk_custom_interfaces/local/lib/python3.10/dist-packages:/home/lamp/workspaces/launch_ws/install/autonomous_exploration/lib/python3.10/site-packages:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_teleop/lib/python3.10/site-packages:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_example/lib/python3.10/site-packages:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_msgs/local/lib/python3.10/dist-packages:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk_custom_interfaces/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('WSL2_GUI_APPS_ENABLED', '1'), ('HOSTTYPE', 'x86_64'), ('JETSON_JETPACK', ''), ('CMAKE_PREFIX_PATH', '/home/lamp/workspaces/segnet/install/gmapper:/home/lamp/workspaces/launch_ws/install/turtlebot3:/home/lamp/workspaces/launch_ws/install/turtlebot3_simulations:/home/lamp/workspaces/launch_ws/install/turtlebot3_bringup:/home/lamp/workspaces/launch_ws/install/turtlebot3_node:/home/lamp/workspaces/launch_ws/install/turtlebot3_navigation2:/home/lamp/workspaces/launch_ws/install/turtlebot3_fake_node:/home/lamp/workspaces/launch_ws/install/turtlebot3_msgs:/home/lamp/workspaces/launch_ws/install/turtlebot3_gazebo:/home/lamp/workspaces/launch_ws/install/turtlebot3_description:/home/lamp/workspaces/launch_ws/install/turtlebot3_cartographer:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk_examples:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk_custom_interfaces:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_simulations:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_bringup:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_node:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_navigation2:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_fake_node:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_msgs:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_gazebo:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_description:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_cartographer:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk_examples:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk_custom_interfaces:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk:/home/lamp/workspaces/segnet/install/segnet:/home/lamp/workspaces/launch_ws/install/turtlebot3_teleop:/home/lamp/workspaces/launch_ws/install/turtlebot3_example:/home/lamp/workspaces/launch_ws/install/segtect:/home/lamp/workspaces/launch_ws/install/autonomous_exploration:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_teleop:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_example:/opt/ros/humble'), ('WSLENV', 'VSCODE_WSL_EXT_LOCATION/up')]), 'shell': False}
+[0.062345] (gmapper) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target gmap\x1b[0m\n'}
+[0.088105] (gmapper) StdoutLine: {'line': b'[ 50%] \x1b[32mBuilding CXX object CMakeFiles/gmap.dir/src/mapper.cpp.o\x1b[0m\n'}
+[0.099503] (-) TimerEvent: {}
+[0.199875] (-) TimerEvent: {}
+[0.300286] (-) TimerEvent: {}
+[0.376396] (gmapper) StderrLine: {'line': b'In file included from \x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/include/gmapper/mapper.h:19\x1b[m\x1b[K,\n'}
+[0.376689] (gmapper) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/src/mapper.cpp:1\x1b[m\x1b[K:\n'}
+[0.376755] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/opt/ros/humble/include/tf2_geometry_msgs/tf2_geometry_msgs/tf2_geometry_msgs.h:35:2:\x1b[m\x1b[K \x1b[01;35m\x1b[Kwarning: \x1b[m\x1b[K#warning This header is obsolete, please include tf2_geometry_msgs/tf2_geometry_msgs.hpp instead [\x1b[01;35m\x1b[K\x1b]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wcpp\x07-Wcpp\x1b]8;;\x07\x1b[m\x1b[K]\n'}
+[0.376814] (gmapper) StderrLine: {'line': b'   35 | #\x1b[01;35m\x1b[Kwarning\x1b[m\x1b[K This header is obsolete, please include tf2_geometry_msgs/tf2_geometry_msgs.hpp instead\n'}
+[0.376895] (gmapper) StderrLine: {'line': b'      |  \x1b[01;35m\x1b[K^~~~~~~\x1b[m\x1b[K\n'}
+[0.400489] (-) TimerEvent: {}
+[0.500942] (-) TimerEvent: {}
+[0.601357] (-) TimerEvent: {}
+[0.701792] (-) TimerEvent: {}
+[0.802311] (-) TimerEvent: {}
+[0.902886] (-) TimerEvent: {}
+[1.003466] (-) TimerEvent: {}
+[1.104281] (-) TimerEvent: {}
+[1.204858] (-) TimerEvent: {}
+[1.305521] (-) TimerEvent: {}
+[1.405996] (-) TimerEvent: {}
+[1.506466] (-) TimerEvent: {}
+[1.607095] (-) TimerEvent: {}
+[1.707547] (-) TimerEvent: {}
+[1.808026] (-) TimerEvent: {}
+[1.908542] (-) TimerEvent: {}
+[2.008979] (-) TimerEvent: {}
+[2.109469] (-) TimerEvent: {}
+[2.209856] (-) TimerEvent: {}
+[2.310274] (-) TimerEvent: {}
+[2.410744] (-) TimerEvent: {}
+[2.511186] (-) TimerEvent: {}
+[2.611772] (-) TimerEvent: {}
+[2.712226] (-) TimerEvent: {}
+[2.812660] (-) TimerEvent: {}
+[2.913098] (-) TimerEvent: {}
+[3.013611] (-) TimerEvent: {}
+[3.114142] (-) TimerEvent: {}
+[3.214596] (-) TimerEvent: {}
+[3.315019] (-) TimerEvent: {}
+[3.415467] (-) TimerEvent: {}
+[3.515947] (-) TimerEvent: {}
+[3.616470] (-) TimerEvent: {}
+[3.716918] (-) TimerEvent: {}
+[3.817404] (-) TimerEvent: {}
+[3.917872] (-) TimerEvent: {}
+[4.018393] (-) TimerEvent: {}
+[4.118796] (-) TimerEvent: {}
+[4.219299] (-) TimerEvent: {}
+[4.319745] (-) TimerEvent: {}
+[4.420257] (-) TimerEvent: {}
+[4.520711] (-) TimerEvent: {}
+[4.621135] (-) TimerEvent: {}
+[4.721608] (-) TimerEvent: {}
+[4.822113] (-) TimerEvent: {}
+[4.922613] (-) TimerEvent: {}
+[5.023059] (-) TimerEvent: {}
+[5.123473] (-) TimerEvent: {}
+[5.223984] (-) TimerEvent: {}
+[5.324458] (-) TimerEvent: {}
+[5.424921] (-) TimerEvent: {}
+[5.525467] (-) TimerEvent: {}
+[5.625910] (-) TimerEvent: {}
+[5.726398] (-) TimerEvent: {}
+[5.826989] (-) TimerEvent: {}
+[5.927530] (-) TimerEvent: {}
+[6.027932] (-) TimerEvent: {}
+[6.128752] (-) TimerEvent: {}
+[6.229172] (-) TimerEvent: {}
+[6.329615] (-) TimerEvent: {}
+[6.430001] (-) TimerEvent: {}
+[6.530425] (-) TimerEvent: {}
+[6.630873] (-) TimerEvent: {}
+[6.731260] (-) TimerEvent: {}
+[6.831708] (-) TimerEvent: {}
+[6.932172] (-) TimerEvent: {}
+[7.032708] (-) TimerEvent: {}
+[7.133817] (-) TimerEvent: {}
+[7.234350] (-) TimerEvent: {}
+[7.334830] (-) TimerEvent: {}
+[7.435339] (-) TimerEvent: {}
+[7.535868] (-) TimerEvent: {}
+[7.636594] (-) TimerEvent: {}
+[7.737415] (-) TimerEvent: {}
+[7.838187] (-) TimerEvent: {}
+[7.938833] (-) TimerEvent: {}
+[8.039342] (-) TimerEvent: {}
+[8.139787] (-) TimerEvent: {}
+[8.240244] (-) TimerEvent: {}
+[8.340732] (-) TimerEvent: {}
+[8.441189] (-) TimerEvent: {}
+[8.541594] (-) TimerEvent: {}
+[8.642059] (-) TimerEvent: {}
+[8.742513] (-) TimerEvent: {}
+[8.842953] (-) TimerEvent: {}
+[8.943453] (-) TimerEvent: {}
+[9.043879] (-) TimerEvent: {}
+[9.144270] (-) TimerEvent: {}
+[9.244729] (-) TimerEvent: {}
+[9.345228] (-) TimerEvent: {}
+[9.445730] (-) TimerEvent: {}
+[9.546188] (-) TimerEvent: {}
+[9.646607] (-) TimerEvent: {}
+[9.747033] (-) TimerEvent: {}
+[9.847610] (-) TimerEvent: {}
+[9.948139] (-) TimerEvent: {}
+[10.048656] (-) TimerEvent: {}
+[10.149148] (-) TimerEvent: {}
+[10.249554] (-) TimerEvent: {}
+[10.350021] (-) TimerEvent: {}
+[10.450860] (-) TimerEvent: {}
+[10.551521] (-) TimerEvent: {}
+[10.651983] (-) TimerEvent: {}
+[10.752517] (-) TimerEvent: {}
+[10.853180] (-) TimerEvent: {}
+[10.953958] (-) TimerEvent: {}
+[11.054491] (-) TimerEvent: {}
+[11.154954] (-) TimerEvent: {}
+[11.255448] (-) TimerEvent: {}
+[11.356061] (-) TimerEvent: {}
+[11.456599] (-) TimerEvent: {}
+[11.557080] (-) TimerEvent: {}
+[11.657646] (-) TimerEvent: {}
+[11.758109] (-) TimerEvent: {}
+[11.858714] (-) TimerEvent: {}
+[11.959330] (-) TimerEvent: {}
+[12.059993] (-) TimerEvent: {}
+[12.160532] (-) TimerEvent: {}
+[12.261065] (-) TimerEvent: {}
+[12.361565] (-) TimerEvent: {}
+[12.462140] (-) TimerEvent: {}
+[12.562711] (-) TimerEvent: {}
+[12.663285] (-) TimerEvent: {}
+[12.755062] (gmapper) StdoutLine: {'line': b'[100%] \x1b[32m\x1b[1mLinking CXX executable gmap\x1b[0m\n'}
+[12.763445] (-) TimerEvent: {}
+[12.863851] (-) TimerEvent: {}
+[12.964218] (-) TimerEvent: {}
+[13.064747] (-) TimerEvent: {}
+[13.165265] (-) TimerEvent: {}
+[13.265847] (-) TimerEvent: {}
+[13.366300] (-) TimerEvent: {}
+[13.419709] (gmapper) StdoutLine: {'line': b'[100%] Built target gmap\n'}
+[13.432164] (gmapper) CommandEnded: {'returncode': 0}
+[13.432969] (gmapper) JobProgress: {'identifier': 'gmapper', 'progress': 'install'}
+[13.441909] (gmapper) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/lamp/workspaces/segnet/build/gmapper'], 'cwd': '/home/lamp/workspaces/segnet/build/gmapper', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'lamp'), ('GIT_ASKPASS', '/home/lamp/.vscode-server/bin/e54c774e0add60467559eb0d1e229c6452cf8447/extensions/git/dist/askpass.sh'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/lamp/workspaces/launch_ws/install/turtlebot3_msgs/lib:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk_custom_interfaces/lib:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk/lib:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_msgs/lib:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk_custom_interfaces/lib:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk/lib:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/lamp'), ('TERM_PROGRAM_VERSION', '1.97.2'), ('VSCODE_IPC_HOOK_CLI', '/run/user/1000/vscode-ipc-2d5c44f9-e964-4e28-9c27-4ec94ebc3e02.sock'), ('JETSON_L4T', ''), ('ROS_PYTHON_VERSION', '3'), ('JETSON_MODEL', ''), ('VSCODE_GIT_ASKPASS_MAIN', '/home/lamp/.vscode-server/bin/e54c774e0add60467559eb0d1e229c6452cf8447/extensions/git/dist/askpass-main.js'), ('VSCODE_GIT_ASKPASS_NODE', '/home/lamp/.vscode-server/bin/e54c774e0add60467559eb0d1e229c6452cf8447/node'), ('PYDEVD_DISABLE_FILE_VALIDATION', '1'), ('BUNDLED_DEBUGPY_PATH', '/home/lamp/.vscode-server/extensions/ms-python.debugpy-2025.4.1-linux-x64/bundled/libs/debugpy'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('WSL_DISTRO_NAME', 'Ubuntu-22.04'), ('WAYLAND_DISPLAY', 'wayland-0'), ('COLCON_PREFIX_PATH', '/home/lamp/workspaces/segnet/install:/home/lamp/workspaces/launch_ws/install:/home/lamp/workspaces/turtlebot3_ws/install'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'lamp'), ('NAME', 'LamP'), ('JETSON_MODULE', ''), ('WSL_INTEROP', '/run/WSL/13395_interop'), ('JETSON_SERIAL_NUMBER', ''), ('PULSE_SERVER', 'unix:/mnt/wslg/PulseServer'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('ROS1_INSTALL_PATH', '/home/lamp/noetic_ws/devel_isolated'), ('TERM', 'xterm-256color'), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/home/lamp/.vscode-server/bin/e54c774e0add60467559eb0d1e229c6452cf8447/bin/remote-cli:/home/lamp/.local/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Python313/Scripts/:/mnt/c/Python313/:/mnt/c/windows/system32:/mnt/c/windows:/mnt/c/windows/System32/Wbem:/mnt/c/windows/System32/WindowsPowerShell/v1.0/:/mnt/c/windows/System32/OpenSSH/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/HP/HP One Agent:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/Microsoft VS Code/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/nodejs/:/mnt/c/Users/salam/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/salam/AppData/Local/Microsoft/WinGet/Links:/mnt/c/Users/salam/AppData/Roaming/npm:/snap/bin:/home/lamp/.vscode-server/extensions/ms-python.debugpy-2025.4.1-linux-x64/bundled/scripts/noConfigScripts:/home/lamp/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand'), ('XDG_RUNTIME_DIR', '/run/user/1000/'), ('DISPLAY', ':0'), ('VSCODE_DEBUGPY_ADAPTER_ENDPOINTS', '/home/lamp/.vscode-server/extensions/ms-python.debugpy-2025.4.1-linux-x64/.noConfigDebugAdapterEndpoints/endpoint-0be7c1854e06fde9.txt'), ('LANG', 'C.UTF-8'), ('PYTHONSTARTUP', '/home/lamp/.vscode-server/data/User/workspaceStorage/4f15011c158547f4836b7e9ae95b9575/ms-python.python/pythonrc.py'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('JETSON_SOC', ''), ('VSCODE_GIT_IPC_HANDLE', '/run/user/1000/vscode-git-215a0f5f70.sock'), ('TERM_PROGRAM', 'vscode'), ('AMENT_PREFIX_PATH', '/home/lamp/workspaces/segnet/install/gmapper:/home/lamp/workspaces/segnet/install/segnet:/home/lamp/workspaces/launch_ws/install/turtlebot3:/home/lamp/workspaces/launch_ws/install/turtlebot3_teleop:/home/lamp/workspaces/launch_ws/install/turtlebot3_simulations:/home/lamp/workspaces/launch_ws/install/turtlebot3_bringup:/home/lamp/workspaces/launch_ws/install/turtlebot3_node:/home/lamp/workspaces/launch_ws/install/turtlebot3_navigation2:/home/lamp/workspaces/launch_ws/install/turtlebot3_fake_node:/home/lamp/workspaces/launch_ws/install/turtlebot3_example:/home/lamp/workspaces/launch_ws/install/turtlebot3_msgs:/home/lamp/workspaces/launch_ws/install/turtlebot3_gazebo:/home/lamp/workspaces/launch_ws/install/turtlebot3_description:/home/lamp/workspaces/launch_ws/install/turtlebot3_cartographer:/home/lamp/workspaces/launch_ws/install/segtect:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk_examples:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk_custom_interfaces:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk:/home/lamp/workspaces/launch_ws/install/autonomous_exploration:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_teleop:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_simulations:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_bringup:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_node:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_navigation2:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_fake_node:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_example:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_msgs:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_gazebo:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_description:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_cartographer:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk_examples:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk_custom_interfaces:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('ROS_MASTER_URI', 'http://localhost:11311'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('VSCODE_GIT_ASKPASS_EXTRA_ARGS', ''), ('JETSON_CUDA_ARCH_BIN', ''), ('PWD', '/home/lamp/workspaces/segnet/build/gmapper'), ('TURTLEBOT3_MODEL', 'custom'), ('XDG_DATA_DIRS', '/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/lamp/workspaces/segnet/build/segnet:/home/lamp/workspaces/segnet/install/segnet/lib/python3.10/site-packages:/home/lamp/workspaces/launch_ws/install/turtlebot3_teleop/lib/python3.10/site-packages:/home/lamp/workspaces/launch_ws/install/turtlebot3_example/lib/python3.10/site-packages:/home/lamp/workspaces/launch_ws/install/turtlebot3_msgs/local/lib/python3.10/dist-packages:/home/lamp/workspaces/launch_ws/install/segtect/lib/python3.10/site-packages:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk_custom_interfaces/local/lib/python3.10/dist-packages:/home/lamp/workspaces/launch_ws/install/autonomous_exploration/lib/python3.10/site-packages:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_teleop/lib/python3.10/site-packages:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_example/lib/python3.10/site-packages:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_msgs/local/lib/python3.10/dist-packages:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk_custom_interfaces/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('WSL2_GUI_APPS_ENABLED', '1'), ('HOSTTYPE', 'x86_64'), ('JETSON_JETPACK', ''), ('CMAKE_PREFIX_PATH', '/home/lamp/workspaces/segnet/install/gmapper:/home/lamp/workspaces/launch_ws/install/turtlebot3:/home/lamp/workspaces/launch_ws/install/turtlebot3_simulations:/home/lamp/workspaces/launch_ws/install/turtlebot3_bringup:/home/lamp/workspaces/launch_ws/install/turtlebot3_node:/home/lamp/workspaces/launch_ws/install/turtlebot3_navigation2:/home/lamp/workspaces/launch_ws/install/turtlebot3_fake_node:/home/lamp/workspaces/launch_ws/install/turtlebot3_msgs:/home/lamp/workspaces/launch_ws/install/turtlebot3_gazebo:/home/lamp/workspaces/launch_ws/install/turtlebot3_description:/home/lamp/workspaces/launch_ws/install/turtlebot3_cartographer:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk_examples:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk_custom_interfaces:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_simulations:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_bringup:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_node:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_navigation2:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_fake_node:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_msgs:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_gazebo:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_description:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_cartographer:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk_examples:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk_custom_interfaces:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk:/home/lamp/workspaces/segnet/install/segnet:/home/lamp/workspaces/launch_ws/install/turtlebot3_teleop:/home/lamp/workspaces/launch_ws/install/turtlebot3_example:/home/lamp/workspaces/launch_ws/install/segtect:/home/lamp/workspaces/launch_ws/install/autonomous_exploration:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_teleop:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_example:/opt/ros/humble'), ('WSLENV', 'VSCODE_WSL_EXT_LOCATION/up')]), 'shell': False}
+[13.450376] (gmapper) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[13.450774] (gmapper) StdoutLine: {'line': b'-- Installing: /home/lamp/workspaces/segnet/install/gmapper/lib/gmapper/gmap\n'}
+[13.461473] (gmapper) StdoutLine: {'line': b'-- Set runtime path of "/home/lamp/workspaces/segnet/install/gmapper/lib/gmapper/gmap" to ""\n'}
+[13.461925] (gmapper) StdoutLine: {'line': b'-- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/launch\n'}
+[13.462399] (gmapper) StdoutLine: {'line': b'-- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/launch/gmap.launch.py\n'}
+[13.462498] (gmapper) StdoutLine: {'line': b'-- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/ament_index/resource_index/package_run_dependencies/gmapper\n'}
+[13.462672] (gmapper) StdoutLine: {'line': b'-- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/ament_index/resource_index/parent_prefix_path/gmapper\n'}
+[13.462827] (gmapper) StdoutLine: {'line': b'-- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/environment/ament_prefix_path.sh\n'}
+[13.462907] (gmapper) StdoutLine: {'line': b'-- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/environment/ament_prefix_path.dsv\n'}
+[13.462971] (gmapper) StdoutLine: {'line': b'-- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/environment/path.sh\n'}
+[13.463033] (gmapper) StdoutLine: {'line': b'-- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/environment/path.dsv\n'}
+[13.463159] (gmapper) StdoutLine: {'line': b'-- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/local_setup.bash\n'}
+[13.463234] (gmapper) StdoutLine: {'line': b'-- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/local_setup.sh\n'}
+[13.463303] (gmapper) StdoutLine: {'line': b'-- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/local_setup.zsh\n'}
+[13.463365] (gmapper) StdoutLine: {'line': b'-- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/local_setup.dsv\n'}
+[13.463425] (gmapper) StdoutLine: {'line': b'-- Installing: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/package.dsv\n'}
+[13.463483] (gmapper) StdoutLine: {'line': b'-- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/ament_index/resource_index/packages/gmapper\n'}
+[13.463538] (gmapper) StdoutLine: {'line': b'-- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/cmake/gmapperConfig.cmake\n'}
+[13.463590] (gmapper) StdoutLine: {'line': b'-- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/cmake/gmapperConfig-version.cmake\n'}
+[13.463649] (gmapper) StdoutLine: {'line': b'-- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/package.xml\n'}
+[13.465020] (gmapper) CommandEnded: {'returncode': 0}
+[13.466495] (-) TimerEvent: {}
+[13.488620] (gmapper) JobEnded: {'identifier': 'gmapper', 'rc': 0}
+[13.489666] (-) EventReactorShutdown: {}

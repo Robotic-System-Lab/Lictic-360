@@ -1,0 +1,33 @@
+[0.022s] Invoking command in '/home/lamp/workspaces/segnet/build/gmapper': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lamp/workspaces/segnet/install/segnet:/home/lamp/workspaces/launch_ws/install/turtlebot3_teleop:/home/lamp/workspaces/launch_ws/install/turtlebot3_example:/home/lamp/workspaces/launch_ws/install/segtect:/home/lamp/workspaces/launch_ws/install/autonomous_exploration:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_teleop:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_example:/opt/ros/humble /usr/bin/cmake --build /home/lamp/workspaces/segnet/build/gmapper -- -j12 -l12
+[0.074s] [35m[1mConsolidate compiler generated dependencies of target gmap[0m
+[0.111s] [ 50%] [32mBuilding CXX object CMakeFiles/gmap.dir/src/mapper.cpp.o[0m
+[0.522s] In file included from [01m[K/home/lamp/workspaces/segnet/src/gmapper/include/gmapper/mapper.h:19[m[K,
+[0.522s]                  from [01m[K/home/lamp/workspaces/segnet/src/gmapper/src/mapper.cpp:1[m[K:
+[0.523s] [01m[K/opt/ros/humble/include/tf2_geometry_msgs/tf2_geometry_msgs/tf2_geometry_msgs.h:35:2:[m[K [01;35m[Kwarning: [m[K#warning This header is obsolete, please include tf2_geometry_msgs/tf2_geometry_msgs.hpp instead [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wcpp-Wcpp]8;;[m[K]
+[0.523s]    35 | #[01;35m[Kwarning[m[K This header is obsolete, please include tf2_geometry_msgs/tf2_geometry_msgs.hpp instead
+[0.523s]       |  [01;35m[K^~~~~~~[m[K
+[16.381s] [100%] [32m[1mLinking CXX executable gmap[0m
+[17.147s] [100%] Built target gmap
+[17.160s] Invoked command in '/home/lamp/workspaces/segnet/build/gmapper' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lamp/workspaces/segnet/install/segnet:/home/lamp/workspaces/launch_ws/install/turtlebot3_teleop:/home/lamp/workspaces/launch_ws/install/turtlebot3_example:/home/lamp/workspaces/launch_ws/install/segtect:/home/lamp/workspaces/launch_ws/install/autonomous_exploration:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_teleop:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_example:/opt/ros/humble /usr/bin/cmake --build /home/lamp/workspaces/segnet/build/gmapper -- -j12 -l12
+[17.171s] Invoking command in '/home/lamp/workspaces/segnet/build/gmapper': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lamp/workspaces/segnet/install/segnet:/home/lamp/workspaces/launch_ws/install/turtlebot3_teleop:/home/lamp/workspaces/launch_ws/install/turtlebot3_example:/home/lamp/workspaces/launch_ws/install/segtect:/home/lamp/workspaces/launch_ws/install/autonomous_exploration:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_teleop:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_example:/opt/ros/humble /usr/bin/cmake --install /home/lamp/workspaces/segnet/build/gmapper
+[17.180s] -- Install configuration: ""
+[17.180s] -- Installing: /home/lamp/workspaces/segnet/install/gmapper/lib/gmapper/gmap
+[17.195s] -- Set runtime path of "/home/lamp/workspaces/segnet/install/gmapper/lib/gmapper/gmap" to ""
+[17.195s] -- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/launch
+[17.196s] -- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/launch/gmap.launch.py
+[17.196s] -- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/ament_index/resource_index/package_run_dependencies/gmapper
+[17.196s] -- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/ament_index/resource_index/parent_prefix_path/gmapper
+[17.196s] -- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/environment/ament_prefix_path.sh
+[17.196s] -- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/environment/ament_prefix_path.dsv
+[17.196s] -- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/environment/path.sh
+[17.196s] -- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/environment/path.dsv
+[17.197s] -- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/local_setup.bash
+[17.197s] -- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/local_setup.sh
+[17.197s] -- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/local_setup.zsh
+[17.197s] -- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/local_setup.dsv
+[17.197s] -- Installing: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/package.dsv
+[17.197s] -- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/ament_index/resource_index/packages/gmapper
+[17.197s] -- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/cmake/gmapperConfig.cmake
+[17.197s] -- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/cmake/gmapperConfig-version.cmake
+[17.197s] -- Up-to-date: /home/lamp/workspaces/segnet/install/gmapper/share/gmapper/package.xml
+[17.200s] Invoked command in '/home/lamp/workspaces/segnet/build/gmapper' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/lamp/workspaces/segnet/install/segnet:/home/lamp/workspaces/launch_ws/install/turtlebot3_teleop:/home/lamp/workspaces/launch_ws/install/turtlebot3_example:/home/lamp/workspaces/launch_ws/install/segtect:/home/lamp/workspaces/launch_ws/install/autonomous_exploration:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_teleop:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_example:/opt/ros/humble /usr/bin/cmake --install /home/lamp/workspaces/segnet/build/gmapper

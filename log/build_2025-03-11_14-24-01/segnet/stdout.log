@@ -1,0 +1,38 @@
+running egg_info
+creating ../build/segnet/segnet.egg-info
+writing ../build/segnet/segnet.egg-info/PKG-INFO
+writing dependency_links to ../build/segnet/segnet.egg-info/dependency_links.txt
+writing entry points to ../build/segnet/segnet.egg-info/entry_points.txt
+writing requirements to ../build/segnet/segnet.egg-info/requires.txt
+writing top-level names to ../build/segnet/segnet.egg-info/top_level.txt
+writing manifest file '../build/segnet/segnet.egg-info/SOURCES.txt'
+reading manifest file '../build/segnet/segnet.egg-info/SOURCES.txt'
+writing manifest file '../build/segnet/segnet.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/lamp/workspaces/segnet/build/segnet/build
+creating /home/lamp/workspaces/segnet/build/segnet/build/lib
+creating /home/lamp/workspaces/segnet/build/segnet/build/lib/segnet
+copying segnet/merging.py -> /home/lamp/workspaces/segnet/build/segnet/build/lib/segnet
+copying segnet/segnet.py -> /home/lamp/workspaces/segnet/build/segnet/build/lib/segnet
+copying segnet/__init__.py -> /home/lamp/workspaces/segnet/build/segnet/build/lib/segnet
+running install
+running install_lib
+creating /home/lamp/workspaces/segnet/install/segnet/lib/python3.10/site-packages/segnet
+copying /home/lamp/workspaces/segnet/build/segnet/build/lib/segnet/merging.py -> /home/lamp/workspaces/segnet/install/segnet/lib/python3.10/site-packages/segnet
+copying /home/lamp/workspaces/segnet/build/segnet/build/lib/segnet/segnet.py -> /home/lamp/workspaces/segnet/install/segnet/lib/python3.10/site-packages/segnet
+copying /home/lamp/workspaces/segnet/build/segnet/build/lib/segnet/__init__.py -> /home/lamp/workspaces/segnet/install/segnet/lib/python3.10/site-packages/segnet
+byte-compiling /home/lamp/workspaces/segnet/install/segnet/lib/python3.10/site-packages/segnet/merging.py to merging.cpython-310.pyc
+byte-compiling /home/lamp/workspaces/segnet/install/segnet/lib/python3.10/site-packages/segnet/segnet.py to segnet.cpython-310.pyc
+byte-compiling /home/lamp/workspaces/segnet/install/segnet/lib/python3.10/site-packages/segnet/__init__.py to __init__.cpython-310.pyc
+running install_data
+creating /home/lamp/workspaces/segnet/install/segnet/share/ament_index
+creating /home/lamp/workspaces/segnet/install/segnet/share/ament_index/resource_index
+creating /home/lamp/workspaces/segnet/install/segnet/share/ament_index/resource_index/packages
+copying resource/segnet -> /home/lamp/workspaces/segnet/install/segnet/share/ament_index/resource_index/packages
+copying package.xml -> /home/lamp/workspaces/segnet/install/segnet/share/segnet
+running install_egg_info
+Copying ../build/segnet/segnet.egg-info to /home/lamp/workspaces/segnet/install/segnet/lib/python3.10/site-packages/segnet-0.0.0-py3.10.egg-info
+running install_scripts
+Installing segnet script to /home/lamp/workspaces/segnet/install/segnet/lib/segnet
+writing list of installed files to '/home/lamp/workspaces/segnet/build/segnet/install.log'

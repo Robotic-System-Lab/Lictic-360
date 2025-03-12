@@ -1,0 +1,19 @@
+[0.742s] Invoking command in '/home/lamp/workspaces/segnet/build/segnet': PYTHONPATH=/home/lamp/workspaces/segnet/build/segnet/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/lamp/workspaces/segnet/install/segnet/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/lamp/workspaces/segnet/build/segnet/build --no-deps symlink_data --force
+[0.987s] running develop
+[1.180s] running egg_info
+[1.180s] writing segnet.egg-info/PKG-INFO
+[1.181s] writing dependency_links to segnet.egg-info/dependency_links.txt
+[1.181s] writing entry points to segnet.egg-info/entry_points.txt
+[1.181s] writing requirements to segnet.egg-info/requires.txt
+[1.181s] writing top-level names to segnet.egg-info/top_level.txt
+[1.183s] reading manifest file 'segnet.egg-info/SOURCES.txt'
+[1.184s] writing manifest file 'segnet.egg-info/SOURCES.txt'
+[1.215s] running build_ext
+[1.216s] Creating /home/lamp/workspaces/segnet/install/segnet/lib/python3.10/site-packages/segnet.egg-link (link to .)
+[1.216s] Installing segnet script to /home/lamp/workspaces/segnet/install/segnet/lib/segnet
+[1.217s] 
+[1.217s] Installed /home/lamp/workspaces/segnet/build/segnet
+[1.217s] running symlink_data
+[1.217s] symbolically linking /home/lamp/workspaces/segnet/build/segnet/resource/segnet -> /home/lamp/workspaces/segnet/install/segnet/share/ament_index/resource_index/packages
+[1.217s] symbolically linking /home/lamp/workspaces/segnet/build/segnet/package.xml -> /home/lamp/workspaces/segnet/install/segnet/share/segnet
+[1.252s] Invoked command in '/home/lamp/workspaces/segnet/build/segnet' returned '0': PYTHONPATH=/home/lamp/workspaces/segnet/build/segnet/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/lamp/workspaces/segnet/install/segnet/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/lamp/workspaces/segnet/build/segnet/build --no-deps symlink_data --force

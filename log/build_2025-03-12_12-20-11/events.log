@@ -1,0 +1,178 @@
+[0.000000] (-) TimerEvent: {}
+[0.000768] (-) JobUnselected: {'identifier': 'segnet'}
+[0.001030] (gmapper) JobQueued: {'identifier': 'gmapper', 'dependencies': OrderedDict()}
+[0.001247] (gmapper) JobStarted: {'identifier': 'gmapper'}
+[0.020778] (gmapper) JobProgress: {'identifier': 'gmapper', 'progress': 'cmake'}
+[0.022134] (gmapper) JobProgress: {'identifier': 'gmapper', 'progress': 'build'}
+[0.023273] (gmapper) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/lamp/workspaces/segnet/build/gmapper', '--', '-j12', '-l12'], 'cwd': '/home/lamp/workspaces/segnet/build/gmapper', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'lamp'), ('GIT_ASKPASS', '/home/lamp/.vscode-server/bin/e54c774e0add60467559eb0d1e229c6452cf8447/extensions/git/dist/askpass.sh'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/lamp/workspaces/launch_ws/install/turtlebot3_msgs/lib:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk_custom_interfaces/lib:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk/lib:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_msgs/lib:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk_custom_interfaces/lib:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk/lib:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/lamp'), ('TERM_PROGRAM_VERSION', '1.97.2'), ('VSCODE_IPC_HOOK_CLI', '/run/user/1000/vscode-ipc-2d5c44f9-e964-4e28-9c27-4ec94ebc3e02.sock'), ('JETSON_L4T', ''), ('ROS_PYTHON_VERSION', '3'), ('JETSON_MODEL', ''), ('VSCODE_GIT_ASKPASS_MAIN', '/home/lamp/.vscode-server/bin/e54c774e0add60467559eb0d1e229c6452cf8447/extensions/git/dist/askpass-main.js'), ('VSCODE_GIT_ASKPASS_NODE', '/home/lamp/.vscode-server/bin/e54c774e0add60467559eb0d1e229c6452cf8447/node'), ('PYDEVD_DISABLE_FILE_VALIDATION', '1'), ('BUNDLED_DEBUGPY_PATH', '/home/lamp/.vscode-server/extensions/ms-python.debugpy-2025.4.1-linux-x64/bundled/libs/debugpy'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('WSL_DISTRO_NAME', 'Ubuntu-22.04'), ('WAYLAND_DISPLAY', 'wayland-0'), ('COLCON_PREFIX_PATH', '/home/lamp/workspaces/segnet/install:/home/lamp/workspaces/launch_ws/install:/home/lamp/workspaces/turtlebot3_ws/install'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'lamp'), ('NAME', 'LamP'), ('JETSON_MODULE', ''), ('WSL_INTEROP', '/run/WSL/13395_interop'), ('JETSON_SERIAL_NUMBER', ''), ('PULSE_SERVER', 'unix:/mnt/wslg/PulseServer'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('ROS1_INSTALL_PATH', '/home/lamp/noetic_ws/devel_isolated'), ('TERM', 'xterm-256color'), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/home/lamp/.vscode-server/bin/e54c774e0add60467559eb0d1e229c6452cf8447/bin/remote-cli:/home/lamp/.local/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Python313/Scripts/:/mnt/c/Python313/:/mnt/c/windows/system32:/mnt/c/windows:/mnt/c/windows/System32/Wbem:/mnt/c/windows/System32/WindowsPowerShell/v1.0/:/mnt/c/windows/System32/OpenSSH/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/HP/HP One Agent:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/Microsoft VS Code/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/nodejs/:/mnt/c/Users/salam/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/salam/AppData/Local/Microsoft/WinGet/Links:/mnt/c/Users/salam/AppData/Roaming/npm:/snap/bin:/home/lamp/.vscode-server/extensions/ms-python.debugpy-2025.4.1-linux-x64/bundled/scripts/noConfigScripts:/home/lamp/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand'), ('XDG_RUNTIME_DIR', '/run/user/1000/'), ('DISPLAY', ':0'), ('VSCODE_DEBUGPY_ADAPTER_ENDPOINTS', '/home/lamp/.vscode-server/extensions/ms-python.debugpy-2025.4.1-linux-x64/.noConfigDebugAdapterEndpoints/endpoint-0be7c1854e06fde9.txt'), ('LANG', 'C.UTF-8'), ('PYTHONSTARTUP', '/home/lamp/.vscode-server/data/User/workspaceStorage/4f15011c158547f4836b7e9ae95b9575/ms-python.python/pythonrc.py'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('JETSON_SOC', ''), ('VSCODE_GIT_IPC_HANDLE', '/run/user/1000/vscode-git-215a0f5f70.sock'), ('TERM_PROGRAM', 'vscode'), ('AMENT_PREFIX_PATH', '/home/lamp/workspaces/segnet/install/gmapper:/home/lamp/workspaces/segnet/install/segnet:/home/lamp/workspaces/launch_ws/install/turtlebot3:/home/lamp/workspaces/launch_ws/install/turtlebot3_teleop:/home/lamp/workspaces/launch_ws/install/turtlebot3_simulations:/home/lamp/workspaces/launch_ws/install/turtlebot3_bringup:/home/lamp/workspaces/launch_ws/install/turtlebot3_node:/home/lamp/workspaces/launch_ws/install/turtlebot3_navigation2:/home/lamp/workspaces/launch_ws/install/turtlebot3_fake_node:/home/lamp/workspaces/launch_ws/install/turtlebot3_example:/home/lamp/workspaces/launch_ws/install/turtlebot3_msgs:/home/lamp/workspaces/launch_ws/install/turtlebot3_gazebo:/home/lamp/workspaces/launch_ws/install/turtlebot3_description:/home/lamp/workspaces/launch_ws/install/turtlebot3_cartographer:/home/lamp/workspaces/launch_ws/install/segtect:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk_examples:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk_custom_interfaces:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk:/home/lamp/workspaces/launch_ws/install/autonomous_exploration:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_teleop:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_simulations:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_bringup:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_node:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_navigation2:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_fake_node:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_example:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_msgs:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_gazebo:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_description:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_cartographer:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk_examples:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk_custom_interfaces:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('ROS_MASTER_URI', 'http://localhost:11311'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('VSCODE_GIT_ASKPASS_EXTRA_ARGS', ''), ('JETSON_CUDA_ARCH_BIN', ''), ('PWD', '/home/lamp/workspaces/segnet/build/gmapper'), ('TURTLEBOT3_MODEL', 'custom'), ('XDG_DATA_DIRS', '/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/lamp/workspaces/segnet/build/segnet:/home/lamp/workspaces/segnet/install/segnet/lib/python3.10/site-packages:/home/lamp/workspaces/launch_ws/install/turtlebot3_teleop/lib/python3.10/site-packages:/home/lamp/workspaces/launch_ws/install/turtlebot3_example/lib/python3.10/site-packages:/home/lamp/workspaces/launch_ws/install/turtlebot3_msgs/local/lib/python3.10/dist-packages:/home/lamp/workspaces/launch_ws/install/segtect/lib/python3.10/site-packages:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk_custom_interfaces/local/lib/python3.10/dist-packages:/home/lamp/workspaces/launch_ws/install/autonomous_exploration/lib/python3.10/site-packages:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_teleop/lib/python3.10/site-packages:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_example/lib/python3.10/site-packages:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_msgs/local/lib/python3.10/dist-packages:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk_custom_interfaces/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('WSL2_GUI_APPS_ENABLED', '1'), ('HOSTTYPE', 'x86_64'), ('JETSON_JETPACK', ''), ('CMAKE_PREFIX_PATH', '/home/lamp/workspaces/segnet/install/gmapper:/home/lamp/workspaces/launch_ws/install/turtlebot3:/home/lamp/workspaces/launch_ws/install/turtlebot3_simulations:/home/lamp/workspaces/launch_ws/install/turtlebot3_bringup:/home/lamp/workspaces/launch_ws/install/turtlebot3_node:/home/lamp/workspaces/launch_ws/install/turtlebot3_navigation2:/home/lamp/workspaces/launch_ws/install/turtlebot3_fake_node:/home/lamp/workspaces/launch_ws/install/turtlebot3_msgs:/home/lamp/workspaces/launch_ws/install/turtlebot3_gazebo:/home/lamp/workspaces/launch_ws/install/turtlebot3_description:/home/lamp/workspaces/launch_ws/install/turtlebot3_cartographer:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk_examples:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk_custom_interfaces:/home/lamp/workspaces/launch_ws/install/dynamixel_sdk:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_simulations:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_bringup:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_node:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_navigation2:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_fake_node:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_msgs:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_gazebo:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_description:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_cartographer:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk_examples:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk_custom_interfaces:/home/lamp/workspaces/turtlebot3_ws/install/dynamixel_sdk:/home/lamp/workspaces/segnet/install/segnet:/home/lamp/workspaces/launch_ws/install/turtlebot3_teleop:/home/lamp/workspaces/launch_ws/install/turtlebot3_example:/home/lamp/workspaces/launch_ws/install/segtect:/home/lamp/workspaces/launch_ws/install/autonomous_exploration:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_teleop:/home/lamp/workspaces/turtlebot3_ws/install/turtlebot3_example:/opt/ros/humble'), ('WSLENV', 'VSCODE_WSL_EXT_LOCATION/up')]), 'shell': False}
+[0.099421] (-) TimerEvent: {}
+[0.151114] (gmapper) StdoutLine: {'line': b'[ 50%] \x1b[32mBuilding CXX object CMakeFiles/gmap.dir/src/mapper.cpp.o\x1b[0m\n'}
+[0.199615] (-) TimerEvent: {}
+[0.300128] (-) TimerEvent: {}
+[0.400606] (-) TimerEvent: {}
+[0.501127] (-) TimerEvent: {}
+[0.601523] (-) TimerEvent: {}
+[0.701919] (-) TimerEvent: {}
+[0.747399] (gmapper) StderrLine: {'line': b'In file included from \x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/include/gmapper/mapper.h:18\x1b[m\x1b[K,\n'}
+[0.747692] (gmapper) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/src/mapper.cpp:1\x1b[m\x1b[K:\n'}
+[0.747788] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/opt/ros/humble/include/tf2_geometry_msgs/tf2_geometry_msgs/tf2_geometry_msgs.h:35:2:\x1b[m\x1b[K \x1b[01;35m\x1b[Kwarning: \x1b[m\x1b[K#warning This header is obsolete, please include tf2_geometry_msgs/tf2_geometry_msgs.hpp instead [\x1b[01;35m\x1b[K\x1b]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wcpp\x07-Wcpp\x1b]8;;\x07\x1b[m\x1b[K]\n'}
+[0.747856] (gmapper) StderrLine: {'line': b'   35 | #\x1b[01;35m\x1b[Kwarning\x1b[m\x1b[K This header is obsolete, please include tf2_geometry_msgs/tf2_geometry_msgs.hpp instead\n'}
+[0.747941] (gmapper) StderrLine: {'line': b'      |  \x1b[01;35m\x1b[K^~~~~~~\x1b[m\x1b[K\n'}
+[0.802098] (-) TimerEvent: {}
+[0.902569] (-) TimerEvent: {}
+[1.003033] (-) TimerEvent: {}
+[1.103440] (-) TimerEvent: {}
+[1.204077] (-) TimerEvent: {}
+[1.304586] (-) TimerEvent: {}
+[1.405284] (-) TimerEvent: {}
+[1.505797] (-) TimerEvent: {}
+[1.606183] (-) TimerEvent: {}
+[1.706903] (-) TimerEvent: {}
+[1.807391] (-) TimerEvent: {}
+[1.907798] (-) TimerEvent: {}
+[2.008286] (-) TimerEvent: {}
+[2.108738] (-) TimerEvent: {}
+[2.209269] (-) TimerEvent: {}
+[2.309857] (-) TimerEvent: {}
+[2.410379] (-) TimerEvent: {}
+[2.510956] (-) TimerEvent: {}
+[2.611471] (-) TimerEvent: {}
+[2.712019] (-) TimerEvent: {}
+[2.812457] (-) TimerEvent: {}
+[2.912860] (-) TimerEvent: {}
+[3.013307] (-) TimerEvent: {}
+[3.113853] (-) TimerEvent: {}
+[3.214380] (-) TimerEvent: {}
+[3.314791] (-) TimerEvent: {}
+[3.415264] (-) TimerEvent: {}
+[3.515760] (-) TimerEvent: {}
+[3.616358] (-) TimerEvent: {}
+[3.716820] (-) TimerEvent: {}
+[3.786745] (gmapper) StderrLine: {'line': b'In file included from \x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/src/mapper.cpp:1\x1b[m\x1b[K:\n'}
+[3.787056] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/include/gmapper/mapper.h:46:41:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[KString\x1b[m\x1b[K\xe2\x80\x99 is not a member of \xe2\x80\x98\x1b[01m\x1b[Kstd_msgs::msg\x1b[m\x1b[K\xe2\x80\x99\n'}
+[3.787172] (gmapper) StderrLine: {'line': b'   46 |     rclcpp::Subscription<std_msgs::msg::\x1b[01;31m\x1b[KString\x1b[m\x1b[K>::SharedPtr segnet_sub_;\n'}
+[3.787417] (gmapper) StderrLine: {'line': b'      |                                         \x1b[01;31m\x1b[K^~~~~~\x1b[m\x1b[K\n'}
+[3.787733] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/include/gmapper/mapper.h:46:47:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Ktemplate argument 1 is invalid\n'}
+[3.787810] (gmapper) StderrLine: {'line': b'   46 |     rclcpp::Subscription<std_msgs::msg::String\x1b[01;31m\x1b[K>\x1b[m\x1b[K::SharedPtr segnet_sub_;\n'}
+[3.787876] (gmapper) StderrLine: {'line': b'      |                                               \x1b[01;31m\x1b[K^\x1b[m\x1b[K\n'}
+[3.787925] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/include/gmapper/mapper.h:46:47:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Ktemplate argument 3 is invalid\n'}
+[3.787973] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/include/gmapper/mapper.h:46:47:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Ktemplate argument 4 is invalid\n'}
+[3.788021] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/include/gmapper/mapper.h:46:47:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Ktemplate argument 5 is invalid\n'}
+[3.788119] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/include/gmapper/mapper.h:46:50:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kexpected \xe2\x80\x98\x1b[01m\x1b[K;\x1b[m\x1b[K\xe2\x80\x99 at end of member declaration\n'}
+[3.788328] (gmapper) StderrLine: {'line': b'   46 |     rclcpp::Subscription<std_msgs::msg::String>::\x1b[01;31m\x1b[KSharedPtr\x1b[m\x1b[K segnet_sub_;\n'}
+[3.788405] (gmapper) StderrLine: {'line': b'      |                                                  \x1b[01;31m\x1b[K^~~~~~~~~\x1b[m\x1b[K\n'}
+[3.788483] (gmapper) StderrLine: {'line': b'      |                                                           \x1b[32m\x1b[K;\x1b[m\x1b[K\n'}
+[3.790116] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/include/gmapper/mapper.h:46:60:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[Ksegnet_sub_\x1b[m\x1b[K\xe2\x80\x99 does not name a type\n'}
+[3.790280] (gmapper) StderrLine: {'line': b'   46 |     rclcpp::Subscription<std_msgs::msg::String>::SharedPtr \x1b[01;31m\x1b[Ksegnet_sub_\x1b[m\x1b[K;\n'}
+[3.790347] (gmapper) StderrLine: {'line': b'      |                                                            \x1b[01;31m\x1b[K^~~~~~~~~~~\x1b[m\x1b[K\n'}
+[3.802562] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/include/gmapper/mapper.h:89:46:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[KString\x1b[m\x1b[K\xe2\x80\x99 in namespace \xe2\x80\x98\x1b[01m\x1b[Kstd_msgs::msg\x1b[m\x1b[K\xe2\x80\x99 does not name a type\n'}
+[3.802790] (gmapper) StderrLine: {'line': b'   89 |     void segnetCallback(const std_msgs::msg::\x1b[01;31m\x1b[KString\x1b[m\x1b[K::SharedPtr msg);\n'}
+[3.802859] (gmapper) StderrLine: {'line': b'      |                                              \x1b[01;31m\x1b[K^~~~~~\x1b[m\x1b[K\n'}
+[3.802909] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/include/gmapper/mapper.h:89:64:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kexpected unqualified-id before \xe2\x80\x98\x1b[01m\x1b[Kmsg\x1b[m\x1b[K\xe2\x80\x99\n'}
+[3.802966] (gmapper) StderrLine: {'line': b'   89 |     void segnetCallback(const std_msgs::msg::String::SharedPtr \x1b[01;31m\x1b[Kmsg\x1b[m\x1b[K);\n'}
+[3.803011] (gmapper) StderrLine: {'line': b'      |                                                                \x1b[01;31m\x1b[K^~~\x1b[m\x1b[K\n'}
+[3.803054] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/include/gmapper/mapper.h:89:63:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kexpected \xe2\x80\x98\x1b[01m\x1b[K)\x1b[m\x1b[K\xe2\x80\x99 before \xe2\x80\x98\x1b[01m\x1b[Kmsg\x1b[m\x1b[K\xe2\x80\x99\n'}
+[3.803110] (gmapper) StderrLine: {'line': b'   89 |     void segnetCallback\x1b[34m\x1b[K(\x1b[m\x1b[Kconst std_msgs::msg::String::SharedPtr\x1b[01;31m\x1b[K \x1b[m\x1b[K\x1b[32m\x1b[Kmsg\x1b[m\x1b[K);\n'}
+[3.803319] (gmapper) StderrLine: {'line': b'      |                        \x1b[34m\x1b[K~\x1b[m\x1b[K                                      \x1b[01;31m\x1b[K^\x1b[m\x1b[K\x1b[32m\x1b[K~~~\x1b[m\x1b[K\n'}
+[3.803385] (gmapper) StderrLine: {'line': b'      |                                                               \x1b[32m\x1b[K)\x1b[m\x1b[K\n'}
+[3.803434] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/include/gmapper/mapper.h:89:54:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kexpected \xe2\x80\x98\x1b[01m\x1b[K;\x1b[m\x1b[K\xe2\x80\x99 at end of member declaration\n'}
+[3.803490] (gmapper) StderrLine: {'line': b'   89 |     void segnetCallback(const std_msgs::msg::String::\x1b[01;31m\x1b[KSharedPtr\x1b[m\x1b[K msg);\n'}
+[3.803543] (gmapper) StderrLine: {'line': b'      |                                                      \x1b[01;31m\x1b[K^~~~~~~~~\x1b[m\x1b[K\n'}
+[3.803587] (gmapper) StderrLine: {'line': b'      |                                                               \x1b[32m\x1b[K;\x1b[m\x1b[K\n'}
+[3.804191] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/include/gmapper/mapper.h:89:64:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[Kmsg\x1b[m\x1b[K\xe2\x80\x99 does not name a type\n'}
+[3.804398] (gmapper) StderrLine: {'line': b'   89 |     void segnetCallback(const std_msgs::msg::String::SharedPtr \x1b[01;31m\x1b[Kmsg\x1b[m\x1b[K);\n'}
+[3.804502] (gmapper) StderrLine: {'line': b'      |                                                                \x1b[01;31m\x1b[K^~~\x1b[m\x1b[K\n'}
+[3.816991] (-) TimerEvent: {}
+[3.885033] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/src/mapper.cpp:\x1b[m\x1b[K In member function \xe2\x80\x98\x1b[01m\x1b[Kvoid SlamGmapping::startLiveSlam()\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[3.885280] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/src/mapper.cpp:88:5:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[Ksegnet_sub_\x1b[m\x1b[K\xe2\x80\x99 was not declared in this scope\n'}
+[3.885356] (gmapper) StderrLine: {'line': b'   88 |     \x1b[01;31m\x1b[Ksegnet_sub_\x1b[m\x1b[K = this->create_subscription<std_msgs::msg::String>(\n'}
+[3.885408] (gmapper) StderrLine: {'line': b'      |     \x1b[01;31m\x1b[K^~~~~~~~~~~\x1b[m\x1b[K\n'}
+[3.886187] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/src/mapper.cpp:88:60:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[KString\x1b[m\x1b[K\xe2\x80\x99 is not a member of \xe2\x80\x98\x1b[01m\x1b[Kstd_msgs::msg\x1b[m\x1b[K\xe2\x80\x99\n'}
+[3.886393] (gmapper) StderrLine: {'line': b'   88 |     segnet_sub_ = this->create_subscription<std_msgs::msg::\x1b[01;31m\x1b[KString\x1b[m\x1b[K>(\n'}
+[3.886450] (gmapper) StderrLine: {'line': b'      |                                                            \x1b[01;31m\x1b[K^~~~~~\x1b[m\x1b[K\n'}
+[3.888623] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/src/mapper.cpp:88:67:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kno matching function for call to \xe2\x80\x98\x1b[01m\x1b[KSlamGmapping::create_subscription<<expression error> >(const char [8], rclcpp::SystemDefaultsQoS, std::_Bind_helper<false, void (SlamGmapping::*)(...), SlamGmapping*, const std::_Placeholder<1>&>::type)\x1b[m\x1b[K\xe2\x80\x99\n'}
+[3.888826] (gmapper) StderrLine: {'line': b'   88 |     segnet_sub_ = \x1b[01;31m\x1b[Kthis->create_subscription<std_msgs::msg::String>(\x1b[m\x1b[K\n'}
+[3.888915] (gmapper) StderrLine: {'line': b'      |                   \x1b[01;31m\x1b[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^\x1b[m\x1b[K\n'}
+[3.888990] (gmapper) StderrLine: {'line': b'   89 | \x1b[01;31m\x1b[K        "/segnet", rclcpp::SystemDefaultsQoS(),\x1b[m\x1b[K\n'}
+[3.889063] (gmapper) StderrLine: {'line': b'      |         \x1b[01;31m\x1b[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\x1b[m\x1b[K                    \n'}
+[3.889135] (gmapper) StderrLine: {'line': b'   90 | \x1b[01;31m\x1b[K        std::bind(&SlamGmapping::segnetCallback, this, std::placeholders::_1)\x1b[m\x1b[K\n'}
+[3.889378] (gmapper) StderrLine: {'line': b'      |         \x1b[01;31m\x1b[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[3.889488] (gmapper) StderrLine: {'line': b'   91 | \x1b[01;31m\x1b[K    )\x1b[m\x1b[K;\n'}
+[3.889567] (gmapper) StderrLine: {'line': b'      |     \x1b[01;31m\x1b[K~\x1b[m\x1b[K                                                              \n'}
+[3.889779] (gmapper) StderrLine: {'line': b'In file included from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executors/single_threaded_executor.hpp:28\x1b[m\x1b[K,\n'}
+[3.889945] (gmapper) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executors.hpp:22\x1b[m\x1b[K,\n'}
+[3.890108] (gmapper) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/rclcpp.hpp:155\x1b[m\x1b[K,\n'}
+[3.890271] (gmapper) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/include/gmapper/mapper.h:9\x1b[m\x1b[K,\n'}
+[3.890697] (gmapper) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/src/mapper.cpp:1\x1b[m\x1b[K:\n'}
+[3.890811] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/node.hpp:219:3:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[Kcandidate: \xe2\x80\x98\x1b[01m\x1b[Ktemplate<class MessageT, class CallbackT, class AllocatorT, class SubscriptionT, class MessageMemoryStrategyT> std::shared_ptr<ROSMessageT> rclcpp::Node::create_subscription(const string&, const rclcpp::QoS&, CallbackT&&, const rclcpp::SubscriptionOptionsWithAllocator<AllocatorT>&, typename MessageMemoryStrategyT::SharedPtr)\x1b[m\x1b[K\xe2\x80\x99\n'}
+[3.890876] (gmapper) StderrLine: {'line': b'  219 |   \x1b[01;36m\x1b[Kcreate_subscription\x1b[m\x1b[K(\n'}
+[3.890926] (gmapper) StderrLine: {'line': b'      |   \x1b[01;36m\x1b[K^~~~~~~~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[3.890970] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/node.hpp:219:3:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[K  template argument deduction/substitution failed:\n'}
+[3.891015] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/src/mapper.cpp:88:67:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Ktemplate argument 1 is invalid\n'}
+[3.891058] (gmapper) StderrLine: {'line': b'   88 |     segnet_sub_ = \x1b[01;31m\x1b[Kthis->create_subscription<std_msgs::msg::String>(\x1b[m\x1b[K\n'}
+[3.891099] (gmapper) StderrLine: {'line': b'      |                   \x1b[01;31m\x1b[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^\x1b[m\x1b[K\n'}
+[3.891140] (gmapper) StderrLine: {'line': b'   89 | \x1b[01;31m\x1b[K        "/segnet", rclcpp::SystemDefaultsQoS(),\x1b[m\x1b[K\n'}
+[3.891225] (gmapper) StderrLine: {'line': b'      |         \x1b[01;31m\x1b[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\x1b[m\x1b[K                    \n'}
+[3.891287] (gmapper) StderrLine: {'line': b'   90 | \x1b[01;31m\x1b[K        std::bind(&SlamGmapping::segnetCallback, this, std::placeholders::_1)\x1b[m\x1b[K\n'}
+[3.891333] (gmapper) StderrLine: {'line': b'      |         \x1b[01;31m\x1b[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[3.891378] (gmapper) StderrLine: {'line': b'   91 | \x1b[01;31m\x1b[K    )\x1b[m\x1b[K;\n'}
+[3.891421] (gmapper) StderrLine: {'line': b'      |     \x1b[01;31m\x1b[K~\x1b[m\x1b[K                                                              \n'}
+[3.891463] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/src/mapper.cpp:\x1b[m\x1b[K At global scope:\n'}
+[3.891505] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/src/mapper.cpp:94:56:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[KString\x1b[m\x1b[K\xe2\x80\x99 in namespace \xe2\x80\x98\x1b[01m\x1b[Kstd_msgs::msg\x1b[m\x1b[K\xe2\x80\x99 does not name a type\n'}
+[3.891548] (gmapper) StderrLine: {'line': b'   94 | void SlamGmapping::segnetCallback(const std_msgs::msg::\x1b[01;31m\x1b[KString\x1b[m\x1b[K::SharedPtr msg)\n'}
+[3.891590] (gmapper) StderrLine: {'line': b'      |                                                        \x1b[01;31m\x1b[K^~~~~~\x1b[m\x1b[K\n'}
+[3.891633] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/src/mapper.cpp:94:74:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kexpected unqualified-id before \xe2\x80\x98\x1b[01m\x1b[Kmsg\x1b[m\x1b[K\xe2\x80\x99\n'}
+[3.891715] (gmapper) StderrLine: {'line': b'   94 | void SlamGmapping::segnetCallback(const std_msgs::msg::String::SharedPtr \x1b[01;31m\x1b[Kmsg\x1b[m\x1b[K)\n'}
+[3.891771] (gmapper) StderrLine: {'line': b'      |                                                                          \x1b[01;31m\x1b[K^~~\x1b[m\x1b[K\n'}
+[3.891818] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/src/mapper.cpp:94:73:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kexpected \xe2\x80\x98\x1b[01m\x1b[K)\x1b[m\x1b[K\xe2\x80\x99 before \xe2\x80\x98\x1b[01m\x1b[Kmsg\x1b[m\x1b[K\xe2\x80\x99\n'}
+[3.891865] (gmapper) StderrLine: {'line': b'   94 | void SlamGmapping::segnetCallback\x1b[34m\x1b[K(\x1b[m\x1b[Kconst std_msgs::msg::String::SharedPtr\x1b[01;31m\x1b[K \x1b[m\x1b[K\x1b[32m\x1b[Kmsg\x1b[m\x1b[K)\n'}
+[3.891916] (gmapper) StderrLine: {'line': b'      |                                  \x1b[34m\x1b[K~\x1b[m\x1b[K                                      \x1b[01;31m\x1b[K^\x1b[m\x1b[K\x1b[32m\x1b[K~~~\x1b[m\x1b[K\n'}
+[3.891960] (gmapper) StderrLine: {'line': b'      |                                                                         \x1b[32m\x1b[K)\x1b[m\x1b[K\n'}
+[3.892002] (gmapper) StderrLine: {'line': b'\x1b[01m\x1b[K/home/lamp/workspaces/segnet/src/gmapper/src/mapper.cpp:94:74:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kexpected initializer before \xe2\x80\x98\x1b[01m\x1b[Kmsg\x1b[m\x1b[K\xe2\x80\x99\n'}
+[3.892045] (gmapper) StderrLine: {'line': b'   94 | void SlamGmapping::segnetCallback(const std_msgs::msg::String::SharedPtr \x1b[01;31m\x1b[Kmsg\x1b[m\x1b[K)\n'}
+[3.892087] (gmapper) StderrLine: {'line': b'      |                                                                          \x1b[01;31m\x1b[K^~~\x1b[m\x1b[K\n'}
+[3.917160] (-) TimerEvent: {}
+[4.017695] (-) TimerEvent: {}
+[4.118110] (-) TimerEvent: {}
+[4.218553] (-) TimerEvent: {}
+[4.318984] (-) TimerEvent: {}
+[4.419444] (-) TimerEvent: {}
+[4.519914] (-) TimerEvent: {}
+[4.620397] (-) TimerEvent: {}
+[4.720955] (-) TimerEvent: {}
+[4.821435] (-) TimerEvent: {}
+[4.921959] (-) TimerEvent: {}
+[5.022385] (-) TimerEvent: {}
+[5.122892] (-) TimerEvent: {}
+[5.223347] (-) TimerEvent: {}
+[5.323986] (-) TimerEvent: {}
+[5.424479] (-) TimerEvent: {}
+[5.525024] (-) TimerEvent: {}
+[5.625463] (-) TimerEvent: {}
+[5.725839] (-) TimerEvent: {}
+[5.826321] (-) TimerEvent: {}
+[5.926807] (-) TimerEvent: {}
+[6.027263] (-) TimerEvent: {}
+[6.127800] (-) TimerEvent: {}
+[6.228215] (-) TimerEvent: {}
+[6.328664] (-) TimerEvent: {}
+[6.429213] (-) TimerEvent: {}
+[6.529640] (-) TimerEvent: {}
+[6.630085] (-) TimerEvent: {}
+[6.730659] (-) TimerEvent: {}
+[6.831191] (-) TimerEvent: {}
+[6.931834] (-) TimerEvent: {}
+[7.032311] (-) TimerEvent: {}
+[7.132737] (-) TimerEvent: {}
+[7.233219] (-) TimerEvent: {}
+[7.333656] (-) TimerEvent: {}
+[7.434177] (-) TimerEvent: {}
+[7.534583] (-) TimerEvent: {}
+[7.635104] (-) TimerEvent: {}
+[7.735525] (-) TimerEvent: {}
+[7.783540] (gmapper) StderrLine: {'line': b'gmake[2]: *** [CMakeFiles/gmap.dir/build.make:76: CMakeFiles/gmap.dir/src/mapper.cpp.o] Error 1\n'}
+[7.784328] (gmapper) StderrLine: {'line': b'gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/gmap.dir/all] Error 2\n'}
+[7.784503] (gmapper) StderrLine: {'line': b'gmake: *** [Makefile:146: all] Error 2\n'}
+[7.786838] (gmapper) CommandEnded: {'returncode': 2}
+[7.807663] (gmapper) JobEnded: {'identifier': 'gmapper', 'rc': 2}
+[7.818558] (-) EventReactorShutdown: {}
