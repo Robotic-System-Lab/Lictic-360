@@ -67,7 +67,7 @@ private:
     unsigned int gsp_laser_beam_count_;
     GMapping::OdometrySensor* gsp_odom_;
 
-    int got_first_scan_;
+    bool got_first_scan_;
 
     bool got_map_;
     nav_msgs::msg::OccupancyGrid map_;

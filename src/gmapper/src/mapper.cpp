@@ -31,7 +31,7 @@ void SlamGmapping::init() {
 
     gsp_laser_ = nullptr;
     gsp_odom_ = nullptr;
-    got_first_scan_ = 0;
+    got_first_scan_ = false;
     got_map_ = false;
 
     throttle_scans_ = 1;
@@ -347,11 +347,11 @@ void SlamGmapping::laserCallback(sensor_msgs::msg::LaserScan::ConstSharedPtr sca
     tf2::TimePoint last_map_update = tf2::TimePointZero;
 
     // We can't initialize the mapper until we've got the first scan
-    if(got_first_scan_ == 0)
+    if(!got_first_scan_)
     {
         if(!initMapper(scan))
             return;
-        got_first_scan_ = 1;
+        got_first_scan_ = true;
     }
     auto new_scan = std::make_shared<sensor_msgs::msg::LaserScan>(*scan);
     
@@ -456,43 +456,9 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
         
         std::array<int, 360> segnet;
         std::generate(segnet.begin(), segnet.end(), []() { return rand() % 5 + 6; });
-        matcher.registerScan(smap, n->pose, &((*n->reading)[0]), dmap, segnet.data());
+        matcher.registerScan(smap, n->pose, &((*n->reading)[0]), segnet.data());
         // matcher.registerScan(smap, n->pose, &((*n->reading)[0]));
     }
-
-    // Open files in write mode.
-    if (got_first_scan_ <= 100) {
-        // std::ofstream smap_file("./tmp/smap.txt", std::ofstream::out | std::ofstream::trunc);
-        // if (smap_file.is_open()) {
-        //     for(int x=0; x < smap.getMapSizeX(); x++) {
-        //         for(int y=0; y < smap.getMapSizeY(); y++) {
-        //             GMapping::IntPoint p(x, y);
-        //             double occ = smap.cell(p);
-        //             smap_file << occ << " ";
-        //         }
-        //         smap_file << std::endl;
-        //     }
-        //     smap_file.close();
-        // } else {
-        //     RCLCPP_ERROR(this->get_logger(), "Unable to open file ./tmp/smap.txt");
-        // }
-        
-        std::ofstream dmap_file("./tmp/dmap.txt", std::ofstream::out | std::ofstream::trunc);
-        if (dmap_file.is_open()) {
-            for(int x=0; x < dmap.getMapSizeX(); x++) {
-                for(int y=0; y < dmap.getMapSizeY(); y++) {
-                    GMapping::IntPoint p(x, y);
-                    int label = dmap.cell(p).getLabel();
-                    dmap_file << label << " ";
-                }
-                dmap_file << std::endl;
-            }
-            dmap_file.close();
-        } else {
-            RCLCPP_ERROR(this->get_logger(), "Unable to open file ./tmp/dmap.txt");
-        }
-    }
-    got_first_scan_++;
 
     // the map may have expanded, so resize ros message as well
     if(map_.info.width != (unsigned int) smap.getMapSizeX() || map_.info.height != (unsigned int) smap.getMapSizeY()) {
@@ -523,7 +489,7 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
             /// @todo Sort out the unknown vs. free vs. obstacle thresholding
             GMapping::IntPoint p(x, y);
             double occ=smap.cell(p);
-            int label = dmap.cell(p).getLabel();
+            int label = smap.cell(p).getLabel();
             assert(occ <= 1.0);
             if(occ < 0)
                 map_.data[MAP_IDX(map_.info.width, x, y)] = -1;
