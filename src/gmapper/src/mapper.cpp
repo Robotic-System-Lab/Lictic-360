@@ -1,4 +1,5 @@
 #include "gmapper/mapper.h"
+#include <nlohmann/json.hpp>
 
 #define MAP_IDX(sx, i, j) ((sx) * (j) + (i))
 
@@ -73,21 +74,33 @@ void SlamGmapping::init() {
 }
 
 void SlamGmapping::startLiveSlam() {
-    // semantic_ = this->create_publisher<nav_msgs::msg::OccupancyGrid>("semantic", rclcpp::SystemDefaultsQoS());
-
+    // Topics Initiation
     entropy_publisher_ = this->create_publisher<std_msgs::msg::Float64>("entropy", rclcpp::SystemDefaultsQoS());
     sst_ = this->create_publisher<nav_msgs::msg::OccupancyGrid>("map", rclcpp::SystemDefaultsQoS());
     sstm_ = this->create_publisher<nav_msgs::msg::MapMetaData>("map_metadata", rclcpp::SystemDefaultsQoS());
     scan_filter_sub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::LaserScan>>
             (node_, "scan", rclcpp::SensorDataQoS().get_rmw_qos_profile());
-//    sub_ = this->create_subscription<sensor_msgs::msg::LaserScan>(
-//        "scan", rclcpp::SensorDataQoS(),
-//        std::bind(&SlamGmapping::laserCallback, this, std::placeholders::_1));
     scan_filter_ = std::make_shared<tf2_ros::MessageFilter<sensor_msgs::msg::LaserScan>>
             (*scan_filter_sub_, *buffer_, odom_frame_, 10, node_);
     scan_filter_->registerCallback(std::bind(&SlamGmapping::laserCallback, this, std::placeholders::_1));
     transform_thread_ = std::make_shared<std::thread>
             (std::bind(&SlamGmapping::publishLoop, this, transform_publish_period_));
+    segnet_sub_ = this->create_subscription<std_msgs::msg::String>(
+        "/segnet", rclcpp::SystemDefaultsQoS(),
+        std::bind(&SlamGmapping::segnetCallback, this, std::placeholders::_1)
+    );
+}
+
+void SlamGmapping::segnetCallback(const std_msgs::msg::String::SharedPtr msg)
+{
+    try {
+        nlohmann::json j = nlohmann::json::parse(msg->data);
+        segnetReads_.push_back(j);
+        RCLCPP_DEBUG(this->get_logger(), "Segnet JSON berhasil diparsing dan disimpan");
+    }
+    catch (nlohmann::json::parse_error &e) {
+        RCLCPP_ERROR(this->get_logger(), "JSON parse error: %s", e.what());
+    }
 }
 
 void SlamGmapping::publishLoop(double transform_publish_period){
@@ -520,7 +533,7 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
             else if(occ > occ_thresh_)
             {
                 //map_.map.data[MAP_IDX(map_.map.info.width, x, y)] = (int)round(occ*100.0);
-                map_.data[MAP_IDX(map_.info.width, x, y)] = label*10;
+                map_.data[MAP_IDX(map_.info.width, x, y)] = label;
             }
             else
                 map_.data[MAP_IDX(map_.info.width, x, y)] = 0;
@@ -533,7 +546,6 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
     map_.header.frame_id = map_frame_;
 
     sst_->publish(map_);
-    // semantic_->publish(map_);
     sstm_->publish(map_.info);
     map_mutex_.unlock();
 }

@@ -76,7 +76,7 @@ class SegmentationNode(Node):
               'x2': data['x2']
             }
     
-    detected = [x['label'] if x['label'] is not None else -1 for x in deg360]
+    detected = [x['label']+1 if x['label'] is not None else -1 for x in deg360]
     payload = {
       'timestamp': timestamp,
       'detected': detected

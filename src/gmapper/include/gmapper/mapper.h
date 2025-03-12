@@ -8,7 +8,8 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/laser_scan.hpp"
-// #include "cuslaser/laser_scan.hpp"
+#include <nlohmann/json.hpp>
+#include "std_msgs/msg/string.hpp"
 #include "std_msgs/msg/float64.hpp"
 #include "nav_msgs/msg/occupancy_grid.hpp"
 #include "nav_msgs/msg/map_meta_data.hpp"
@@ -42,8 +43,8 @@ private:
     rclcpp::Node::SharedPtr node_;
     rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr entropy_publisher_;
     rclcpp::Publisher<nav_msgs::msg::OccupancyGrid>::SharedPtr sst_;
-    // rclcpp::Publisher<nav_msgs::msg::OccupancyGrid>::SharedPtr semantic_;
     rclcpp::Publisher<nav_msgs::msg::MapMetaData>::SharedPtr sstm_;
+    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr segnet_sub_;
 
     std::shared_ptr<tf2_ros::Buffer> buffer_;
     std::shared_ptr<tf2_ros::TransformListener> tfl_;
@@ -51,7 +52,8 @@ private:
     std::shared_ptr<message_filters::Subscriber<sensor_msgs::msg::LaserScan>> scan_filter_sub_;
     std::shared_ptr<tf2_ros::MessageFilter<sensor_msgs::msg::LaserScan >> scan_filter_;
     std::shared_ptr<tf2_ros::TransformBroadcaster> tfB_;
-
+    std::vector<nlohmann::json> segnetReads_;
+    
     GMapping::GridSlamProcessor* gsp_;
     GMapping::RangeSensor* gsp_laser_;
     // The angles in the laser, going from -x to x (adjustment is made to get the laser between
@@ -85,6 +87,7 @@ private:
     std::string map_frame_;
     std::string odom_frame_;
 
+    void segnetCallback(const std_msgs::msg::String::SharedPtr msg);
     void updateMap(sensor_msgs::msg::LaserScan::ConstSharedPtr scan);
     bool getOdomPose(GMapping::OrientedPoint& gmap_pose, const rclcpp::Time& t);
     bool initMapper(sensor_msgs::msg::LaserScan::ConstSharedPtr scan);
