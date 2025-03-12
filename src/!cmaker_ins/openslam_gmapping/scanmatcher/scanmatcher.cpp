@@ -115,7 +115,6 @@ void ScanMatcher::computeActiveArea(ScanMatcherMap& map, const OrientedPoint& p,
 	m_activeAreaComputed=true;
 }
 */
-// void ScanMatcher::computeActiveArea(ScanMatcherMap& map, const OrientedPoint& p, const double* readings, ScanMatcherMap& dmap, const double* segnet){
 void ScanMatcher::computeActiveArea(ScanMatcherMap& map, const OrientedPoint& p, const double* readings){
 	if (m_activeAreaComputed)
 		return;
@@ -219,14 +218,13 @@ void ScanMatcher::computeActiveArea(ScanMatcherMap& map, const OrientedPoint& p,
 	m_activeAreaComputed=true;
 }
 
-double ScanMatcher::registerScan(ScanMatcherMap& map, const OrientedPoint& p, const double* readings, ScanMatcherMap& dmap, const int* segnet){
+double ScanMatcher::registerScan(ScanMatcherMap& map, const OrientedPoint& p, const double* readings, const int* segnet){
 // double ScanMatcher::registerScan(ScanMatcherMap& map, const OrientedPoint& p, const double* readings){
 	if (!m_activeAreaComputed)
 		computeActiveArea(map, p, readings);
 		
 	//this operation replicates the cells that will be changed in the registration operation
 	map.storage().allocActiveArea();
-	dmap.storage().allocActiveArea();
 	
 	OrientedPoint lp=p;
 	lp.x+=cos(p.theta)*m_laserPose.x-sin(p.theta)*m_laserPose.y;
@@ -257,10 +255,6 @@ double ScanMatcher::registerScan(ScanMatcherMap& map, const OrientedPoint& p, co
 				cell.update(false, Point(0,0),segnet[counter]);
 				e+=cell.entropy();
 				esum+=e;
-
-				PointAccumulator& dcell=dmap.cell(line.points[i]);
-				dcell.update(false, Point(0,0),segnet[counter]);
-
 				// double randomX = static_cast<double>(std::rand()) / RAND_MAX;
 				// double randomY = static_cast<double>(std::rand()) / RAND_MAX;
 				// GMapping::Point randomPoint(randomX, randomY);
@@ -271,9 +265,6 @@ double ScanMatcher::registerScan(ScanMatcherMap& map, const OrientedPoint& p, co
 				map.cell(p1).update(true,phit,segnet[counter]);
 				e+=map.cell(p1).entropy();
 				esum+=e;
-				
-				// Update dmap with different values
-				dmap.cell(p1).update(true,phit,segnet[counter]);
 			}
 		} else {
 			if (*r>m_laserMaxRange||*r>m_usableRange||*r==0.0||isnan(*r)) continue;
@@ -283,7 +274,6 @@ double ScanMatcher::registerScan(ScanMatcherMap& map, const OrientedPoint& p, co
 			IntPoint p1=map.world2map(phit);
 			assert(p1.x>=0 && p1.y>=0);
 			map.cell(p1).update(true,phit,0);
-			dmap.cell(p1).update(true,phit,0);
 		}
 		counter++;
 	}

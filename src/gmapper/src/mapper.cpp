@@ -439,9 +439,6 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
     GMapping::ScanMatcherMap smap(center, xmin_, ymin_, xmax_, ymax_,
                                   delta_);
 
-    GMapping::ScanMatcherMap dmap(center, xmin_, ymin_, xmax_, ymax_,
-                                  delta_);
-
     RCLCPP_DEBUG(this->get_logger(), "Trajectory tree:");
     for(GMapping::GridSlamProcessor::TNode* n = best.node; n; n = n->parent)
     {

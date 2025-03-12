@@ -21,7 +21,7 @@ class ScanMatcher{
 		double optimize(OrientedPoint& pnew, const ScanMatcherMap& map, const OrientedPoint& p, const double* readings) const;
 		double optimize(OrientedPoint& mean, CovarianceMatrix& cov, const ScanMatcherMap& map, const OrientedPoint& p, const double* readings) const;
 		
-		double   registerScan(ScanMatcherMap& map, const OrientedPoint& p, const double* readings, ScanMatcherMap& dmap, const int* segnet);
+		double   registerScan(ScanMatcherMap& map, const OrientedPoint& p, const double* readings, const int* segnet);
 		// double   registerScan(ScanMatcherMap& map, const OrientedPoint& p, const double* readings);
 		void setLaserParameters
 			(unsigned int beams, double* angles, const OrientedPoint& lpose);
