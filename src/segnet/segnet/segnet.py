@@ -31,7 +31,8 @@ class SegmentationNode(Node):
   def image_callback(self, msg):
     if self.processing:
       return
-
+    stamp = msg.header.stamp
+    timestamp = stamp.sec + stamp.nanosec * 1e-9
     self.processing = True
     self.get_logger().info(f'({self.image_count}) Received image data, performing segmentation...')
     self.image_count += 1
@@ -60,8 +61,6 @@ class SegmentationNode(Node):
     deg360 = [{
               'label': None,
               'conf': 0,
-              'x1': 0,
-              'x2': 0
             }] * 360
     width = cv_image.shape[1]*6
     pixels_per_degree = width//360
@@ -77,9 +76,14 @@ class SegmentationNode(Node):
               'x2': data['x2']
             }
     
-    msg = String()
-    msg.data = json.dumps(deg360)
-    self.segmentation_publisher.publish(msg)
+    detected = [x['label'] if x['label'] is not None else -1 for x in deg360]
+    payload = {
+      'timestamp': timestamp,
+      'detected': detected
+    }
+    msg_out = String()
+    msg_out.data = json.dumps(payload)
+    self.segmentation_publisher.publish(msg_out)
 
     self.processing = False
     self.get_logger().info(f'({self.image_count}) Successfully performed segmentation. Waiting for next image...')
