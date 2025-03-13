@@ -16,78 +16,118 @@ class SegmentationNode(Node):
     self.get_logger().info('Segmentation node has been started.')
     self.bridge = CvBridge()
     self.get_logger().info('Loading Model...')
-    self.model = YOLO('./src/segnet/model/yolov8m-seg.pt')
+    self.model = YOLO('./src/segnet/model/yolo11m-seg.pt')
     self.get_logger().info('Model loaded, ready to perform segmentation.')
     
-    self.image_count = 0
-    self.processing = False
-    self.image_subscriber = self.create_subscription(
-      Image,
-      '/camera/image_raw',
-      self.image_callback,
-      10)
+    self.timestamp = 0
+    self.subscribers = []
+    self.images = [None] * 6
+    
     self.segmentation_publisher = self.create_publisher(String, '/segnet', 10)
+    for i in range(6):
+      topic_name = f'/camera_{i + 1}/image_raw'
+      self.subscribers.append(
+        self.create_subscription(
+          Image,
+          topic_name,
+          lambda msg, idx=i: self.image_callback(msg, idx),
+          10
+        )
+      )
+    self.timer = self.create_timer(0.1, self.display_images)
 
-  def image_callback(self, msg):
-    if self.processing:
-      return
+  def image_callback(self, msg, index):
     stamp = msg.header.stamp
-    timestamp = stamp.sec + stamp.nanosec * 1e-9
-    self.processing = True
-    self.get_logger().info(f'({self.image_count}) Received image data, performing segmentation...')
-    self.image_count += 1
+    self.timestamp = stamp.sec + stamp.nanosec * 1e-9
+    self.get_logger().info(f'Received image data, performing segmentation...')
 
     cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
-    results = self.model(cv_image)
     
-    pred_img = results[0].plot()
-    cv2.imshow('Predicted Image', pred_img)
-    cv2.waitKey(1)
+    if (index < 3):
+      cv2.imshow('Multi Camera Display (6x1)', cv_image)
+    self.images[index] = cv_image
 
-    segmentation_data = []
-    for result in results:
-      for box in result.boxes:
-        label = box.cls.item()
-        conf = box.cls.item()
-        xyxy = box.xyxy[0].tolist()
-        x1, y1, x2, y2 = xyxy
-        segmentation_data.append({
-          'label': int(label),
-          'conf': conf,
-          'x1': int(x1),
-          'x2': int(x2),
-        })
+  def collect_segnet(results, cv_image, timestamp):
+    try:
+      segmentation_data = []
+      for result in results:
+        for box in result.boxes:
+          label = box.cls.item()
+          conf = box.cls.item()
+          xyxy = box.xyxy[0].tolist()
+          x1, y1, x2, y2 = xyxy
+          segmentation_data.append({
+            'label': int(label),
+            'conf': conf,
+            'x1': int(x1),
+            'x2': int(x2),
+          })
 
-    deg360 = [{
-              'label': None,
-              'conf': 0,
-            }] * 360
-    width = cv_image.shape[1]*6
-    pixels_per_degree = width//360
+      deg360 = [{
+                'label': None,
+                'conf': 0,
+              }] * 360
+      width = cv_image.shape[1]*6
+      pixels_per_degree = width//360
+      
+      for data in segmentation_data:
+        for degree in range(360):
+          if data['x1'] <= degree * pixels_per_degree < data['x2']:
+            if (deg360[degree]['conf'] == 0 or deg360[degree]['conf'] < data['conf']):
+              deg360[degree] = {
+                'label': data['label'],
+                'conf': data['conf'],
+                'x1': data['x1'],
+                'x2': data['x2']
+              }
+      
+      detected = [x['label']+1 if x['label'] is not None else -1 for x in deg360]
+      detected = [detected[(i - 309) % 360] for i in range(360)]
+      payload = {
+        'timestamp': timestamp,
+        'detected': detected
+      }
+      msg_out = String()
+      msg_out.data = json.dumps(payload)
+    except Exception:
+      msg_out = None
+    return msg_out
+
+  def crop_center_width(self, image, target_width):
+    """Memotong gambar pada bagian tengah dengan width yang ditentukan."""
+    _, width, _ = image.shape
+    if target_width >= width:
+      return image
+    x_start = (width - target_width) // 2
+    return image[:, x_start:x_start + target_width]
+
+  def segment_image(self, image):
+    """Gunakan segNet untuk segmentasi gambar."""
+    results = self.model(image)
+    segmented_image = results[0].plot()
+    return segmented_image
+
+  def display_images(self):
+    """Gabungkan dan tampilkan gambar dari semua kamera dengan hasil segmentasi."""
+    if all(image is not None for image in self.images):
+      try:
+        processed_images = [self.segment_image(image) for image in self.images]
+        combined_image = cv2.hconcat(processed_images)
+        cv2.imshow('Multi Camera Display (6x1)', combined_image)
+        cv2.waitKey(1)
+
+        msg_out = None
+        # msg_out = self.collect_segnet(results, cv_image, timestamp)
+        if (msg_out):
+          self.segmentation_publisher.publish(msg_out)
+          self.get_logger().info(f'Segmentation completed.')
+        else:
+          self.get_logger().info(f'Segmentation failed.')
+      except Exception as e:
+        self.get_logger().error(f"Error during image concatenation: {e}")
+    else:
+      self.get_logger().warning("Not all camera feeds are available.")
     
-    for data in segmentation_data:
-      for degree in range(360):
-        if data['x1'] <= degree * pixels_per_degree < data['x2']:
-          if (deg360[degree]['conf'] == 0 or deg360[degree]['conf'] < data['conf']):
-            deg360[degree] = {
-              'label': data['label'],
-              'conf': data['conf'],
-              'x1': data['x1'],
-              'x2': data['x2']
-            }
-    
-    detected = [x['label']+1 if x['label'] is not None else -1 for x in deg360]
-    detected = [detected[(i - 309) % 360] for i in range(360)]
-    payload = {
-      'timestamp': timestamp,
-      'detected': detected
-    }
-    msg_out = String()
-    msg_out.data = json.dumps(payload)
-    self.segmentation_publisher.publish(msg_out)
-
-    self.processing = False
-    self.get_logger().info(f'({self.image_count}) Successfully performed segmentation. Waiting for next image...')
 
 def main(args=None):
   rclpy.init(args=args)
