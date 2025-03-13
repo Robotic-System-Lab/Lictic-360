@@ -24,22 +24,20 @@ struct PointAccumulator{
 	static const PointAccumulator& Unknown();
 	static PointAccumulator* unknown_ptr;
 	FloatPoint acc;
-	int n, visits, label = 0;
+	int n, visits, label = 100;
 	inline double entropy() const;
 };
 
 void PointAccumulator::update(bool value, const Point& p, int detected){
 	if (value) {
-		// label = detected;
+		// Assign Detected Value for Semantic Mapping
+		label = detected;
 		acc.x+= static_cast<float>(p.x);
 		acc.y+= static_cast<float>(p.y); 
 		n++; 
 		visits+=SIGHT_INC;
 	} else
 		visits++;
-	if (detected > 0 && detected < 10) {
-		label = detected;
-	}
 }
 
 int PointAccumulator::getLabel() {

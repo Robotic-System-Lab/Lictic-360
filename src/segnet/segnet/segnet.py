@@ -16,7 +16,7 @@ class SegmentationNode(Node):
     self.get_logger().info('Segmentation node has been started.')
     self.bridge = CvBridge()
     self.get_logger().info('Loading Model...')
-    self.model = YOLO('./src/segnet/model/yolo11m-seg.pt')
+    self.model = YOLO('./src/segnet/model/yolov8m-seg.pt')
     self.get_logger().info('Model loaded, ready to perform segmentation.')
     
     self.image_count = 0
@@ -77,6 +77,7 @@ class SegmentationNode(Node):
             }
     
     detected = [x['label']+1 if x['label'] is not None else -1 for x in deg360]
+    detected = [detected[(i - 309) % 360] for i in range(360)]
     payload = {
       'timestamp': timestamp,
       'detected': detected

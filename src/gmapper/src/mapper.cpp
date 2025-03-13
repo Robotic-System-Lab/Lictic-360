@@ -454,9 +454,31 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
         matcher.invalidateActiveArea();
         matcher.computeActiveArea(smap, n->pose, &((*n->reading)[0]));
         
-        std::array<int, 360> segnet;
-        std::generate(segnet.begin(), segnet.end(), []() { return rand() % 5 + 6; });
-        matcher.registerScan(smap, n->pose, &((*n->reading)[0]), segnet.data());
+        // std::array<int, 360> segnet;
+        // std::generate(segnet.begin(), segnet.end(), []() { return rand() % 5 + 6; });
+        // matcher.registerScan(smap, n->pose, &((*n->reading)[0]), segnet.data());
+        if (segnetReads_.empty()) {
+            // No segnet data received yet – fill with a default value (-1)
+            std::array<int, 360> segnet_default;
+            segnet_default.fill(-1);
+            matcher.registerScan(smap, n->pose, &((*n->reading)[0]), segnet_default.data());
+        }
+        else {
+            auto &latest = segnetReads_.back();
+            if (latest.contains("detected") && latest["detected"].is_array() && latest["detected"].size() == 360) {
+                std::array<int, 360> segnet_topic;
+                for (size_t i = 0; i < 360; ++i) {
+                    segnet_topic[i] = latest["detected"][i];
+                }
+                matcher.registerScan(smap, n->pose, &((*n->reading)[0]), segnet_topic.data());
+            }
+            else {
+                // If JSON format is unexpected, fallback to a default array.
+                std::array<int, 360> segnet_default;
+                segnet_default.fill(-1);
+                matcher.registerScan(smap, n->pose, &((*n->reading)[0]), segnet_default.data());
+            }
+        }
         // matcher.registerScan(smap, n->pose, &((*n->reading)[0]));
     }
 
@@ -496,7 +518,8 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
             else if(occ > occ_thresh_)
             {
                 //map_.map.data[MAP_IDX(map_.map.info.width, x, y)] = (int)round(occ*100.0);
-                map_.data[MAP_IDX(map_.info.width, x, y)] = label;
+                int fill = label == -1 ? 100 : label;
+                map_.data[MAP_IDX(map_.info.width, x, y)] = fill;
             }
             else
                 map_.data[MAP_IDX(map_.info.width, x, y)] = 0;
