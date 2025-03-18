@@ -81,7 +81,7 @@ void SlamGmapping::startLiveSlam() {
     scan_filter_sub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::LaserScan>>
             (node_, "scan", rclcpp::SensorDataQoS().get_rmw_qos_profile());
     scan_filter_ = std::make_shared<tf2_ros::MessageFilter<sensor_msgs::msg::LaserScan>>
-            (*scan_filter_sub_, *buffer_, odom_frame_, 10, node_);
+            (*scan_filter_sub_, *buffer_, odom_frame_, 100, node_);
     scan_filter_->registerCallback(std::bind(&SlamGmapping::laserCallback, this, std::placeholders::_1));
     transform_thread_ = std::make_shared<std::thread>
             (std::bind(&SlamGmapping::publishLoop, this, transform_publish_period_));
@@ -561,5 +561,6 @@ int main(int argc, char* argv[])
 
     auto slam_gmapping_node = std::make_shared<SlamGmapping>();
     rclcpp::spin(slam_gmapping_node);
+    rclcpp::shutdown();
     return(0);
 }
