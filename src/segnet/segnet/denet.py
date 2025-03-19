@@ -8,27 +8,25 @@ from std_msgs.msg import String
 from cv_bridge import CvBridge
 import cv2
 import numpy as np
-from ultralytics import YOLO
+import jetson_inference     # <-- Added for DetectNet
+import jetson_utils         # <-- Added for image conversion
 from rclpy.executors import MultiThreadedExecutor
 
 class SegmentationNode(Node):
   def __init__(self):
-    super().__init__('segnet')
-    model = '11'
-    
+    super().__init__('denet')
     self.get_logger().info('Segmentation node has been started.')
     self.bridge = CvBridge()
-    self.get_logger().info('Loading Model...')
-    self.model = YOLO(f'./src/segnet/model/yolo{model}m-seg.pt')
-    self.get_logger().info(f'Model loaded on: {self.model.device}, ready to perform segmentation.')
+    
+    self.get_logger().info('Loading DetectNet Model...')
+    # Initialize DetectNet using jetson_inference as in detect.py
+    self.model = jetson_inference.detectNet("ssd-mobilenet-v2", threshold=0.5)
+    self.get_logger().info('DetectNet model loaded, ready to perform segmentation.')
     
     self.timestamp = 0
     self.subscribers = []
     self.images = [None] * 6
-    self.deg360 = [{
-                'label': None,
-                'conf': 0,
-              }] * 360
+    self.deg360 = [{'label': None, 'conf': 0}] * 360
     
     self.segmentation_publisher = self.create_publisher(String, '/segnet', 10)
     for i in range(6):
@@ -50,22 +48,22 @@ class SegmentationNode(Node):
 
   def collect_segnet(self, results, cv_image, index):
     segmentation_data = []
-    for result in results:
-      for box in result.boxes:
-        label = box.cls.item()
-        conf = box.cls.item()
-        xyxy = box.xyxy[0].tolist()
-        x1, y1, x2, y2 = xyxy
-        segmentation_data.append({
+    # For each detection returned by DetectNet
+    for detection in results:
+      label = detection.ClassID           # Retrieve class ID
+      conf = detection.Confidence         # Retrieve detection confidence
+      x1 = int(detection.Left)              # Left coordinate (x1)
+      x2 = int(detection.Right)             # Right coordinate (x2)
+      segmentation_data.append({
           'label': int(label),
           'conf': conf,
-          'x1': int(x1),
-          'x2': int(x2),
-        })
+          'x1': x1,
+          'x2': x2,
+      })
 
     width = cv_image.shape[1]*6
-    pixels_per_degree = width//360
-    
+    pixels_per_degree = width // 360
+
     for data in segmentation_data:
       for degree in range(index*60, (index+1)*60):
         if data['x1'] <= degree * pixels_per_degree < data['x2']:
@@ -86,11 +84,25 @@ class SegmentationNode(Node):
     return image[:, x_start:x_start + target_width]
 
   def segment_image(self, image, index):
-    """Gunakan segNet untuk segmentasi gambar."""
-    results = self.model(image)
-    segmented_image = results[0].plot()
-    self.collect_segnet(results, image, index)
-    return segmented_image
+    """Gunakan DetectNet untuk segmentasi gambar."""
+    # Convert OpenCV image to CUDA image
+    cuda_image = jetson_utils.cudaFromNumpy(image)
+    # Run detection
+    detections = self.model.Detect(cuda_image)
+
+    # Draw bounding boxes on the image for visualization
+    for detection in detections:
+      x1 = int(detection.Left)
+      y1 = int(detection.Top)
+      x2 = int(detection.Right)
+      y2 = int(detection.Bottom)
+      # You can choose a fixed color or generate one based on detection.ClassID
+      color = (0, 255, 0)
+      cv2.rectangle(image, (x1, y1), (x2, y2), color, 2)
+
+    # Update segmentation info based on detection results
+    self.collect_segnet(detections, image, index)
+    return image
 
   def display_images(self):
     """Gabungkan dan tampilkan gambar dari semua kamera dengan hasil segmentasi."""
@@ -110,6 +122,7 @@ class SegmentationNode(Node):
         }
         msg_out = String()
         msg_out.data = json.dumps(payload)
+        self.segmentation_publisher.publish(msg_out)
         
         self.get_logger().info(f'Segmentation completed.')
       except Exception as e:

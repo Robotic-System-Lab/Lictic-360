@@ -10,6 +10,8 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        ('share/' + package_name + '/launch', ['launch/segnet.launch.py']),
+        ('share/' + package_name + '/launch', ['launch/cam.launch.py']),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -20,7 +22,11 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'segnet = segnet.segnet:main'
+            'segnet = segnet.segnet:main',
+            'jetson = segnet.jetson_denet:main',
+            'detect = segnet.jetson_segnet:main',
+            'denet = segnet.denet:main',
+            'denset = segnet.denset:main',
         ],
     },
 )
