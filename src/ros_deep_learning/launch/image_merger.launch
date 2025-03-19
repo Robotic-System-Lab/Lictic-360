@@ -1,0 +1,4 @@
+<launch>
+    <!-- Menjalankan node untuk menggabungkan gambar dari 6 kamera -->
+    <node name="image_merger" pkg="ros_deep_learning" type="image_merger.py" output="screen" />
+</launch>
