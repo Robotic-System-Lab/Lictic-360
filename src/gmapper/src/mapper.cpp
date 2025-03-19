@@ -405,6 +405,18 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
 {
     RCLCPP_DEBUG(this->get_logger(), "Update map");
     map_mutex_.lock();
+
+    if (segnetReads_.empty()) {
+        RCLCPP_DEBUG(this->get_logger(), "segnetReads_ kosong, updateMap dilewati");
+        map_mutex_.unlock();
+        return;
+    }
+    auto &segnetCheck = segnetReads_.back();
+    if (!segnetCheck.contains("detected") || !latest["detected"].is_array() || !latest["detected"].size() == 360) {
+        return;
+    }
+
+
     GMapping::ScanMatcher matcher;
 
     matcher.setLaserParameters(static_cast<unsigned int>(scan->ranges.size()), &(laser_angles_[0]),
@@ -457,28 +469,11 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
         // std::array<int, 360> segnet;
         // std::generate(segnet.begin(), segnet.end(), []() { return rand() % 5 + 6; });
         // matcher.registerScan(smap, n->pose, &((*n->reading)[0]), segnet.data());
-        if (segnetReads_.empty()) {
-            // No segnet data received yet – fill with a default value (-1)
-            std::array<int, 360> segnet_default;
-            segnet_default.fill(-1);
-            matcher.registerScan(smap, n->pose, &((*n->reading)[0]), segnet_default.data());
+        std::array<int, 360> segnet_topic;
+        for (size_t i = 0; i < 360; ++i) {
+            segnet_topic[i] = segnetCheck["detected"][i];
         }
-        else {
-            auto &latest = segnetReads_.back();
-            if (latest.contains("detected") && latest["detected"].is_array() && latest["detected"].size() == 360) {
-                std::array<int, 360> segnet_topic;
-                for (size_t i = 0; i < 360; ++i) {
-                    segnet_topic[i] = latest["detected"][i];
-                }
-                matcher.registerScan(smap, n->pose, &((*n->reading)[0]), segnet_topic.data());
-            }
-            else {
-                // If JSON format is unexpected, fallback to a default array.
-                std::array<int, 360> segnet_default;
-                segnet_default.fill(-1);
-                matcher.registerScan(smap, n->pose, &((*n->reading)[0]), segnet_default.data());
-            }
-        }
+        matcher.registerScan(smap, n->pose, &((*n->reading)[0]), segnet_topic.data());
         // matcher.registerScan(smap, n->pose, &((*n->reading)[0]));
     }
 
@@ -518,7 +513,7 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
             else if(occ > occ_thresh_)
             {
                 //map_.map.data[MAP_IDX(map_.map.info.width, x, y)] = (int)round(occ*100.0);
-                int fill = label == -1 ? 100 : label;
+                int fill = label == -1 ? 0 : label;
                 map_.data[MAP_IDX(map_.info.width, x, y)] = fill;
             }
             else
@@ -533,6 +528,8 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
 
     sst_->publish(map_);
     sstm_->publish(map_.info);
+
+    segnetReads_.clear();
     map_mutex_.unlock();
 }
 

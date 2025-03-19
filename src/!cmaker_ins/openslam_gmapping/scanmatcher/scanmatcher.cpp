@@ -277,7 +277,6 @@ double ScanMatcher::registerScan(ScanMatcherMap& map, const OrientedPoint& p, co
 		}
 		counter++;
 	}
-	std::cout << "Counted: " << counter << std::endl;
 	//cout  << "informationGain=" << -esum << endl;
 	return esum;
 }
