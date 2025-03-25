@@ -412,7 +412,7 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
         return;
     }
     auto &segnetCheck = segnetReads_.back();
-    if (!segnetCheck.contains("detected") || !latest["detected"].is_array() || !latest["detected"].size() == 360) {
+    if (!segnetCheck.contains("detected") || !segnetCheck["detected"].is_array() || !segnetCheck["detected"].size() == 360) {
         return;
     }
 
