@@ -12,12 +12,14 @@ import numpy as np
 import jetson_inference     # <-- Added for DetectNet
 import jetson_utils         # <-- Added for image conversion
 from rclpy.executors import MultiThreadedExecutor
+from .openstitch.stitcher import Stitcher
 
 class SegmentationNode(Node):
   def __init__(self):
     super().__init__('denset')
     self.get_logger().info('Segmentation node has been started.')
     self.bridge = CvBridge()
+    self.stitcher = Stitcher()
     
     self.get_logger().info('Loading DetectNet Model...')
     self.model = jetson_inference.detectNet("ssd-mobilenet-v2", threshold=0.5)
@@ -69,7 +71,7 @@ class SegmentationNode(Node):
     self.get_logger().debug(f"Received image from camera_{index}")
     self.images[index] = cv_image
 
-  def segment_image(self, image, index):
+  def segment_image(self, image):
     """Gunakan DetectNet untuk image detection dan tambahkan overlay dari segNet segmentation."""
     # Pertama: Dapatkan overlay dari segNet untuk segmentation
     cuda_seg_image = jetson_utils.cudaFromNumpy(image)
@@ -93,10 +95,10 @@ class SegmentationNode(Node):
       cv2.rectangle(segmented_image, (x1, y1), (x2, y2), color, 2)
 
     # Update data segmen untuk sensor (tetap ada proses collect_segnet)
-    self.collect_segnet(detections, segmented_image, index)
+    self.collect_segnet(detections, segmented_image)
     return segmented_image
 
-  def collect_segnet(self, results, cv_image, index):
+  def collect_segnet(self, results, cv_image):
     segmentation_data = []
     # For each detection returned by DetectNet
     for detection in results:
@@ -115,7 +117,7 @@ class SegmentationNode(Node):
     pixels_per_degree = width // 360
 
     for data in segmentation_data:
-      for degree in range(index*60, (index+1)*60):
+      for degree in range(0, 360):
         if data['x1'] <= degree * pixels_per_degree < data['x2']:
           if (self.deg360[degree]['conf'] == 0 or self.deg360[degree]['conf'] < data['conf']):
             self.deg360[degree] = {
@@ -131,13 +133,23 @@ class SegmentationNode(Node):
       try:
         self.deg360 = [{'label': None, 'conf': 0}] * 360
         self.timestamp = time.time()
-        processed_images = [self.segment_image(image, idx) for idx, image in enumerate(self.images)]
-        combined_image = cv2.hconcat(processed_images)
-        cv2.imshow('Multi Camera Display (6x1)', combined_image)
-        cv2.waitKey(1)
 
+        collected_images = [image for image in self.images]
+
+        combined_image = self.stitcher.stitch(collected_images)
+        segmented_images = []
+        for i in range(6):
+            start_x = i * (combined_image.shape[1] // 6)
+            end_x = (i + 1) * (combined_image.shape[1] // 6)
+            camera_image = combined_image[:, start_x:end_x]
+            segmented_image = self.segment_image(camera_image)
+            segmented_images.append(segmented_image)
+        processed_images = cv2.hconcat(segmented_images)
+        cv2.imshow('Multi Camera Display (6x1)', processed_images)
+
+        cv2.waitKey(1)
         detected = [x['label']+1 if x['label'] is not None else -1 for x in self.deg360]
-        detected = [detected[(i - 309) % 360] for i in range(360)]
+        # detected = [detected[(i - 309) % 360] for i in range(360)]
         payload = {
           'timestamp': self.timestamp,
           'detected': detected

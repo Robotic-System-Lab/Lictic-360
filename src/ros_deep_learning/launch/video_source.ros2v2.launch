@@ -1,6 +1,6 @@
 <launch>
     <arg name="input_cam_6" default="csi://0"/>
-    <arg name="input_width" default="320"/>
+    <arg name="input_width" default="360"/>
     <arg name="input_height" default="240"/>
     <arg name="input_codec" default="unknown"/>
     <arg name="input_loop" default="0"/>
