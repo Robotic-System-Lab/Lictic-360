@@ -466,10 +466,8 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
         matcher.invalidateActiveArea();
         matcher.computeActiveArea(smap, n->pose, &((*n->reading)[0]));
         
-        // std::array<int, 360> segnet;
-        // std::generate(segnet.begin(), segnet.end(), []() { return rand() % 5 + 6; });
-        // matcher.registerScan(smap, n->pose, &((*n->reading)[0]), segnet.data());
         std::array<int, 360> segnet_topic;
+        // segnet_topic.fill(0);
         for (size_t i = 0; i < 360; ++i) {
             segnet_topic[i] = segnetCheck["detected"][i];
         }
@@ -515,6 +513,7 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
                 //map_.map.data[MAP_IDX(map_.map.info.width, x, y)] = (int)round(occ*100.0);
                 int fill = label == -1 ? 0 : label;
                 map_.data[MAP_IDX(map_.info.width, x, y)] = fill;
+                // map_.data[MAP_IDX(map_.info.width, x, y)] = 100;
             }
             else
                 map_.data[MAP_IDX(map_.info.width, x, y)] = 0;
@@ -529,7 +528,7 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
     sst_->publish(map_);
     sstm_->publish(map_.info);
 
-    segnetReads_.clear();
+    // segnetReads_.clear();
     map_mutex_.unlock();
 }
 
