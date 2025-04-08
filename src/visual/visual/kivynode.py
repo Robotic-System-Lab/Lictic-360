@@ -204,7 +204,7 @@ class MainWidget(BoxLayout):
 # Node ROS2 yang mensubscribe topik /map dan menjadwalkan update GUI
 class MapListener(Node):
   def __init__(self, update_callback):
-    super().__init__('kivy_map_listener')
+    super().__init__('kivynode')
     self.subscription = self.create_subscription(
       OccupancyGrid,
       '/map',
@@ -233,6 +233,8 @@ class SegnetApp(App):
     threading.Thread(target=ros_spin, args=(main_widget,), daemon=True).start()
     return main_widget
 
+def main():
+    SegnetApp().run()
 
 if __name__ == '__main__':
-  SegnetApp().run()
+    main()
