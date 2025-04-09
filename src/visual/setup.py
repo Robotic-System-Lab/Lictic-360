@@ -22,6 +22,7 @@ setup(
         'console_scripts': [
             'tkinter = visual.tknode:main', # Visualize Segmentation
             'kivy = visual.kvnode:main', # Visualize Segmentation with Kivy
+            'qt = visual.qtnode:main', # Visualize Segmentation with QT
         ],
     },
 )
