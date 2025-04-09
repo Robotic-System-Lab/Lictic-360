@@ -123,6 +123,8 @@ class MainWidget(BoxLayout):
     self.orientation = 'horizontal'
     self.size_hint = (None, None)
     self.size = (1000, 850)  # panel kiri: 800x850, sidebar: 200x850
+    self.last_update = 0
+    self.min_update_interval = 1
 
     # Panel kiri: grid dan footer
     left_panel = BoxLayout(orientation='vertical', size_hint=(None, None), size=(800, 850))
@@ -187,16 +189,17 @@ class MainWidget(BoxLayout):
 
   # Method yang dipanggil dari node ROS2 untuk mengupdate grid dari pesan OccupancyGrid
   def update_from_map(self, msg: OccupancyGrid):
-    # Perbarui ukuran grid sesuai informasi pesan /map
+    current_time = Clock.get_time()
+    if current_time - self.last_update < self.min_update_interval:
+        return  # lewati update bila belum mencapai interval minimum
+    self.last_update = current_time
     self.grid_widget.map_width = msg.info.width
     self.grid_widget.map_height = msg.info.height
 
-    # Pastikan data yang diterima sesuai dengan ukuran grid;
-    # jika data kurang, lengkapi dengan nilai 0
     data = list(msg.data)
     expected = msg.info.width * msg.info.height
     if len(data) < expected:
-      data += [0] * (expected - len(data))
+        data += [0] * (expected - len(data))
     self.grid_widget.data = data
     self.grid_widget.update_grid()
 
