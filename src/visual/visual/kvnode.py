@@ -36,25 +36,40 @@ class GridWidget(Widget):
     self.map_width = 40
     self.map_height = 40
     self.size = (800, 800)
+    # List untuk menyimpan tuple (Color, Rectangle)
+    self.rectangles = []
     self.bind(pos=self.update_grid, size=self.update_grid)
     self.update_grid()
 
   def update_grid(self, *args):
-    self.canvas.clear()
-    # Hitung ukuran cell berdasarkan ukuran widget dan jumlah cell
+    total_cells = self.map_width * self.map_height
     cell_width = self.width / self.map_width
     cell_height = self.height / self.map_height
-    with self.canvas:
-      for i in range(self.map_height):
-        for j in range(self.map_width):
-          index = i * self.map_width + j
-          # Jika data tidak lengkap, gunakan nilai default 0
-          value = self.data[index] if index < len(self.data) else 0
-          entry = self.color_map.get(value, {"color": [1, 1, 1, 1]})
-          Color(*entry["color"])
-          # Gambar dari atas ke bawah agar index 0 berada di sudut atas
-          Rectangle(pos=(j * cell_width, self.height - (i + 1) * cell_height),
-                    size=(cell_width, cell_height))
+
+    # Buat ulang instruksi jika jumlah sel tidak sesuai
+    if len(self.rectangles) != total_cells:
+      self.canvas.clear()
+      self.rectangles = []
+      with self.canvas:
+        for i in range(self.map_height):
+          for j in range(self.map_width):
+            # Inisialisasi dengan warna default (putih)
+            col = Color(1, 1, 1, 1)
+            rect = Rectangle(pos=(j * cell_width, self.height - (i + 1) * cell_height),
+                             size=(cell_width, cell_height))
+            self.rectangles.append((col, rect))
+
+    # Update setiap sel berdasarkan data
+    for i in range(self.map_height):
+      for j in range(self.map_width):
+        index = i * self.map_width + j
+        # Jika data tidak lengkap, gunakan nilai default 0
+        value = self.data[index] if index < len(self.data) else 0
+        entry = self.color_map.get(value, {"color": [1, 1, 1, 1]})
+        col, rect = self.rectangles[index]
+        col.rgba = entry["color"]
+        rect.pos = (j * cell_width, self.height - (i + 1) * cell_height)
+        rect.size = (cell_width, cell_height)
 
 
 # Scatter untuk mendukung zoom dan drag pada grid
