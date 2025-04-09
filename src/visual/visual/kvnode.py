@@ -11,6 +11,7 @@ from kivy.clock import Clock
 from kivy.uix.scatter import Scatter
 from kivy.uix.widget import Widget
 from kivy.graphics import Color, Rectangle
+from kivy.graphics.texture import Texture
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
@@ -24,10 +25,8 @@ for i in range(50):
   r, g, b = colorsys.hsv_to_rgb(hue, 1.0, 1.0)
   COLOR_MAP[i] = {"color": [r, g, b, 1], "name": f"Warna {i}"}
 
-
-# Widget yang menggambar grid berdasarkan data occupancy grid. Ukuran grid diplot fix 800x800.
-# Ukuran grid (jumlah cell) didapat dari properti map_width dan map_height.
-class GridWidget(Widget):
+# Widget render berbasis tekstur: data grid dikonversi ke texture dan ditampilkan dengan satu objek Rectangle.
+class TextureGrid(Widget):
   def __init__(self, data, color_map, **kwargs):
     super().__init__(**kwargs)
     self.data = data
@@ -36,41 +35,41 @@ class GridWidget(Widget):
     self.map_width = 40
     self.map_height = 40
     self.size = (800, 800)
-    # List untuk menyimpan tuple (Color, Rectangle)
-    self.rectangles = []
-    self.bind(pos=self.update_grid, size=self.update_grid)
+    # Buat texture dengan ukuran grid dan filter 'nearest' agar tidak blur saat diskalakan
+    self.texture = Texture.create(size=(self.map_width, self.map_height), colorfmt='rgba')
+    self.texture.mag_filter = 'nearest'
+    with self.canvas:
+      self.rect = Rectangle(texture=self.texture, pos=self.pos, size=self.size)
+    self.bind(pos=self.update_rect, size=self.update_rect)
     self.update_grid()
 
+  def update_rect(self, *args):
+    self.rect.pos = self.pos
+    self.rect.size = self.size
+
   def update_grid(self, *args):
-    total_cells = self.map_width * self.map_height
-    cell_width = self.width / self.map_width
-    cell_height = self.height / self.map_height
-
-    # Buat ulang instruksi jika jumlah sel tidak sesuai
-    if len(self.rectangles) != total_cells:
-      self.canvas.clear()
-      self.rectangles = []
-      with self.canvas:
-        for i in range(self.map_height):
-          for j in range(self.map_width):
-            # Inisialisasi dengan warna default (putih)
-            col = Color(1, 1, 1, 1)
-            rect = Rectangle(pos=(j * cell_width, self.height - (i + 1) * cell_height),
-                             size=(cell_width, cell_height))
-            self.rectangles.append((col, rect))
-
-    # Update setiap sel berdasarkan data
+    # Buat buffer untuk pixel (ukuran: map_width * map_height * 4 byte per pixel)
+    buf = bytearray(self.map_width * self.map_height * 4)
     for i in range(self.map_height):
       for j in range(self.map_width):
         index = i * self.map_width + j
         # Jika data tidak lengkap, gunakan nilai default 0
         value = self.data[index] if index < len(self.data) else 0
         entry = self.color_map.get(value, {"color": [1, 1, 1, 1]})
-        col, rect = self.rectangles[index]
-        col.rgba = entry["color"]
-        rect.pos = (j * cell_width, self.height - (i + 1) * cell_height)
-        rect.size = (cell_width, cell_height)
-
+        r, g, b, a = entry["color"]
+        r_byte = int(r * 255)
+        g_byte = int(g * 255)
+        b_byte = int(b * 255)
+        a_byte = int(a * 255)
+        offset = (i * self.map_width + j) * 4
+        buf[offset    ] = r_byte
+        buf[offset + 1] = g_byte
+        buf[offset + 2] = b_byte
+        buf[offset + 3] = a_byte
+    # Perbarui texture dengan buffer yang telah dibuat
+    self.texture.blit_buffer(bytes(buf), colorfmt='rgba', bufferfmt='ubyte')
+    # Balikkan texture secara vertikal untuk penyesuaian koordinat
+    self.texture.flip_vertical()
 
 # Scatter untuk mendukung zoom dan drag pada grid
 class DraggableGrid(Scatter):
@@ -94,7 +93,6 @@ class DraggableGrid(Scatter):
       return True
     return super().on_touch_down(touch)
 
-
 # Widget untuk menampilkan kotak warna pada legenda
 class ColorBox(Widget):
   def __init__(self, color, **kwargs):
@@ -110,7 +108,6 @@ class ColorBox(Widget):
     self.rect.pos = self.pos
     self.rect.size = self.size
 
-
 # Item legenda: menampilkan square beserta nama warnanya
 class LegendItem(BoxLayout):
   def __init__(self, number, entry, **kwargs):
@@ -124,7 +121,6 @@ class LegendItem(BoxLayout):
 
   def update_text(self, *args):
     self.children[0].texture_update()
-
 
 # Kelas utama yang menampilkan GUI dan menyediakan method untuk mengupdate grid dari pesan OccupancyGrid.
 class MainWidget(BoxLayout):
@@ -145,8 +141,8 @@ class MainWidget(BoxLayout):
     left_panel = BoxLayout(orientation='vertical', size_hint=(None, None), size=(800, 850))
     # Mulai dengan data dummy sebanyak 1600 elemen (default grid 40x40)
     dummy_data = [0] * (40 * 40)
-    self.grid_widget = GridWidget(dummy_data, COLOR_MAP)
-    self.draggable = DraggableGrid(self.grid_widget)
+    self.texture_grid = TextureGrid(dummy_data, COLOR_MAP)
+    self.draggable = DraggableGrid(self.texture_grid)
     grid_container = Widget(size=(800, 800))
     grid_container.add_widget(self.draggable)
     left_panel.add_widget(grid_container)
@@ -206,18 +202,16 @@ class MainWidget(BoxLayout):
   def update_from_map(self, msg: OccupancyGrid):
     current_time = Clock.get_time()
     if current_time - self.last_update < self.min_update_interval:
-        return  # lewati update bila belum mencapai interval minimum
+      return
     self.last_update = current_time
-    self.grid_widget.map_width = msg.info.width
-    self.grid_widget.map_height = msg.info.height
-
+    self.texture_grid.map_width = msg.info.width
+    self.texture_grid.map_height = msg.info.height
     data = list(msg.data)
     expected = msg.info.width * msg.info.height
     if len(data) < expected:
-        data += [0] * (expected - len(data))
-    self.grid_widget.data = data
-    self.grid_widget.update_grid()
-
+      data += [0] * (expected - len(data))
+    self.texture_grid.data = data
+    self.texture_grid.update_grid()
 
 # Node ROS2 yang mensubscribe topik /map dan menjadwalkan update GUI
 class MapListener(Node):
@@ -234,7 +228,6 @@ class MapListener(Node):
     # Jadwalkan update GUI pada thread utama Kivy
     Clock.schedule_once(lambda dt: self.update_callback(msg))
 
-
 # Fungsi untuk menjalankan spin ROS2 di thread terpisah
 def ros_spin(main_widget):
   rclpy.init(args=None)
@@ -242,7 +235,6 @@ def ros_spin(main_widget):
   rclpy.spin(listener)
   listener.destroy_node()
   rclpy.shutdown()
-
 
 class SegnetApp(App):
   def build(self):
@@ -252,7 +244,7 @@ class SegnetApp(App):
     return main_widget
 
 def main():
-    SegnetApp().run()
+  SegnetApp().run()
 
 if __name__ == '__main__':
-    main()
+  main()
