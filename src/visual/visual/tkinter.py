@@ -8,9 +8,9 @@ from tkinter import filedialog
 from PIL import Image
 from nav_msgs.msg import OccupancyGrid
 
-class MapNode(Node):
+class TkinterMapNode(Node):
   def __init__(self):
-    super().__init__('map')
+    super().__init__('tkinter')
     # Inisialisasi grid array dan dimensinya default (20x20)
     self.grid_array = [-1] * 400
     self.grid_width = 40
@@ -203,7 +203,7 @@ class MapNode(Node):
 
 def main(args=None):
   rclpy.init(args=args)
-  node = MapNode()
+  node = TkinterMapNode()
   rclpy.spin(node)
   node.destroy_node()
   rclpy.shutdown()
