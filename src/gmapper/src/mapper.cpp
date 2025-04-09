@@ -406,15 +406,15 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
     RCLCPP_DEBUG(this->get_logger(), "Update map");
     map_mutex_.lock();
 
-    if (segnetReads_.empty()) {
-        RCLCPP_DEBUG(this->get_logger(), "segnetReads_ kosong, updateMap dilewati");
-        map_mutex_.unlock();
-        return;
-    }
-    auto &segnetCheck = segnetReads_.back();
-    if (!segnetCheck.contains("detected") || !segnetCheck["detected"].is_array() || !segnetCheck["detected"].size() == 360) {
-        return;
-    }
+    // if (segnetReads_.empty()) {
+    //     RCLCPP_DEBUG(this->get_logger(), "segnetReads_ kosong, updateMap dilewati");
+    //     map_mutex_.unlock();
+    //     return;
+    // }
+    // auto &segnetCheck = segnetReads_.back();
+    // if (!segnetCheck.contains("detected") || !segnetCheck["detected"].is_array() || !segnetCheck["detected"].size() == 360) {
+    //     return;
+    // }
 
 
     GMapping::ScanMatcher matcher;
@@ -467,10 +467,10 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
         matcher.computeActiveArea(smap, n->pose, &((*n->reading)[0]));
         
         std::array<int, 360> segnet_topic;
-        // segnet_topic.fill(0);
-        for (size_t i = 0; i < 360; ++i) {
-            segnet_topic[i] = segnetCheck["detected"][i];
-        }
+        segnet_topic.fill(0);
+        // for (size_t i = 0; i < 360; ++i) {
+        //     segnet_topic[i] = segnetCheck["detected"][i];
+        // }
         matcher.registerScan(smap, n->pose, &((*n->reading)[0]), segnet_topic.data());
         // matcher.registerScan(smap, n->pose, &((*n->reading)[0]));
     }
