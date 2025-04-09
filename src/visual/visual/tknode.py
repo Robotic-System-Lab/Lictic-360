@@ -10,7 +10,7 @@ from nav_msgs.msg import OccupancyGrid
 
 class TkinterMapNode(Node):
   def __init__(self):
-    super().__init__('tkinter')
+    super().__init__('tknode')
     # Inisialisasi grid array dan dimensinya default (20x20)
     self.grid_array = [-1] * 400
     self.grid_width = 40

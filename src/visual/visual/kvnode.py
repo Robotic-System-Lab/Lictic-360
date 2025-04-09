@@ -207,7 +207,7 @@ class MainWidget(BoxLayout):
 # Node ROS2 yang mensubscribe topik /map dan menjadwalkan update GUI
 class MapListener(Node):
   def __init__(self, update_callback):
-    super().__init__('kivynode')
+    super().__init__('kvnode')
     self.subscription = self.create_subscription(
       OccupancyGrid,
       '/map',

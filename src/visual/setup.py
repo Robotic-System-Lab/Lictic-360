@@ -20,8 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'tkinter = visual.tkinter:main', # Visualize Segmentation
-            'kivy = visual.kivynode:main', # Visualize Segmentation with Kivy
+            'tkinter = visual.tknode:main', # Visualize Segmentation
+            'kivy = visual.kvnode:main', # Visualize Segmentation with Kivy
         ],
     },
 )
