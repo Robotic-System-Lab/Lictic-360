@@ -37,6 +37,7 @@ endif()
 include_directories(include)
 
 add_executable(gmap src/mapper.cpp)
+add_executable(semap src/semap.cpp)
 
 ament_target_dependencies(gmap
         rclcpp
@@ -48,7 +49,20 @@ ament_target_dependencies(gmap
         tf2_geometry_msgs
         openslam_gmapping)
 
+ament_target_dependencies(semap
+        rclcpp
+        tf2
+        tf2_ros
+        message_filters
+        sensor_msgs
+        nav_msgs
+        tf2_geometry_msgs
+        openslam_gmapping)
+
 install(TARGETS gmap
+        DESTINATION lib/${PROJECT_NAME})
+
+install(TARGETS semap
         DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY launch
