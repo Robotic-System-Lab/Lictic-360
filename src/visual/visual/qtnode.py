@@ -122,7 +122,10 @@ class MainWindow(QMainWindow):
     self.redraw_grid()
   
   def redraw_grid(self):
-    self.scene.clear()
+    # Buat QPixmap dengan ukuran fixed 800x800
+    pixmap = QPixmap(800, 800)
+    pixmap.fill(Qt.white)
+    painter = QPainter(pixmap)
     for row in range(self.grid_height):
       for col in range(self.grid_width):
         index = row * self.grid_width + col
@@ -136,7 +139,11 @@ class MainWindow(QMainWindow):
           color = QColor(r, 100, b)
         rect = QRectF(col * self.cell_size, row * self.cell_size,
                       self.cell_size, self.cell_size)
-        self.scene.addRect(rect, brush=QBrush(color))
+        painter.fillRect(rect, QBrush(color))
+    painter.end()
+    
+    self.scene.clear()
+    self.scene.addPixmap(pixmap)
   
   def update_grid_from_map(self, msg):
     self.grid_width = msg.info.width
