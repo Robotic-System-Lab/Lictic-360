@@ -11,6 +11,7 @@ import colorsys
 import numpy as np
 from ultralytics import YOLO
 from rclpy.executors import MultiThreadedExecutor
+from .openstitch.stitcher import Stitcher
 
 class YOLODensetNode(Node):
   def __init__(self):
@@ -32,15 +33,16 @@ class YOLODensetNode(Node):
     self.label_colors = self.create_color_map(91)
     self.segcounter = 0
 
-    self.cam_req = 1
+    self.cam_req = 6
     self.timestamp = 0
     self.subscribers = []
     self.images = [None] * self.cam_req
     self.deg360 = [{'label': None, 'conf': 0}] * 360
+    self.stitcher = Stitcher()
     
     self.segmentation_publisher = self.create_publisher(String, '/segnet', 10)
-    for i in range(1):
-      topic_name = f'/camera/image_raw'
+    for i in range(self.cam_req):
+      topic_name = f'/camera{f"_{i+1}" if self.cam_req > 1 else ""}/image_raw'
       self.subscribers.append(
         self.create_subscription(
           Image,
@@ -123,13 +125,32 @@ class YOLODensetNode(Node):
       try:
         self.deg360 = [{'label': None, 'conf': 0}] * 360
         self.timestamp = time.time()
-        processed_images = [self.segment_image(image, idx) for idx, image in enumerate(self.images)]
-        combined_image = cv2.hconcat(processed_images)
-        cv2.imshow('Multi Camera Display (6x1)', combined_image)
+
+        # collected_images = self.images[::-1]
+        collected_images = [image for image in self.images]
+
+        # Pastikan self.stitcher sudah didefinisikan (sama seperti di denset.py)
+        if self.cam_req == 7 :
+          combined_image = self.stitcher.stitch(collected_images)
+        else :
+          combined_image = collected_images[self.cam_req-1]
+        
+        segmented_images = []
+        for i in range(self.cam_req):
+          start_x = i * (combined_image.shape[1] // self.cam_req)
+          end_x = (i + 1) * (combined_image.shape[1] // self.cam_req)
+          camera_image = combined_image[:, start_x:end_x]
+          segmented_image = self.segment_image(camera_image, i)
+          segmented_images.append(segmented_image)
+        processed_images = cv2.hconcat(segmented_images)
+        height, width = processed_images.shape[:2]
+        resized_images = cv2.resize(processed_images, (width // 10, height // 10))
+        # cv2.imshow('Multi Camera Display (6x1)', resized_images)
+        cv2.imshow('Multi Camera Display 1', collected_images[4])
+        cv2.imshow('Multi Camera Display 2', collected_images[5])
         cv2.waitKey(1)
 
         detected = [x['label']+1 if x['label'] is not None else -1 for x in self.deg360]
-        detected = [detected[(i - 309) % 360] for i in range(360)]
         payload = {
           'timestamp': self.timestamp,
           'detected': detected
@@ -137,9 +158,8 @@ class YOLODensetNode(Node):
         msg_out = String()
         msg_out.data = json.dumps(payload)
         self.segmentation_publisher.publish(msg_out)
-        
 
-        self.segcounter +=1
+        self.segcounter += 1
         unique_labels = len(set(x for x in detected if x != -1))
         self.get_logger().info(f'Segmentation {self.segcounter} completed. Unique labels detected: {unique_labels}')
       except Exception as e:
@@ -148,6 +168,7 @@ class YOLODensetNode(Node):
     else:
       available_cameras = sum(1 for image in self.images if image is not None)
       self.get_logger().info(f"Available camera feeds: {available_cameras}/{self.cam_req}")
+      print(f"Available camera feeds count: {available_cameras}")
 
     
 
