@@ -1,0 +1,9 @@
+archive
+build
+install
+/log
+__pycache__
+tmp
+temp
+model
+src/segnet/COLCON_IGNORE
