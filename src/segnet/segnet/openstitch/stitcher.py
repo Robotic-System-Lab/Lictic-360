@@ -37,25 +37,25 @@ class Stitcher:
         "timelapse": Timelapser.DEFAULT_TIMELAPSE,
         "timelapse_prefix": Timelapser.DEFAULT_TIMELAPSE_PREFIX,
 
-        # "detector": FeatureDetector.DEFAULT_DETECTOR,
-        # "confidence_threshold": .1,
-        # "crop": Cropper.DEFAULT_CROP,
-        # "estimator": CameraEstimator.DEFAULT_CAMERA_ESTIMATOR,
-        # "wave_correct_kind": WaveCorrector.DEFAULT_WAVE_CORRECTION,
-        # "matcher_type": FeatureMatcher.DEFAULT_MATCHER,
-        # "adjuster": CameraAdjuster.DEFAULT_CAMERA_ADJUSTER,
-        # "warper_type": Warper.DEFAULT_WARP_TYPE,
-        # "compensator": ExposureErrorCompensator.DEFAULT_COMPENSATOR,
+        "detector": FeatureDetector.DEFAULT_DETECTOR,
+        "confidence_threshold": .1,
+        "crop": Cropper.DEFAULT_CROP,
+        "estimator": CameraEstimator.DEFAULT_CAMERA_ESTIMATOR,
+        "wave_correct_kind": WaveCorrector.DEFAULT_WAVE_CORRECTION,
+        "matcher_type": FeatureMatcher.DEFAULT_MATCHER,
+        "adjuster": CameraAdjuster.DEFAULT_CAMERA_ADJUSTER,
+        "warper_type": Warper.DEFAULT_WARP_TYPE,
+        "compensator": ExposureErrorCompensator.DEFAULT_COMPENSATOR,
         
-        "detector": "sift",
-        "confidence_threshold": .00000001, 
-        "crop": False,    
-        'estimator': 'affine', 
-        'wave_correct_kind': 'no', 
-        'matcher_type': 'affine', 
-        'adjuster': 'affine', 
-        'warper_type': 'affine', 
-        'compensator': 'no'
+        # "detector": "sift",
+        # "confidence_threshold": .00000001, 
+        # "crop": False,    
+        # 'estimator': 'affine', 
+        # 'wave_correct_kind': 'no', 
+        # 'matcher_type': 'affine', 
+        # 'adjuster': 'affine', 
+        # 'warper_type': 'affine', 
+        # 'compensator': 'no'
     }
 
     def __init__(self, **kwargs):
