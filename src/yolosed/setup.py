@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'segnet'
+package_name = 'yolosed'
 
 setup(
     name=package_name,
@@ -10,7 +10,7 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        ('share/' + package_name + '/launch', ['launch/segnet.launch.py']),
+        ('share/' + package_name + '/launch', ['launch/yolosed.launch.py']),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -21,9 +21,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'jetdet = segnet.jetson_denet:main', # Jetson Inference DetectNet
-            'jetseg = segnet.jetson_segnet:main', # Jetson Inference SegNet
-            'denset = segnet.denset:main', # Jetson DetectNet and SegNet
+            'seg = yolosed.segmentation:main', # YOLO Segmentation
+            'dst = yolosed.detectsegment:main', # YOLO Detection and Segmentation
         ],
     },
 )

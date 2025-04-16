@@ -15,7 +15,7 @@ from .openstitch.stitcher import Stitcher
 
 class YOLODensetNode(Node):
   def __init__(self):
-    super().__init__('yolo_denset')
+    super().__init__('detectsegment')
     self.get_logger().info('Segmentation node has been started.')
     self.bridge = CvBridge()
     model = '11'

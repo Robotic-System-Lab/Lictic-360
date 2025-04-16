@@ -13,7 +13,7 @@ from rclpy.executors import MultiThreadedExecutor
 
 class YOLOSegnetNode(Node):
   def __init__(self):
-    super().__init__('yolo_segnet')
+    super().__init__('segmentation')
     model = '11'
     
     self.get_logger().info('Segmentation node has been started.')
