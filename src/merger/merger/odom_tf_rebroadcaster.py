@@ -1,6 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from nav_msgs.msg import Odometry
+from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import TransformStamped
 import tf2_ros
 
@@ -11,15 +12,26 @@ class OdomTfRebroadcaster(Node):
         self.br = tf2_ros.TransformBroadcaster(self)
         # Berlangganan pada topik /odom
         self.create_subscription(Odometry, '/odom', self.odom_callback, 10)
-    
+        # Berlangganan pada topik /base_scan untuk mengambil timestamp
+        self.create_subscription(LaserScan, '/scan', self.base_scan_callback, 10)
+        # Menyimpan timestamp terbaru dari base_scan
+        self.latest_base_scan_stamp = None
+
+    def base_scan_callback(self, msg: LaserScan):
+        # Update timestamp dari data base_scan
+        self.latest_base_scan_stamp = msg.header.stamp
+
     def odom_callback(self, msg: Odometry):
         t = TransformStamped()
-        # Gunakan waktu dari pesan odometry
-        t.header.stamp = msg.header.stamp
-        # Pastikan frame induk adalah 'odom' untuk tf tree yang lengkap
+        # Jika timestamp dari base_scan tersedia, gunakan itu, jika tidak gunakan timestamp odometry
+        if self.latest_base_scan_stamp is not None:
+            t.header.stamp = self.latest_base_scan_stamp
+        else:
+            t.header.stamp = msg.header.stamp
+        # Pastikan frame induk adalah 'odom'
         t.header.frame_id = 'odom'
-        # Gunakan child_frame_id dari pesan odom (biasanya 'base_link')
-        t.child_frame_id = 'base_footprint'  
+        # Tetapkan child_frame_id secara eksplisit ke 'base_footprint'
+        t.child_frame_id = 'base_footprint'
         # Salin informasi posisi
         t.transform.translation.x = msg.pose.pose.position.x
         t.transform.translation.y = msg.pose.pose.position.y
