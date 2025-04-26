@@ -20,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'odom = merger.odom:main',
+            'odom = merger.odom_tf_rebroadcaster:main',
         ],
     },
 )
