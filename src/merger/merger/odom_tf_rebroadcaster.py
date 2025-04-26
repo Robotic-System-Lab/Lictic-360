@@ -15,11 +15,11 @@ class OdomTfRebroadcaster(Node):
     def odom_callback(self, msg: Odometry):
         t = TransformStamped()
         # Gunakan waktu dari pesan odometry
-        t.header.stamp = msg.header.stamp
+        t.header.stamp = self.get_clock().now().to_msg()
         # Pastikan frame induk adalah 'odom' untuk tf tree yang lengkap
         t.header.frame_id = 'odom'
         # Gunakan child_frame_id dari pesan odom (biasanya 'base_link')
-        t.child_frame_id = msg.child_frame_id  
+        t.child_frame_id = 'base_footprint'  
         # Salin informasi posisi
         t.transform.translation.x = msg.pose.pose.position.x
         t.transform.translation.y = msg.pose.pose.position.y
