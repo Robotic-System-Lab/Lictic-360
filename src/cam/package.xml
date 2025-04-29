@@ -14,8 +14,9 @@
   <test_depend>ament_lint_common</test_depend>
 
   <!-- Dependensi eksekusi -->
-  <exec_depend>rclcpp</exec_depend>
-  <exec_depend>sensor_msgs</exec_depend>
+  <depend>rclcpp</depend>
+  <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
   <!-- Jika ada dependensi lain, misalnya jetson-utils atau image_converter, tambahkan di sini -->
 
   <export>
