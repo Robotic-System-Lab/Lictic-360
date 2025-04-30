@@ -48,7 +48,7 @@ class YOLOSegnetNode(Node):
     cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
     self.images[index] = cv_image
 
-  def collect_segnet(self, results, cv_image, index):
+  def collect_segment(self, results, cv_image, index):
     segmentation_data = []
     for result in results:
       for box in result.boxes:
@@ -89,7 +89,7 @@ class YOLOSegnetNode(Node):
     """Gunakan segNet untuk segmentasi gambar."""
     results = self.model(image)
     segmented_image = results[0].plot()
-    self.collect_segnet(results, image, index)
+    self.collect_segment(results, image, index)
     return segmented_image
 
   def display_images(self):
