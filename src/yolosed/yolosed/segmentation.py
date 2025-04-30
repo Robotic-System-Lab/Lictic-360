@@ -22,6 +22,7 @@ class YOLOSegnetNode(Node):
     self.model = YOLO(f'./src/segnet/model/yolo{model}m-seg.pt')
     self.get_logger().info(f'Model loaded on: {self.model.device}, ready to perform segmentation.')
     
+    self.segcounter = 0
     self.timestamp = 0
     self.subscribers = []
     self.images = [None] * 6
