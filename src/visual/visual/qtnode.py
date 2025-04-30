@@ -131,6 +131,8 @@ class MainWindow(QMainWindow):
         index = row * self.grid_width + col
         value = self.grid_data[index]
         if value == -1:
+          color = QColor('darkgray')
+        elif value == 0:
           color = QColor('lightgray')
         else:
           ratio = value / 100
