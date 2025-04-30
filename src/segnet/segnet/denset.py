@@ -9,8 +9,8 @@ from cv_bridge import CvBridge
 import cv2
 import colorsys
 import numpy as np
-import jetson_inference     # <-- Added for DetectNet
-import jetson_utils         # <-- Added for image conversion
+import jetson_inference     # type: ignore # <-- Added for DetectNet
+import jetson_utils         # type: ignore #  <-- Added for image conversion
 from rclpy.executors import MultiThreadedExecutor
 from .openstitch.stitcher import Stitcher
 
