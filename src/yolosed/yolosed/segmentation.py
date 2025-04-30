@@ -41,7 +41,7 @@ class YOLOSegnetNode(Node):
           10
         )
       )
-    self.timer = self.create_timer(0.1, self.display_images)
+    self.timer = self.create_timer(0.5, self.display_images)
 
   def image_callback(self, msg, index):
     self.get_logger().info(f'Received image data, performing segmentation...')
@@ -96,24 +96,48 @@ class YOLOSegnetNode(Node):
     """Gabungkan dan tampilkan gambar dari semua kamera dengan hasil segmentasi."""
     if all(image is not None for image in self.images):
       try:
+        self.deg360 = [{'label': None, 'conf': 0}] * 360
         self.timestamp = time.time()
-        processed_images = [self.segment_image(image, idx) for idx, image in enumerate(self.images)]
-        combined_image = cv2.hconcat(processed_images)
-        cv2.imshow('Multi Camera Display (6x1)', combined_image)
+
+        collected_images = [self.segment_image(image, idx) for idx, image in enumerate(self.images)]
+        resized_images = []
+        target_height = 160
+        for i, image in enumerate(collected_images):
+            h, w = image.shape[:2]
+            scale = target_height / h if h > target_height else 1
+            new_w = int(w * scale)
+            resized_image = cv2.resize(image, (new_w, target_height))
+            resized_images.append(resized_image)
+
+        border_thickness = 5
+        bordered_images = []
+        for idx, img in enumerate(resized_images):
+            bordered_images.append(img)
+            if idx < len(resized_images) - 1:
+                # Membuat kolom border dengan warna hitam (0, 0, 0)
+                border = np.full((target_height, border_thickness, 3), 0, dtype=np.uint8)
+                bordered_images.append(border)
+
+        # Gabungkan semua gambar dan border secara horizontal
+        combined_image = cv2.hconcat(bordered_images)
+        cv2.imshow("Segmented Images", combined_image)
         cv2.waitKey(1)
 
         detected = [x['label']+1 if x['label'] is not None else -1 for x in self.deg360]
-        detected = [detected[(i - 309) % 360] for i in range(360)]
+        # detected = [detected[(i - 309) % 360] for i in range(360)]
         payload = {
           'timestamp': self.timestamp,
           'detected': detected
         }
         msg_out = String()
         msg_out.data = json.dumps(payload)
-        
-        self.get_logger().info(f'Segmentation completed.')
+        self.segmentation_publisher.publish(msg_out)
+
+        self.segcounter +=1
+        self.get_logger().info(f'Segmentation {self.segcounter} completed')
       except Exception as e:
-        self.get_logger().error(f"Error during image concatenation: {e}")
+        self.get_logger().error(f"Error: {e}")
+      self.images = [None] * 6
     else:
       self.get_logger().warning("Not all camera feeds are available.")
     

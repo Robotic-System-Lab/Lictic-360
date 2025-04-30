@@ -19,7 +19,7 @@ class SegmentationNode(Node):
     super().__init__('denset')
     self.get_logger().info('Segmentation node has been started.')
     self.bridge = CvBridge()
-    self.stitcher = Stitcher(detector="sift", confidence_threshold=0.1)
+    self.stitcher = Stitcher(detector="sift", confidence_threshold=.3)
     
     self.get_logger().info('Loading DetectNet Model...')
     self.model = jetson_inference.detectNet("ssd-mobilenet-v2", threshold=0.5)
@@ -71,15 +71,9 @@ class SegmentationNode(Node):
     self.get_logger().debug(f"Received image from camera_{index}")
     self.images[index] = cv_image
 
-  def segment_image(self, image):
+  def detect_image(self, image):
     """Gunakan DetectNet untuk image detection dan tambahkan overlay dari segNet segmentation."""
-    # Pertama: Dapatkan overlay dari segNet untuk segmentation
-    cuda_seg_image = jetson_utils.cudaFromNumpy(image)
-    self.segnet.Process(cuda_seg_image)
-    self.segnet.Overlay(cuda_seg_image)
-    segmented_image = jetson_utils.cudaToNumpy(cuda_seg_image)
-    
-    # Kedua: Lakukan detection dengan DetectNet
+    # Lakukan detection dengan DetectNet
     cuda_image_det = jetson_utils.cudaFromNumpy(image)
     detections = self.model.Detect(cuda_image_det)
 
@@ -92,11 +86,11 @@ class SegmentationNode(Node):
       label_id = int(detection.ClassID)
       # Gunakan warna dari color map berdasarkan id label (0-90)
       color = self.label_colors.get(label_id, (0, 255, 0))
-      cv2.rectangle(segmented_image, (x1, y1), (x2, y2), color, 2)
+      cv2.rectangle(image, (x1, y1), (x2, y2), color, 2)
 
     # Update data segmen untuk sensor (tetap ada proses collect_segnet)
-    self.collect_segnet(detections, segmented_image)
-    return segmented_image
+    self.collect_segnet(detections, image)
+    return image
 
   def collect_segnet(self, results, cv_image):
     segmentation_data = []
@@ -135,17 +129,28 @@ class SegmentationNode(Node):
         self.timestamp = time.time()
 
         collected_images = [image for image in self.images]
+        each_size = self.images[0].shape[1]
+        min_size = each_size-(30*5)
 
         combined_image = self.stitcher.stitch(collected_images)
+        combined_size = combined_image.shape[1]
+
+        if (combined_size//6 < min_size):
+          raise RuntimeError(f"Combined size doesn't meet the minimum size requirement ({min_size} < {combined_size})")
+        
         segmented_images = []
         for i in range(6):
             start_x = i * (combined_image.shape[1] // 6)
             end_x = (i + 1) * (combined_image.shape[1] // 6)
             camera_image = combined_image[:, start_x:end_x]
-            segmented_image = self.segment_image(camera_image)
+            segmented_image = self.detect_image(camera_image)
             segmented_images.append(segmented_image)
         processed_images = cv2.hconcat(segmented_images)
-        cv2.imshow('Multi Camera Display (6x1)', processed_images)
+        
+        target_width, target_height = 2160, 240
+        if processed_images.shape[1] < target_width or processed_images.shape[0] < target_height:
+            reshaped_image = cv2.resize(processed_images, (target_width, target_height))
+        cv2.imshow('Multi Camera Display (6x1)', reshaped_image)
 
         cv2.waitKey(1)
         detected = [x['label']+1 if x['label'] is not None else -1 for x in self.deg360]
@@ -157,17 +162,16 @@ class SegmentationNode(Node):
         msg_out = String()
         msg_out.data = json.dumps(payload)
         self.segmentation_publisher.publish(msg_out)
-        
 
         self.segcounter +=1
-        unique_labels = len(set(x for x in detected if x != -1))
-        self.get_logger().info(f'Segmentation {self.segcounter} completed. Unique labels detected: {unique_labels}')
+        self.get_logger().info(f'Segmentation {self.segcounter} completed')
       except Exception as e:
-        self.get_logger().error(f"Error during image concatenation: {e}")
+        self.get_logger().error(f"Error: {e}")
       self.images = [None] * 6
     else:
-      available_cameras = sum(1 for image in self.images if image is not None)
-      self.get_logger().info(f"Available camera feeds: {available_cameras}/6")
+      # available_cameras = sum(1 for image in self.images if image is not None)
+      # self.get_logger().error(f"Available camera feeds: {available_cameras}/6")
+      self.get_logger().warn(f"Waiting..")
 
     
 
