@@ -45,7 +45,7 @@ class YOLOSegnetNode(Node):
     self.timer = self.create_timer(0.5, self.display_images)
 
   def image_callback(self, msg, index):
-    self.get_logger().info(f'Received image data, performing segmentation...')
+    # self.get_logger().info(f'Received image data, performing segmentation...')
     cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
     self.images[index] = cv_image
 
@@ -64,12 +64,15 @@ class YOLOSegnetNode(Node):
           'x2': int(x2),
         })
 
-    width = cv_image.shape[1]*6
-    pixels_per_degree = width//360
+    width = cv_image.shape[1]
+    pixels_per_degree = width//60
     
     for data in segmentation_data:
       for degree in range(index*60, (index+1)*60):
-        if data['x1'] <= degree * pixels_per_degree < data['x2']:
+        print(degree)
+        # if (index == 1):
+        #   print(f"index = {index} ||||| {data['x1']} <= {(degree-(60*index))*pixels_per_degree} < {data['x2']}")
+        if data['x1'] <= (degree-(60*index))*pixels_per_degree < data['x2']:
           if (self.deg360[degree]['conf'] == 0 or self.deg360[degree]['conf'] < data['conf']):
             self.deg360[degree] = {
               'label': data['label'],
@@ -124,8 +127,16 @@ class YOLOSegnetNode(Node):
         cv2.imshow("Segmented Images", combined_image)
         cv2.waitKey(1)
 
-        detected = [x['label']+1 if x['label'] is not None else -1 for x in self.deg360]
-        # detected = [detected[(i - 309) % 360] for i in range(360)]
+        # detected = [x['label']+1 if x['label'] is not None else -1 for x in self.deg360]
+        detected = [
+          (self.deg360[(150 + i) % 360]['label'] + 1)
+          if self.deg360[(150 + i) % 360]['label'] is not None else -1
+          for i in range(360)
+        ]
+        # for i in range(360):
+        #   detected[i] = i%100
+        # for i in range(100):
+        #   detected[i] = 0
         payload = {
           'timestamp': self.timestamp,
           'detected': detected
@@ -133,14 +144,23 @@ class YOLOSegnetNode(Node):
         msg_out = String()
         msg_out.data = json.dumps(payload)
         self.segmentation_publisher.publish(msg_out)
+        for des in range(6):
+          log = f"[CURRENT = {des}]-------->"
+          for i in range(des*60,(des+1)*60):
+            log += f"{detected[i] if detected[i]>-1 else '..'}, "
+          print(log)
+        # print(detected)
+        # for idx, det in enumerate(detected):
+        #   if det != -1:
+        #       self.get_logger().info(f"Detected index {idx}: {det}")
 
         self.segcounter +=1
-        self.get_logger().info(f'Segmentation {self.segcounter} completed')
+        # self.get_logger().info(f'Segmentation {self.segcounter} completed')
       except Exception as e:
         self.get_logger().error(f"Error: {e}")
-      self.images = [None] * 6
     else:
       self.get_logger().warning("Not all camera feeds are available.")
+    self.images = [None] * 6
     
 
 def main(args=None):
