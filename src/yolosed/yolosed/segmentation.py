@@ -24,7 +24,6 @@ class YOLOSegnetNode(Node):
     self.model = YOLO(f'./src/segnet/model/yolo{model}m-seg.pt')
     self.get_logger().info(f'Model loaded on: {self.model.device}, ready to perform segmentation.')
     
-    self.segcounter = 0
     self.timestamp = 0
     self.images = [None] * 6
     self.deg360 = [{
@@ -62,7 +61,7 @@ class YOLOSegnetNode(Node):
       yaw_rad = atan2(2 * (q.w * q.z + q.x * q.y), 1 - 2 * (q.y * q.y + q.z * q.z))
       yaw_deg = degrees(yaw_rad)
       # Normalisasi sehingga berada pada rentang 0-359 derajat:
-      return int((-yaw_deg) % 360)
+      self.robot_yaw = int(yaw_deg % 360)
 
   def image_callback(self, msg, index):
     # self.get_logger().info(f'Received image data, performing segmentation...')
@@ -147,16 +146,11 @@ class YOLOSegnetNode(Node):
         cv2.imshow("Segmented Images", combined_image)
         cv2.waitKey(1)
 
-        # detected = [x['label']+1 if x['label'] is not None else -1 for x in self.deg360]
         detected = [
           (self.deg360[(self.cam_center + int(self.robot_yaw) + i) % 360]['label'] + 1)
           if self.deg360[(self.cam_center + int(self.robot_yaw) + i) % 360]['label'] is not None else -1
           for i in range(360)
         ]
-        # for i in range(360):
-        #   detected[i] = i%100
-        # for i in range(100):
-        #   detected[i] = 0
         payload = {
           'timestamp': self.timestamp,
           'detected': detected
@@ -164,18 +158,7 @@ class YOLOSegnetNode(Node):
         msg_out = String()
         msg_out.data = json.dumps(payload)
         self.segmentation_publisher.publish(msg_out)
-        for des in range(6):
-          log = f"[CURRENT = {des}]-------->"
-          for i in range(des*60,(des+1)*60):
-            log += f"{detected[i] if detected[i]>-1 else '..'}, "
-          print(log)
-        # print(detected)
-        # for idx, det in enumerate(detected):
-        #   if det != -1:
-        #       self.get_logger().info(f"Detected index {idx}: {det}")
 
-        self.segcounter +=1
-        # self.get_logger().info(f'Segmentation {self.segcounter} completed')
       except Exception as e:
         self.get_logger().error(f"Error: {e}")
     else:
