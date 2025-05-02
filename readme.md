@@ -72,6 +72,7 @@ rosrun relay odom
 ```
 7. The setups are done, we can navigate into `support/openslam_gmapping/` and we will install customized library that was originally made by [siddarth09](https://github.com/siddarth09/ros2_gmapping)
 ```bash
+# ROS2
 cd ~/lintic_ws/support/
 mkdir build
 cmake ..
@@ -79,8 +80,8 @@ sudo make install
 ```
 8. Build the whole packages
 ```bash
+# ROS2
 # The `ros_deep_learning` package was meant to launch camera for Jetson. If u're not using it, create a `COLCON IGNORE` file inside of the packages.
-
 # Since we will only use one object detection for a single run, you can choose to build `segnet` or `yolosed`. (The segnet will run with Jetson Inference while yolosed run with YOLO by Ultralytics)
 
 cd ~/lintic_ws/
