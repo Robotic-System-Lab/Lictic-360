@@ -23,6 +23,7 @@ setup(
         'console_scripts': [
             'seg = yolosed.segmentation:main', # YOLO Segmentation
             'dst = yolosed.detectsegment:main', # YOLO Detection and Segmentation
+            'watch = yolosed.watch:main', # Watchdog
         ],
     },
 )

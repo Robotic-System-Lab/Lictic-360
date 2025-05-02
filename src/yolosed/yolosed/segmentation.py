@@ -1,15 +1,17 @@
-import os
 import time
 import json
 import rclpy
 from rclpy.node import Node
+from nav_msgs.msg import Odometry
 from sensor_msgs.msg import Image
 from std_msgs.msg import String
 from cv_bridge import CvBridge
-import cv2
-import numpy as np
 from ultralytics import YOLO
-from rclpy.executors import MultiThreadedExecutor
+import cv2
+
+import numpy as np
+from math import atan2
+from math import atan2, degrees
 
 class YOLOSegnetNode(Node):
   def __init__(self):
@@ -24,13 +26,21 @@ class YOLOSegnetNode(Node):
     
     self.segcounter = 0
     self.timestamp = 0
-    self.subscribers = []
     self.images = [None] * 6
     self.deg360 = [{
                 'label': None,
                 'conf': 0,
               }] * 360
     
+    self.robot_yaw = 0
+    self.subscription = self.create_subscription(
+        Odometry,
+        '/odom',
+        self.odom_callback,
+        10)
+    
+    self.cam_center = 150
+    self.subscribers = []
     self.segmentation_publisher = self.create_publisher(String, '/segnet', 10)
     for i in range(6):
       topic_name = f'/camera_{i + 1}/image_raw'
@@ -43,6 +53,16 @@ class YOLOSegnetNode(Node):
         )
       )
     self.timer = self.create_timer(0.5, self.display_images)
+    
+  def odom_callback(self, msg: Odometry):
+      # Mengambil quaternion orientasi dari pesan Odometry
+      q = msg.pose.pose.orientation
+      # Menghitung yaw dari quaternion:
+      # yaw = arctan2(2*(w*z + x*y), 1 - 2*(y² + z²))
+      yaw_rad = atan2(2 * (q.w * q.z + q.x * q.y), 1 - 2 * (q.y * q.y + q.z * q.z))
+      yaw_deg = degrees(yaw_rad)
+      # Normalisasi sehingga berada pada rentang 0-359 derajat:
+      return int((-yaw_deg) % 360)
 
   def image_callback(self, msg, index):
     # self.get_logger().info(f'Received image data, performing segmentation...')
@@ -129,8 +149,8 @@ class YOLOSegnetNode(Node):
 
         # detected = [x['label']+1 if x['label'] is not None else -1 for x in self.deg360]
         detected = [
-          (self.deg360[(150 + i) % 360]['label'] + 1)
-          if self.deg360[(150 + i) % 360]['label'] is not None else -1
+          (self.deg360[(self.cam_center + int(self.robot_yaw) + i) % 360]['label'] + 1)
+          if self.deg360[(self.cam_center + int(self.robot_yaw) + i) % 360]['label'] is not None else -1
           for i in range(360)
         ]
         # for i in range(360):
