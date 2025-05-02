@@ -87,7 +87,9 @@ cd ~/lintic_ws/
 colcon build
 source install/setup.bash
 ```
-9. Finally, we can run those nodes and launch files:
+
+## How To Run
+After all those setups, we can run those nodes and launch files:
 ```bash
 # Ignore the ros_deep_learning if u're not using it
 ros2 launch ros_deep_learning video_source.ros2v2.launch
@@ -98,10 +100,19 @@ ros2 launch velodyne velodyne-all-nodes-VLP32C-launch.py
 # Initiate the ROS Bridge
 ros2 run ros1_bridge parameter_bridge
 
+# Run the broadcaster for /odom
+ros2 run merger odom
+
 # Run the main GMapping process
 ros2 run gmapper semap
 
 # Run `segnet` if u want to use Jetson Inference or `yolosed` if u want to use YOLO instead
 ros2 run segnet denset
 ros2 run yolosed seg
+```
+
+## Common Issues
+1. `nlohmann` related error encountered frequently, make sure to check every single error occured on ur machine. Run this if you found one.
+```bash
+sudo apt-get -y install nlohmann-json3-dev
 ```
