@@ -90,23 +90,28 @@ source install/setup.bash
 
 ## How To Run
 After all those setups, we can run those nodes and launch files:
+> Ignore the ros_deep_learning if u're not using it
 ```bash
-# Ignore the ros_deep_learning if u're not using it
 ros2 launch ros_deep_learning video_source.ros2v2.launch
-
-# You can change this if you're using another version or brand of LiDAR sensor
+```
+> You can change this if you're using another version or brand of LiDAR sensor
+```bash
 ros2 launch velodyne velodyne-all-nodes-VLP32C-launch.py
-
-# Initiate the ROS Bridge
+```
+> Initiate the ROS Bridge
+```bash
 ros2 run ros1_bridge parameter_bridge
-
-# Run the broadcaster for /odom
+```
+> Run the broadcaster for /odom
+```bash
 ros2 run merger odom
-
-# Run the main GMapping process
+```
+> Run the main GMapping process
+```bash
 ros2 run gmapper semap
-
-# Run `segnet` if u want to use Jetson Inference or `yolosed` if u want to use YOLO instead
+```
+> Run `segnet` if u want to use Jetson Inference or `yolosed` if u want to use YOLO instead
+```bash
 ros2 run segnet denset
 ros2 run yolosed seg
 ```
