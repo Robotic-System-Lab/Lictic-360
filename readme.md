@@ -79,11 +79,10 @@ cmake ..
 sudo make install
 ```
 8. Build the whole packages
+> The `ros_deep_learning` package was meant to launch camera for Jetson. If u're not using it, create a `COLCON IGNORE` file inside of the packages.
+> Since we will only use one object detection for a single run, you can choose to build `segnet` or `yolosed`. (The segnet will run with Jetson Inference while yolosed run with YOLO by Ultralytics)
 ```bash
 # ROS2
-# The `ros_deep_learning` package was meant to launch camera for Jetson. If u're not using it, create a `COLCON IGNORE` file inside of the packages.
-# Since we will only use one object detection for a single run, you can choose to build `segnet` or `yolosed`. (The segnet will run with Jetson Inference while yolosed run with YOLO by Ultralytics)
-
 cd ~/lintic_ws/
 colcon build
 source install/setup.bash
