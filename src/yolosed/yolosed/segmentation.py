@@ -11,6 +11,7 @@ import cv2
 
 import numpy as np
 from math import atan2, degrees
+from .hazard import hazard_lookup
 
 class YOLOSegnetNode(Node):
   def __init__(self):
@@ -74,12 +75,15 @@ class YOLOSegnetNode(Node):
     segmentation_data = []
     for result in results:
       for box in result.boxes:
-        label = box.cls.item()
+        class_id = box.cls.item()
+        label_name = self.model.names[int(class_id)]
+        hazard_score = hazard_lookup.get(label_name, 1)
+        
         conf = box.cls.item()
         xyxy = box.xyxy[0].tolist()
         x1, y1, x2, y2 = xyxy
         segmentation_data.append({
-          'label': int(label),
+          'label': hazard_score,
           'conf': conf,
           'x1': int(x1),
           'x2': int(x2),
@@ -90,7 +94,6 @@ class YOLOSegnetNode(Node):
     
     for data in segmentation_data:
       for degree in range(index*60, (index+1)*60):
-        print(degree)
         if data['x1'] <= (degree-(60*index))*pixels_per_degree < data['x2']:
           if (self.deg360[degree]['conf'] == 0 or self.deg360[degree]['conf'] < data['conf']):
             self.deg360[degree] = {

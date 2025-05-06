@@ -13,6 +13,7 @@ import jetson_utils         # type: ignore #  <-- Added for image conversion
 
 import numpy as np
 from math import atan2, degrees
+from .hazard import hazard_lookup
 
 class DetectionNode(Node):
   def __init__(self):
@@ -91,12 +92,15 @@ class DetectionNode(Node):
     detection_data = []
     # For each detection returned by DetectNet
     for detection in results:
-      label = detection.ClassID           # Retrieve class ID
+      class_id = detection.ClassID
+      label_name = self.model.GetClassDesc(class_id)
+      hazard_score = hazard_lookup.get(label_name, 1)
+      
       conf = detection.Confidence         # Retrieve detection confidence
       x1 = int(detection.Left)              # Left coordinate (x1)
       x2 = int(detection.Right)             # Right coordinate (x2)
       detection_data.append({
-          'label': int(label),
+          'label': hazard_score,
           'conf': conf,
           'x1': x1,
           'x2': x2,
@@ -107,7 +111,6 @@ class DetectionNode(Node):
 
     for data in detection_data:
       for degree in range(index*60, (index+1)*60):
-        print(degree)
         if data['x1'] <= (degree-(60*index))*pixels_per_degree < data['x2']:
           if (self.deg360[degree]['conf'] == 0 or self.deg360[degree]['conf'] < data['conf']):
             self.deg360[degree] = {
