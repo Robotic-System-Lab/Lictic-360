@@ -10,19 +10,19 @@ from ultralytics import YOLO
 import cv2
 
 import numpy as np
-from math import atan2
 from math import atan2, degrees
 
 class YOLOSegnetNode(Node):
   def __init__(self):
     super().__init__('segmentation')
+    self.get_logger().info('Segmentation node has been started.')
+    self.bridge = CvBridge()
+    
     self.declare_parameter('cam_center', 150)
     self.declare_parameter('segmentation_model', "yolo11m-seg")
     self.cam_center = self.get_parameter('cam_center').value
     self.segmentation_model = self.get_parameter('segmentation_model').value
     
-    self.get_logger().info('Segmentation node has been started.')
-    self.bridge = CvBridge()
     self.get_logger().info('Loading Model...')
     self.model = YOLO(f'./src/yolosed/model/{self.segmentation_model}.pt')
     self.get_logger().info(f'Model loaded on: {self.model.device}, ready to perform segmentation.')
@@ -70,7 +70,7 @@ class YOLOSegnetNode(Node):
     cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
     self.images[index] = cv_image
 
-  def collect_segment(self, results, cv_image, index):
+  def collect_results(self, results, cv_image, index):
     segmentation_data = []
     for result in results:
       for box in result.boxes:
@@ -91,8 +91,6 @@ class YOLOSegnetNode(Node):
     for data in segmentation_data:
       for degree in range(index*60, (index+1)*60):
         print(degree)
-        # if (index == 1):
-        #   print(f"index = {index} ||||| {data['x1']} <= {(degree-(60*index))*pixels_per_degree} < {data['x2']}")
         if data['x1'] <= (degree-(60*index))*pixels_per_degree < data['x2']:
           if (self.deg360[degree]['conf'] == 0 or self.deg360[degree]['conf'] < data['conf']):
             self.deg360[degree] = {
@@ -106,7 +104,7 @@ class YOLOSegnetNode(Node):
     """Gunakan segNet untuk segmentasi gambar."""
     results = self.model(image)
     segmented_image = results[0].plot()
-    self.collect_segment(results, image, index)
+    self.collect_results(results, image, index)
     return segmented_image
 
   def display_images(self):
@@ -119,7 +117,7 @@ class YOLOSegnetNode(Node):
         collected_images = [self.segment_image(image, idx) for idx, image in enumerate(self.images)]
         resized_images = []
         target_height = 160
-        for i, image in enumerate(collected_images):
+        for image in collected_images:
             h, w = image.shape[:2]
             scale = target_height / h if h > target_height else 1
             new_w = int(w * scale)
