@@ -11,6 +11,7 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name + '/launch', ['launch/segnet.launch.py']),
+        ('share/' + package_name + '/config', ['config/denet_params.yaml']),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -24,6 +25,7 @@ setup(
             'jetdet = segnet.jetson_denet:main', # Jetson Inference DetectNet
             'jetseg = segnet.jetson_segnet:main', # Jetson Inference SegNet
             'denset = segnet.denset:main', # Jetson DetectNet and SegNet
+            'denet = segnet.denset:main', # Jetson DetectNet
         ],
     },
 )
