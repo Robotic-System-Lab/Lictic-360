@@ -16,12 +16,15 @@ from math import atan2, degrees
 class YOLOSegnetNode(Node):
   def __init__(self):
     super().__init__('segmentation')
-    model = '11'
+    self.declare_parameter('cam_center', 150)
+    self.declare_parameter('segmentation_model', "yolo11m-seg")
+    self.cam_center = self.get_parameter('cam_center').value
+    self.segmentation_model = self.get_parameter('segmentation_model').value
     
     self.get_logger().info('Segmentation node has been started.')
     self.bridge = CvBridge()
     self.get_logger().info('Loading Model...')
-    self.model = YOLO(f'./src/segnet/model/yolo{model}m-seg.pt')
+    self.model = YOLO(f'./src/yolosed/model/{self.segmentation_model}.pt')
     self.get_logger().info(f'Model loaded on: {self.model.device}, ready to perform segmentation.')
     
     self.timestamp = 0
@@ -38,7 +41,6 @@ class YOLOSegnetNode(Node):
         self.odom_callback,
         10)
     
-    self.cam_center = 150
     self.subscribers = []
     self.segmentation_publisher = self.create_publisher(String, '/segnet', 10)
     for i in range(6):
@@ -99,14 +101,6 @@ class YOLOSegnetNode(Node):
               'x1': data['x1'],
               'x2': data['x2']
             }
-
-  def crop_center_width(self, image, target_width):
-    """Memotong gambar pada bagian tengah dengan width yang ditentukan."""
-    _, width, _ = image.shape
-    if target_width >= width:
-      return image
-    x_start = (width - target_width) // 2
-    return image[:, x_start:x_start + target_width]
 
   def segment_image(self, image, index):
     """Gunakan segNet untuk segmentasi gambar."""
