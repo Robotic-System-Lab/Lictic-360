@@ -102,7 +102,7 @@ class MainWindow(QMainWindow):
     legend_layout.setContentsMargins(0, 0, 0, 0)
     legend_layout.setSpacing(2)
     
-    for value in range(101):
+    for value in range(10):
       item = self.create_legend_item(value)
       legend_layout.addWidget(item)
     legend_area.setWidget(legend_widget)
@@ -135,7 +135,7 @@ class MainWindow(QMainWindow):
         elif value == 0:
           color = QColor('lightgray')
         else:
-          ratio = value / 100
+          ratio = (value - 1) / 9
           r = int(ratio * 255)
           b = 255 - r
           color = QColor(r, 100, b)
@@ -159,14 +159,14 @@ class MainWindow(QMainWindow):
     item = QWidget()
     layout = QHBoxLayout(item)
     layout.setContentsMargins(5, 0, 5, 0)
-    ratio = value / 100
+    ratio = (value - 1) / 9
     r = int(ratio * 255)
     b = 255 - r
     color = QColor(r, 100, b)
     color_box = QFrame()
     color_box.setFixedSize(20, 20)
     color_box.setStyleSheet(f"background-color: {color.name()}; border: 1px solid black;")
-    label = QLabel(str(value))
+    label = QLabel(str(value+1))
     layout.addWidget(color_box)
     layout.addWidget(label)
     return item
