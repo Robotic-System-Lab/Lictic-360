@@ -509,7 +509,7 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
             else if(occ > occ_thresh_)
             {
                 //map_.map.data[MAP_IDX(map_.map.info.width, x, y)] = (int)round(occ*100.0);
-                int fill = label == -1 ? 0 : label;
+                int fill = label == -1 ? 1 : label;
                 map_.data[MAP_IDX(map_.info.width, x, y)] = fill;
                 // map_.data[MAP_IDX(map_.info.width, x, y)] = 100;
             }

@@ -118,7 +118,7 @@ class MainWindow(QMainWindow):
     self.ros2_thread.start()
   
   def generate_default_grid(self):
-    self.grid_data = [random.randint(0, 99) for _ in range(self.grid_width * self.grid_height)]
+    self.grid_data = [random.randint(0, 10) for _ in range(self.grid_width * self.grid_height)]
     self.redraw_grid()
   
   def redraw_grid(self):
@@ -134,6 +134,8 @@ class MainWindow(QMainWindow):
           color = QColor('darkgray')
         elif value == 0:
           color = QColor('lightgray')
+        elif value == 1:
+          color = QColor(50, 50, 50)
         else:
           ratio = (value - 1) / 9
           r = int(ratio * 255)
