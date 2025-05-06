@@ -25,7 +25,7 @@ setup(
             'jetdet = segnet.jetson_denet:main', # Jetson Inference DetectNet
             'jetseg = segnet.jetson_segnet:main', # Jetson Inference SegNet
             'denset = segnet.denset:main', # Jetson DetectNet and SegNet
-            'denet = segnet.denset:main', # Jetson DetectNet
+            'denet = segnet.denet:main', # Jetson DetectNet
         ],
     },
 )
