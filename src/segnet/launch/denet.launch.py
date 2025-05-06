@@ -47,7 +47,6 @@ def generate_launch_description():
             output='screen',
         ),
         IncludeLaunchDescription(
-            XMLLaunchDescriptionSource(camera_launch),
-            launch_arguments={'gui': 'false'}.items(),
+            XMLLaunchDescriptionSource(camera_launch)
         ),
     ])
