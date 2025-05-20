@@ -1,5 +1,5 @@
 segmentation:
   ros__parameters:
     use_sim_time: true
-    cam_center: 70
+    cam_center: 30
     segmentation_model: "yolo11m-seg"

@@ -121,29 +121,31 @@ class MainWindow(QMainWindow):
     self.grid_data = [random.randint(0, 10) for _ in range(self.grid_width * self.grid_height)]
     self.redraw_grid()
   
+  # filepath: /home/lamp/workspaces/segnet/src/visual/visual/qtnode.py
   def redraw_grid(self):
     # Buat QPixmap dengan ukuran fixed 800x800
     pixmap = QPixmap(800, 800)
     pixmap.fill(Qt.white)
     painter = QPainter(pixmap)
     for row in range(self.grid_height):
-      for col in range(self.grid_width):
-        index = row * self.grid_width + col
-        value = self.grid_data[index]
-        if value == 99:
-          color = QColor(50, 50, 50)
-        elif value == -1:
-          color = QColor('darkgray')
-        elif value == 0:
-          color = QColor('lightgray')
-        else:
-          ratio = (value - 1) / 9
-          r = int(ratio * 255)
-          b = 255 - r
-          color = QColor(r, 100, b)
-        rect = QRectF(col * self.cell_size, row * self.cell_size,
-                      self.cell_size, self.cell_size)
-        painter.fillRect(rect, QBrush(color))
+        real_row = self.grid_height - 1 - row
+        for col in range(self.grid_width):
+            index = real_row * self.grid_width + col
+            value = self.grid_data[index]
+            if value == 99:
+                color = QColor(50, 50, 50)
+            elif value == -1:
+                color = QColor('darkgray')
+            elif value == 0:
+                color = QColor('lightgray')
+            else:
+                ratio = (value - 1) / 9
+                r = int(ratio * 255)
+                b = 255 - r
+                color = QColor(r, 100, b)
+            rect = QRectF(col * self.cell_size, row * self.cell_size,
+                          self.cell_size, self.cell_size)
+            painter.fillRect(rect, QBrush(color))
     painter.end()
     
     self.scene.clear()
