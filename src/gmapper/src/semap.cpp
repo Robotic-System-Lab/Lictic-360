@@ -491,6 +491,7 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
         map_.info.origin.position.x = xmin_;
         map_.info.origin.position.y = ymin_;
         map_.data.resize(map_.info.width * map_.info.height);
+        map_labels_.resize(map_.info.width * map_.info.height, {-1, -1, -1});
 
         RCLCPP_DEBUG(this->get_logger(), "map origin: (%f, %f)", map_.info.origin.position.x, map_.info.origin.position.y);
     }
@@ -503,18 +504,41 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
             GMapping::IntPoint p(x, y);
             double occ=smap.cell(p);
             int label = smap.cell(p).getLabel();
+            
+            auto &map_labels_v = map_labels_[MAP_IDX(map_.info.width, x, y)];
+            
             assert(occ <= 1.0);
-            if(occ < 0)
+            if(occ < 0 && map_labels_v[0] == -1) {
                 map_.data[MAP_IDX(map_.info.width, x, y)] = -1;
+            }
             else if(occ > occ_thresh_)
             {
-                //map_.map.data[MAP_IDX(map_.map.info.width, x, y)] = (int)round(occ*100.0);
-                int fill = label == -1 ? 1 : label;
-                map_.data[MAP_IDX(map_.info.width, x, y)] = fill;
-                // map_.data[MAP_IDX(map_.info.width, x, y)] = 100;
+                int fill = (label == -1) ? -2 : label;
+
+                for (auto &val : map_labels_v) {
+                    if (val == -1 && fill > 0) {
+                        val = fill;
+                        break;
+                    }
+                }
+                
+                // int modus = std::max_element(map_labels_v.begin(), map_labels_v.end());
+                auto it = std::max_element(map_labels_v.begin(), map_labels_v.end());
+                int modus = (it != map_labels_v.end()) ? *it : -1;
+
+                if (modus != -1 && modus != -2)
+                    map_.data[MAP_IDX(map_.info.width, x, y)] = modus;
+                else if (map_labels_v[0] != -1)
+                    map_.data[MAP_IDX(map_.info.width, x, y)] = map_labels_v[0];
+                else
+                    map_.data[MAP_IDX(map_.info.width, x, y)] = fill;
+            
+                // map_.data[MAP_IDX(map_.info.width, x, y)] = 
+                //     (mode != -1 ? mode : (map_labels_v[0] != -1 ? map_labels_v[0] : fill));
             }
-            else
+            else if (map_labels_v[0] == -1){
                 map_.data[MAP_IDX(map_.info.width, x, y)] = 0;
+            }
         }
     }
     got_map_ = true;

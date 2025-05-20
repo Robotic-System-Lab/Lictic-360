@@ -130,12 +130,12 @@ class MainWindow(QMainWindow):
       for col in range(self.grid_width):
         index = row * self.grid_width + col
         value = self.grid_data[index]
-        if value == -1:
+        if value == -2:
+          color = QColor(50, 50, 50)
+        elif value == -1:
           color = QColor('darkgray')
         elif value == 0:
           color = QColor('lightgray')
-        elif value == 1:
-          color = QColor(50, 50, 50)
         else:
           ratio = (value - 1) / 9
           r = int(ratio * 255)

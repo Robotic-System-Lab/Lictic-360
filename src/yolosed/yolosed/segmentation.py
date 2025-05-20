@@ -77,7 +77,7 @@ class YOLOSegnetNode(Node):
       for box in result.boxes:
         class_id = box.cls.item()
         label_name = self.model.names[int(class_id)]
-        hazard_score = hazard_lookup.get(label_name, 1)
+        hazard_score = hazard_lookup.get(label_name, 4)
         
         conf = box.cls.item()
         xyxy = box.xyxy[0].tolist()

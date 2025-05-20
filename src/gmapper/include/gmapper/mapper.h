@@ -5,6 +5,7 @@
 #include <mutex>
 #include <thread>
 #include <memory>
+#include <array>
 
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/laser_scan.hpp"
@@ -71,6 +72,8 @@ private:
 
     bool got_map_;
     nav_msgs::msg::OccupancyGrid map_;
+    static constexpr int label_error = 3;
+    std::vector<std::array<int, label_error>> map_labels_;
 
     tf2::Duration map_update_interval_;
     tf2::Transform map_to_odom_;
