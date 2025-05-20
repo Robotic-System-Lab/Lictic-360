@@ -146,14 +146,14 @@ class YOLOSegnetNode(Node):
           for i in range(360)
         ]
         reversed_detected = detected[::-1]
-        persuade_detected = [
-          (reversed_detected[(self.cam_center - self.robot_yaw + i ) % 360])
-          if reversed_detected[(self.cam_center - self.robot_yaw + i) % 360] is not None else -1
+        translate_detected = [
+          (reversed_detected[((self.cam_center - self.robot_yaw) + i) % 360])
+          if reversed_detected[((self.cam_center - self.robot_yaw) + i) % 360] is not None else -1
           for i in range(360)
         ]
         payload = {
           'timestamp': self.timestamp,
-          'detected': persuade_detected
+          'detected': translate_detected
         }
         msg_out = String()
         msg_out.data = json.dumps(payload)
