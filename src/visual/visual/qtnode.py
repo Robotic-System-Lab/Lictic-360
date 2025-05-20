@@ -130,7 +130,7 @@ class MainWindow(QMainWindow):
       for col in range(self.grid_width):
         index = row * self.grid_width + col
         value = self.grid_data[index]
-        if value == -2:
+        if value == 99:
           color = QColor(50, 50, 50)
         elif value == -1:
           color = QColor('darkgray')

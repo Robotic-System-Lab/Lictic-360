@@ -95,6 +95,18 @@ void SlamGmapping::segnetCallback(const std_msgs::msg::String::SharedPtr msg)
 {
     try {
         nlohmann::json j = nlohmann::json::parse(msg->data);
+        // Ekstrak timestamp dari pesan segnet (diasumsikan dalam satuan detik)
+        double segnet_ts = j["timestamp"].get<double>();
+        double scan_ts = last_scan_timestamp_.seconds();
+        const double MAX_TIMESTAMP_DIFF = .3; // ambang batas
+
+        if (std::abs(segnet_ts - scan_ts) > MAX_TIMESTAMP_DIFF) {
+            RCLCPP_WARN(this->get_logger(),
+                        "Selisih timestamp terlalu jauh: segnet=%.3f, scan=%.3f",
+                        segnet_ts, scan_ts);
+            // Abaikan pesan segnet jika perbedaan terlalu tinggi
+            return;
+        }
         segnetReads_.push_back(j);
         RCLCPP_DEBUG(this->get_logger(), "Segnet JSON berhasil diparsing dan disimpan");
     }
@@ -340,6 +352,7 @@ bool SlamGmapping::addScan(const sensor_msgs::msg::LaserScan::ConstSharedPtr sca
 
 
 void SlamGmapping::laserCallback(sensor_msgs::msg::LaserScan::ConstSharedPtr scan) {
+    last_scan_timestamp_ = get_clock()->now();
     laser_count_++;
     if ((laser_count_ % throttle_scans_) != 0)
         return;
@@ -504,7 +517,6 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
             GMapping::IntPoint p(x, y);
             double occ=smap.cell(p);
             int label = smap.cell(p).getLabel();
-            
             auto &map_labels_v = map_labels_[MAP_IDX(map_.info.width, x, y)];
             
             assert(occ <= 1.0);
@@ -513,25 +525,28 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
             }
             else if(occ > occ_thresh_)
             {
-                int fill = (label == -1) ? -2 : label;
+                // `fill` will be 99 if the cell is unknown (no label)
+                int fill = (label == -1) ? 99 : label;
 
-                for (auto &val : map_labels_v) {
-                    if (val == -1 && fill > 0) {
-                        val = fill;
-                        break;
+                if (fill == 99 && std::count(map_labels_v.begin(), map_labels_v.end(), 99) >= 0) {
+                    // Sudah ada 3 buah 99, tidak melakukan apa-apa
+                } else {
+                    for (auto &val : map_labels_v) {
+                        if (val == -1) {
+                            val = fill;
+                            break;
+                        }
                     }
                 }
                 
-                // int modus = std::max_element(map_labels_v.begin(), map_labels_v.end());
-                auto it = std::max_element(map_labels_v.begin(), map_labels_v.end());
-                int modus = (it != map_labels_v.end()) ? *it : -1;
-
-                if (modus != -1 && modus != -2)
-                    map_.data[MAP_IDX(map_.info.width, x, y)] = modus;
-                else if (map_labels_v[0] != -1)
-                    map_.data[MAP_IDX(map_.info.width, x, y)] = map_labels_v[0];
-                else
-                    map_.data[MAP_IDX(map_.info.width, x, y)] = fill;
+                auto it = std::max_element(map_labels_v.begin(), map_labels_v.end(), [](int a, int b) {
+                    if(a == -1) return true;
+                    if(b == -1) return false;
+                    return a < b;
+                });
+                int modus = (it != map_labels_v.end() && *it != -1) ? *it : 99;
+                // map_.data[MAP_IDX(map_.info.width, x, y)] = modus;
+                map_.data[MAP_IDX(map_.info.width, x, y)] = modus;
             
                 // map_.data[MAP_IDX(map_.info.width, x, y)] = 
                 //     (mode != -1 ? mode : (map_labels_v[0] != -1 ? map_labels_v[0] : fill));

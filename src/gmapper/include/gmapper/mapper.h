@@ -72,9 +72,10 @@ private:
 
     bool got_map_;
     nav_msgs::msg::OccupancyGrid map_;
-    static constexpr int label_error = 3;
+    static constexpr int label_error = 20;
     std::vector<std::array<int, label_error>> map_labels_;
 
+    rclcpp::Time last_scan_timestamp_;
     tf2::Duration map_update_interval_;
     tf2::Transform map_to_odom_;
     std::mutex map_to_odom_mutex_;

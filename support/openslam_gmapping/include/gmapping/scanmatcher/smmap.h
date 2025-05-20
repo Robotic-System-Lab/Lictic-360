@@ -17,6 +17,7 @@ struct PointAccumulator{
 	PointAccumulator(int i): acc(0,0), n(0), visits(0){assert(i==-1);}
 	/*after end*/
         inline void update(bool value, const Point& p=Point(0,0), int detected=0);
+        inline void labelling(const Point& p=Point(0,0), int detected=0);
         inline int getLabel();
 	inline Point mean() const {return 1./n*Point(acc.x, acc.y);}
 	inline operator double() const { return visits?(double)n*SIGHT_INC/(double)visits:-1; }
@@ -38,6 +39,13 @@ void PointAccumulator::update(bool value, const Point& p, int detected){
 		visits+=SIGHT_INC;
 	} else
 		visits++;
+}
+
+void PointAccumulator::labelling( const Point& p, int detected){
+	label = detected;
+	acc.x+= static_cast<float>(p.x);
+	acc.y+= static_cast<float>(p.y); 
+	n++; 
 }
 
 int PointAccumulator::getLabel() {

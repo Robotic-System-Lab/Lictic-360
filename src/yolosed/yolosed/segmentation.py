@@ -54,7 +54,7 @@ class YOLOSegnetNode(Node):
           10
         )
       )
-    self.timer = self.create_timer(0.5, self.display_images)
+    self.timer = self.create_timer(0.4, self.display_images)
     
   def odom_callback(self, msg: Odometry):
       # Mengambil quaternion orientasi dari pesan Odometry
@@ -105,7 +105,7 @@ class YOLOSegnetNode(Node):
 
   def segment_image(self, image, index):
     """Gunakan segNet untuk segmentasi gambar."""
-    results = self.model(image)
+    results = self.model(image, verbose=False)
     segmented_image = results[0].plot()
     self.collect_results(results, image, index)
     return segmented_image
@@ -142,13 +142,18 @@ class YOLOSegnetNode(Node):
         cv2.waitKey(1)
 
         detected = [
-          (self.deg360[(self.cam_center + int(self.robot_yaw) + i) % 360]['label'] + 1)
-          if self.deg360[(self.cam_center + int(self.robot_yaw) + i) % 360]['label'] is not None else -1
+          self.deg360[i]['label']
+          for i in range(360)
+        ]
+        reversed_detected = detected[::-1]
+        persuade_detected = [
+          (reversed_detected[(self.cam_center - self.robot_yaw + i ) % 360])
+          if reversed_detected[(self.cam_center - self.robot_yaw + i) % 360] is not None else -1
           for i in range(360)
         ]
         payload = {
           'timestamp': self.timestamp,
-          'detected': detected
+          'detected': persuade_detected
         }
         msg_out = String()
         msg_out.data = json.dumps(payload)

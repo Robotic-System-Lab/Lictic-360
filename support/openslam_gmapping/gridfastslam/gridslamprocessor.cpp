@@ -392,13 +392,13 @@ void GridSlamProcessor::setMotionModelParameters
 	m_outputStream << " " << m_angularDistance << endl;
       }
       
-      if (m_infoStream)
-	m_infoStream << "update frame " <<  m_readingCount << endl
-		     << "update ld=" << m_linearDistance << " ad=" << m_angularDistance << endl;
+  //     if (m_infoStream)
+	// m_infoStream << "update frame " <<  m_readingCount << endl
+	// 	     << "update ld=" << m_linearDistance << " ad=" << m_angularDistance << endl;
       
       
-      cerr << "Laser Pose= " << reading.getPose().x << " " << reading.getPose().y 
-	   << " " << reading.getPose().theta << endl;
+    //   cerr << "Laser Pose= " << reading.getPose().x << " " << reading.getPose().y 
+	  //  << " " << reading.getPose().theta << endl;
       
       
       //this is for converting the reading in a scan-matcher feedable form
@@ -407,7 +407,7 @@ void GridSlamProcessor::setMotionModelParameters
       for(unsigned int i=0; i<m_beams; i++){
 	plainReading[i]=reading[i];
       }
-      m_infoStream << "m_count " << m_count << endl;
+      // m_infoStream << "m_count " << m_count << endl;
 
       RangeReading* reading_copy = 
               new RangeReading(reading.size(),
@@ -439,7 +439,7 @@ void GridSlamProcessor::setMotionModelParameters
 	updateTreeWeights(false);
 				
 	if (m_infoStream){
-	  m_infoStream << "neff= " << m_neff  << endl;
+	  // m_infoStream << "neff= " << m_neff  << endl;
 	}
 	if (m_outputStream.is_open()){
 	  m_outputStream << setiosflags(ios::fixed) << setprecision(6);
