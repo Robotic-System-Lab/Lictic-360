@@ -23,6 +23,7 @@ class DetectionNode(Node):
     
     self.declare_parameter('cam_center', 150)
     self.declare_parameter('detection_model', "ssd-mobilenet-v2")
+    self.declare_parameter('detection_threshold', 0.5)
     self.cam_center = self.get_parameter('cam_center').value
     self.detection_model = self.get_parameter('detection_model').value
     self.detection_threshold = self.get_parameter('detection_threshold').value
