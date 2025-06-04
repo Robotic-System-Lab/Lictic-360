@@ -98,7 +98,7 @@ void SlamGmapping::segnetCallback(const std_msgs::msg::String::SharedPtr msg)
         // Ekstrak timestamp dari pesan segnet (diasumsikan dalam satuan detik)
         double segnet_ts = j["timestamp"].get<double>();
         double scan_ts = last_scan_timestamp_.seconds();
-        const double MAX_TIMESTAMP_DIFF = .3; // ambang batas
+        const double MAX_TIMESTAMP_DIFF = 2; // ambang batas
 
         if (std::abs(segnet_ts - scan_ts) > MAX_TIMESTAMP_DIFF) {
             RCLCPP_WARN(this->get_logger(),
@@ -416,16 +416,17 @@ double SlamGmapping::computePoseEntropy()
 
 void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr scan)
 {
-    RCLCPP_DEBUG(this->get_logger(), "Update map");
+    RCLCPP_WARN(this->get_logger(), "Updating map");
     map_mutex_.lock();
 
     if (segnetReads_.empty()) {
-        RCLCPP_DEBUG(this->get_logger(), "segnetReads_ kosong, updateMap dilewati");
+        RCLCPP_WARN(this->get_logger(), "No segmentation data, skipping..");
         map_mutex_.unlock();
         return;
     }
     auto &segnetCheck = segnetReads_.back();
     if (!segnetCheck.contains("detected") || !segnetCheck["detected"].is_array() || segnetCheck["detected"].size() != 360) {
+        RCLCPP_WARN(this->get_logger(), "Segmentation data is not valid, skipping..");
         return;
     }
 
@@ -567,6 +568,7 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
 
     segnetReads_.clear();
     map_mutex_.unlock();
+    RCLCPP_WARN(this->get_logger(), "Updated map successfully!");
 }
 
 void SlamGmapping::publishTransform()

@@ -8,13 +8,13 @@ import launch_ros.actions
 
 def generate_launch_description():
     config_file = os.path.join(
-        get_package_share_directory('yolosed'),
+        get_package_share_directory('lictic'),
         'config',
         'husky_params.yaml'
     )
     
     camera_launch = os.path.join(
-        get_package_share_directory('yolosed'),
+        get_package_share_directory('lictic'),
         'launch',
         'camera.launch.py'
     )

@@ -167,7 +167,8 @@ void ScanMatcher::computeActiveArea(ScanMatcherMap& map, const OrientedPoint& p,
 	for (const double* r=readings+m_initialBeamsSkip; r<readings+m_laserBeams; r++, angle++)
 		if (m_generateMap){
 			double d=*r;
-			// if (d>m_laserMaxRange||d==0.0||isnan(d)) continue;
+			if (d>m_laserMaxRange||d==0.0||isnan(d))
+				continue;
 			if (d>m_usableRange)
 				d=m_usableRange;
 			Point phit=lp+Point(d*cos(lp.theta+*angle),d*sin(lp.theta+*angle));

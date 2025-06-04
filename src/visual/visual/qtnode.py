@@ -124,7 +124,9 @@ class MainWindow(QMainWindow):
   # filepath: /home/lamp/workspaces/segnet/src/visual/visual/qtnode.py
   def redraw_grid(self):
     # Buat QPixmap dengan ukuran fixed 800x800
-    pixmap = QPixmap(800, 800)
+    multiplier = 2
+    print(f"Redrawing grid ({self.grid_height*multiplier}x{self.grid_width*multiplier})")
+    pixmap = QPixmap(self.grid_height*multiplier, self.grid_width*multiplier)
     pixmap.fill(Qt.white)
     painter = QPainter(pixmap)
     for row in range(self.grid_height):
