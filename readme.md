@@ -101,8 +101,9 @@ sudo make install
 > Note that the project was built to run in Jetson AGX Orin, the version of PyTorch is need to match JetPack 6.2. See this image docker for details: [ultralytics/ultralytics:latest-jetson-jetpack6](https://hub.docker.com/r/ultralytics/ultralytics/tags?name=jetpack6)
 ```bash
 pip install numpy==1.26.4 https://github.com/ultralytics/assets/releases/download/v0.0.0/onnxruntime_gpu-1.20.0-cp310-cp310-linux_aarch64.whl https://github.com/ultralytics/assets/releases/download/v0.0.0/torch-2.5.0a0+872d972e41.nv24.08-cp310-cp310-linux_aarch64.whl https://github.com/ultralytics/assets/releases/download/v0.0.0/torchvision-0.20.0a0+afc54f7-cp310-cp310-linux_aarch64.whl ultralytics
-
-# If u're going to run this on an AMD64 device, just run this instead:
+```
+> If u're going to run this on an AMD64 device, just run this instead:
+```bash
 pip install ultralytics
 ```
 9. Build the whole packages
