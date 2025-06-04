@@ -3,7 +3,7 @@ import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription
-from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.launch_description_sources import XMLLaunchDescriptionSource 
 import launch_ros.actions
 
 def generate_launch_description():
@@ -13,10 +13,10 @@ def generate_launch_description():
         'husky_params.yaml'
     )
     
-    turtlebot3_launch = os.path.join(
-        get_package_share_directory('turtlebot3_gazebo'),
+    camera_launch = os.path.join(
+        get_package_share_directory('ros_deep_learning'),
         'launch',
-        'callibrate_cam.launch.py'
+        'video_source.ros2v2.launch'
     )
 
     return LaunchDescription([
@@ -40,7 +40,6 @@ def generate_launch_description():
             output='screen',
         ),
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(turtlebot3_launch),
-            launch_arguments={'gui': 'false'}.items(),
+            XMLLaunchDescriptionSource(camera_launch)
         ),
     ])
