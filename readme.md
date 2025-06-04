@@ -28,11 +28,13 @@ This repository focused on applying semantic mapping for Husky Clearpath A200 wh
 ```
 .
 ├──src
-│  ├── gmapper
+│  ├── lictic
 │  ├── merger
-│  ├── ros_deep_learning
+│  ├── visual
+│  ├── gmapper
 │  ├── yolosed
-│  └── visual
+│  ├── velodyne
+│  └── ros_deep_learning
 │
 └──support
    ├── openslam_gmapping
@@ -60,9 +62,8 @@ git clone https://github.com/Robotic-System-Lab/Lintic-360.git .
 export ROS_MASTER_URI=http://192.168.131.1:11311
 export ROS_IP=192.168.131.1
 
-# Jetson Orin at `~/.bashrc`
-export ROS_MASTER_URI=http://192.168.1.100:11311
-export ROS_IP=192.168.1.103
+# Jetson AGX Orin at `~/.bashrc`
+export ROS_MASTER_URI=http://192.168.131.1:11311
 ```
 3. Using raw published topics will not work since Husky has a complex network settings. Create this file and run `rosparam load bridge.yaml` to setup for `/odom` topic bridge.
 ```yaml
@@ -85,6 +86,7 @@ catkin_create_pkg relay roscpp nav_msgs tf2_ros geometry_msgs
 rosrun relay odom
 ```
 6. Since we're using two different devices, we need to register the Husky as a host in the Jetson. Run sudo nano `/etc/hosts` and add this line (sometimes, we also need to restart the Jetson to apply this change)
+> Note that your Jetson AGX Orin should use ip in range 192.168.131.101-192.168.131.110
 ```bash
 # Husky's IP should be like this according to the Official Documentation 
 192.168.131.1 husky
@@ -125,8 +127,8 @@ sudo apt-get -y install nlohmann-json3-dev
 After all those setups, we can run the launch file:
 ```bash
 # Using Gazebo Simulator
-ros2 launch yolosed sim.launch.py
+ros2 launch lictic sim.launch.py
 
 # Using Husky Robot
-ros2 launch yolosed husky.launch.py
+ros2 launch lictic husky.launch.py
 ```
