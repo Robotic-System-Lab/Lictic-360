@@ -16,7 +16,7 @@ def generate_launch_description():
     camera_launch = os.path.join(
         get_package_share_directory('yolosed'),
         'launch',
-        'video_source.ros2v2.launch'
+        'camera.launch.py'
     )
 
     return LaunchDescription([

@@ -10,6 +10,7 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        ('share/' + package_name + '/launch', ['launch/camera.launch.py']),
         ('share/' + package_name + '/launch', ['launch/husky.launch.py']),
         ('share/' + package_name + '/config', ['config/husky_params.yaml']),
         ('share/' + package_name + '/launch', ['launch/sim.launch.py']),
