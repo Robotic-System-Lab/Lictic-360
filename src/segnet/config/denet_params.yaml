@@ -1,6 +1,0 @@
-denet:
-  ros__parameters:
-    use_sim_time: true
-    cam_center: 150
-    detection_model: "ssd-mobilenet-v2"
-    detection_threshold: 0.5

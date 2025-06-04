@@ -31,7 +31,6 @@ This repository focused on applying semantic mapping for Husky Clearpath A200 wh
 │  ├── gmapper
 │  ├── merger
 │  ├── ros_deep_learning
-│  ├── segnet
 │  ├── yolosed
 │  └── visual
 │
@@ -99,8 +98,7 @@ cmake ..
 sudo make install
 ```
 8. Build the whole packages
-> The `ros_deep_learning` package was meant to launch camera for Jetson. If u're not using it, create a `COLCON IGNORE` file inside of the packages.
-> Since we will only use one object detection for a single run, you can choose to build `segnet` or `yolosed`. (The segnet will run with Jetson Inference while yolosed run with YOLO by Ultralytics)
+> The `ros_deep_learning` package was meant to launch camera for Jetson. If u're meant to run this project only with simulator, create a `COLCON IGNORE` file inside of the packages.
 ```bash
 # ROS2
 cd ~/lintic_ws/
@@ -108,36 +106,18 @@ colcon build
 source install/setup.bash
 ```
 
-## How To Run
-After all those setups, we can run those nodes and launch files:
-> Ignore the ros_deep_learning if u're not using it
-```bash
-ros2 launch ros_deep_learning video_source.ros2v2.launch
-```
-> You can change this if you're using another version or brand of LiDAR sensor
-```bash
-ros2 launch velodyne velodyne-all-nodes-VLP32C-launch.py
-```
-> Initiate the ROS Bridge
-```bash
-ros2 run ros1_bridge parameter_bridge
-```
-> Run the broadcaster for /odom
-```bash
-ros2 run merger odom
-```
-> Run the main GMapping process
-```bash
-ros2 run gmapper semap
-```
-> Run `segnet` if u want to use Jetson Inference or `yolosed` if u want to use YOLO instead
-```bash
-ros2 run segnet denset
-ros2 run yolosed seg
-```
-
 ## Common Issues
 1. `nlohmann` related error encountered frequently, make sure to check every single error occured on ur machine. Run this if you found one.
 ```bash
 sudo apt-get -y install nlohmann-json3-dev
+```
+
+## How To Run
+After all those setups, we can run the launch file:
+```bash
+# Using Gazebo Simulator
+ros2 launch yolosed sim.launch.py
+
+# Using Husky Robot
+ros2 launch yolosed husky.launch.py
 ```
