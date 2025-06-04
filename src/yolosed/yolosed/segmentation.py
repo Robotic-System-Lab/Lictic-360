@@ -158,6 +158,7 @@ class YOLOSegnetNode(Node):
         msg_out = String()
         msg_out.data = json.dumps(payload)
         self.segmentation_publisher.publish(msg_out)
+        self.get_logger().info("Success processing inference!")
 
       except Exception as e:
         self.get_logger().error(f"Error: {e}")

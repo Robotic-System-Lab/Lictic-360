@@ -13,7 +13,7 @@ string(TOUPPER $ENV{ROS_DISTRO} ROS_DISTRO)
 set(ROS_DISTRO "ROS_${ROS_DISTRO}")
 message("detected ROS_DISTRO=${ROS_DISTRO}")
 
-find_package(VPI 2.0)
+find_package(VPI 3.0)
 link_directories(/usr/lib/aarch64-linux-gnu/tegra)
 
 find_package(ament_cmake QUIET)
