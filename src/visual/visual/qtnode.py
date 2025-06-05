@@ -10,6 +10,8 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QWheelEvent, QColor, QBrush, QPainter, QPixmap
 from PySide6.QtCore import Qt, QRectF, QThread, Signal
 from nav_msgs.msg import OccupancyGrid
+import os
+import datetime
 
 # Custom GraphicsView dengan zoom dan drag (menggunakan AnchorUnderMouse)
 class GridView(QGraphicsView):
@@ -59,6 +61,8 @@ class MainWindow(QMainWindow):
     left_layout.setContentsMargins(0, 0, 0, 0)
     left_layout.setSpacing(0)
     
+    self.start_time = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+    self.save_indexer = 0
     self.scene = QGraphicsScene()
     self.grid_width = 40
     self.grid_height = 40
@@ -67,26 +71,7 @@ class MainWindow(QMainWindow):
     self.view = GridView(self.scene)
     self.view.setFixedSize(800, 800)
     
-    footer = QFrame()
-    footer.setFrameShape(QFrame.StyledPanel)
-    footer.setFixedSize(800, 50)
-    footer_layout = QHBoxLayout(footer)
-    footer_layout.setContentsMargins(5, 5, 5, 5)
-    footer_layout.setSpacing(5)
-    
-    self.path_button = QPushButton("Select Path")
-    self.path_button.clicked.connect(self.select_path)
-    self.filename_edit = QLineEdit()
-    self.filename_edit.setPlaceholderText("Nama file")
-    self.save_button = QPushButton("Save")
-    self.save_button.clicked.connect(self.save_grid_image)
-    
-    footer_layout.addWidget(self.path_button)
-    footer_layout.addWidget(self.filename_edit)
-    footer_layout.addWidget(self.save_button)
-    
     left_layout.addWidget(self.view)
-    left_layout.addWidget(footer)
     
     # Sidebar legenda
     sidebar = QWidget()
@@ -123,35 +108,74 @@ class MainWindow(QMainWindow):
   
   # filepath: /home/lamp/workspaces/segnet/src/visual/visual/qtnode.py
   def redraw_grid(self):
-    # Buat QPixmap dengan ukuran fixed 800x800
-    multiplier = 2
-    print(f"Redrawing grid ({self.grid_height*multiplier}x{self.grid_width*multiplier})")
-    pixmap = QPixmap(self.grid_height*multiplier, self.grid_width*multiplier)
-    pixmap.fill(Qt.white)
-    painter = QPainter(pixmap)
-    for row in range(self.grid_height):
-        real_row = self.grid_height - 1 - row
-        for col in range(self.grid_width):
-            index = real_row * self.grid_width + col
-            value = self.grid_data[index]
-            if value == 99:
-                color = QColor(50, 50, 50)
-            elif value == -1:
-                color = QColor('darkgray')
-            elif value == 0:
-                color = QColor('lightgray')
-            else:
-                ratio = (value - 1) / 9
-                r = int(ratio * 255)
-                b = 255 - r
-                color = QColor(r, 100, b)
-            rect = QRectF(col * self.cell_size, row * self.cell_size,
-                          self.cell_size, self.cell_size)
-            painter.fillRect(rect, QBrush(color))
-    painter.end()
-    
-    self.scene.clear()
-    self.scene.addPixmap(pixmap)
+    print(f"Redrawing grid (800x800)")
+    # pixmap = QPixmap(800, 800)
+    # pixmap.fill(Qt.white)
+    # painter = QPainter(pixmap)
+    # for row in range(self.grid_height):
+    #     real_row = self.grid_height - 1 - row
+    #     for col in range(self.grid_width):
+    #         index = real_row * self.grid_width + col
+    #         value = self.grid_data[index]
+    #         if value == 99:
+    #             color = QColor(50, 50, 50)
+    #         elif value == -1:
+    #             color = QColor('darkgray')
+    #         elif value == 0:
+    #             color = QColor('lightgray')
+    #         else:
+    #             ratio = (value - 1) / 9
+    #             r = int(ratio * 255)
+    #             b = 255 - r
+    #             color = QColor(r, 100, b)
+    #         rect = QRectF(col * self.cell_size, row * self.cell_size,
+    #                       self.cell_size, self.cell_size)
+    #         painter.fillRect(rect, QBrush(color))
+    # painter.end()
+
+    # Hanya update scene jika visualisasi diaktifkan
+    # if getattr(self, "visual_enabled", True):
+    #     self.scene.clear()
+    #     self.scene.addPixmap(pixmap)
+
+    self.save_indexer += 1
+    if self.save_indexer % 3 == 0:
+      print(f"Saving grid {self.save_indexer}")
+      self.save_indexer = 0
+      # image = QPixmap(800, 800)
+      # image.fill(Qt.white)
+      # painter = QPainter(image)
+      # self.scene.render(painter)
+      # painter.end()
+      pixmap = QPixmap(800, 800)
+      pixmap.fill(Qt.white)
+      painter = QPainter(pixmap)
+      for row in range(self.grid_height):
+          real_row = self.grid_height - 1 - row
+          for col in range(self.grid_width):
+              index = real_row * self.grid_width + col
+              value = self.grid_data[index]
+              if value == 99:
+                  color = QColor(50, 50, 50)
+              elif value == -1:
+                  color = QColor('darkgray')
+              elif value == 0:
+                  color = QColor('lightgray')
+              else:
+                  ratio = (value - 1) / 9
+                  r = int(ratio * 255)
+                  b = 255 - r
+                  color = QColor(r, 100, b)
+              rect = QRectF(col * self.cell_size, row * self.cell_size,
+                            self.cell_size, self.cell_size)
+              painter.fillRect(rect, QBrush(color))
+      painter.end()
+      
+      folder = os.path.join(os.path.expanduser("~"), "lictic", "captured_map", str(self.start_time))
+      os.makedirs(folder, exist_ok=True)
+      timestamp_now = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+      full_path = f"{folder}/{timestamp_now}.png"
+      pixmap.save(full_path, "PNG")
   
   def update_grid_from_map(self, msg):
     self.grid_width = msg.info.width
@@ -176,25 +200,6 @@ class MainWindow(QMainWindow):
     layout.addWidget(color_box)
     layout.addWidget(label)
     return item
-  
-  def select_path(self):
-    directory = QFileDialog.getExistingDirectory(self, "Select Directory")
-    if directory:
-      self.save_path = directory
-  
-  def save_grid_image(self):
-    if not self.save_path:
-      return
-    filename = self.filename_edit.text().strip()
-    if not filename:
-      return
-    image = QPixmap(800, 800)
-    image.fill(Qt.white)
-    painter = QPainter(image)
-    self.scene.render(painter)
-    painter.end()
-    full_path = f"{self.save_path}/{filename}.png"
-    image.save(full_path, "PNG")
 
 def main(args=None):
   app = QApplication(sys.argv)

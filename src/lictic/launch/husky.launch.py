@@ -37,6 +37,7 @@ def generate_launch_description():
             executable='odom',
             name='odom',
             output='screen',
+            parameters=[config_file],
         ),
         launch_ros.actions.Node(
             package='yolosed',

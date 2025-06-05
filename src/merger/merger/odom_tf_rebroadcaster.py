@@ -63,7 +63,8 @@ class OdomTfRebroadcaster(Node):
         
         maxrange = self.get_parameter('maxrange').value
         limited_msg = LaserScan()
-        limited_msg.header = msg.header
+        limited_msg.header.frame_id = 'base_scan'
+        limited_msg.header.stamp = self.latest_base_scan_stamp
         limited_msg.angle_min = msg.angle_min
         limited_msg.angle_max = msg.angle_max
         limited_msg.angle_increment = msg.angle_increment

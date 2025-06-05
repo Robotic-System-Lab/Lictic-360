@@ -16,13 +16,13 @@ def generate_launch_description():
     turtlebot3_launch = os.path.join(
         get_package_share_directory('turtlebot3_gazebo'),
         'launch',
-        'turtlebot3_world.launch.py'
+        'callibrate_cam.launch.py'
     )
 
     return LaunchDescription([
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(turtlebot3_launch),
-            launch_arguments={'gui': 'false'}.items(),
+            launch_arguments={'gui': 'true'}.items(),
         ),
         launch_ros.actions.Node(
             package='yolosed',
@@ -31,19 +31,12 @@ def generate_launch_description():
             output='screen',
             parameters=[config_file],
         ),
-        launch_ros.actions.Node(
-            package='merger',
-            executable='limit',
-            name='limit',
-            output='screen',
-            parameters=[config_file],
-        ),
-        launch_ros.actions.Node(
-            package='gmapper',
-            executable='semap',
-            name='semap',
-            output='screen',
-        ),
+        # launch_ros.actions.Node(
+        #     package='gmapper',
+        #     executable='semap',
+        #     name='semap',
+        #     output='screen',
+        # ),
         launch_ros.actions.Node(
             package='visual',
             executable='qt',
