@@ -59,10 +59,27 @@ class OdomTfRebroadcaster(Node):
     def base_scan_callback(self, msg: LaserScan):
         # Update timestamp dari data base_scan
         self.latest_base_scan_stamp = msg.header.stamp
-        # Ubah frame id dari 'velodyne' menjadi 'base_scan'
-        msg.header.frame_id = 'base_scan'
-        # Terbitkan pesan LaserScan yang telah diperbarui
-        self.scan_pub.publish(msg)
+        t = TransformStamped()
+        t.header.frame_id = 'trash_scan'
+        t.child_frame_id = 'trash_footprint'
+        self.br.sendTransform(t)
+        
+        maxrange=1.0
+        limited_msg = LaserScan()
+        limited_msg.header = msg.header
+        limited_msg.angle_min = msg.angle_min
+        limited_msg.angle_max = msg.angle_max
+        limited_msg.angle_increment = msg.angle_increment
+        limited_msg.time_increment = msg.time_increment
+        limited_msg.scan_time = msg.scan_time
+        limited_msg.range_min = msg.range_min
+        limited_msg.range_max = maxrange
+        limited_msg.ranges = [
+            distance if distance <= maxrange else float('inf')
+        		for distance in msg.ranges
+        ]
+        limited_msg.header.frame_id = 'base_scan'
+        self.scan_pub.publish(limited_msg)
 
     def odom_callback(self, msg: Odometry):
         t = TransformStamped()

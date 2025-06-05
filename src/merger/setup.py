@@ -21,6 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             'odom = merger.odom_tf_rebroadcaster:main',
+            'limit = merger.lidar_limiter:main',
         ],
     },
 )
