@@ -19,9 +19,14 @@ class YOLOSegnetNode(Node):
     self.get_logger().info('Segmentation node has been started.')
     self.bridge = CvBridge()
     
+    self.declare_parameter('cam_top_threshold', 0.5)
+    self.declare_parameter('cam_bot_threshold', 0.5)
     self.declare_parameter('cam_center', 150)
-    self.declare_parameter('segmentation_model', "yolo11m-seg")
+    self.cam_top_threshold = self.get_parameter('cam_top_threshold').value
+    self.cam_bot_threshold = self.get_parameter('cam_bot_threshold').value
     self.cam_center = self.get_parameter('cam_center').value
+    
+    self.declare_parameter('segmentation_model', "yolo11m-seg")
     self.segmentation_model = self.get_parameter('segmentation_model').value
     
     self.get_logger().info('Loading Model...')
@@ -73,21 +78,34 @@ class YOLOSegnetNode(Node):
 
   def collect_results(self, results, cv_image, index):
     segmentation_data = []
+    height = cv_image.shape[0]
+    # Tentukan batas valid dari mask (10% di atas dan 5% di bawah tengah)
+    y_center = height // 2
+    y_min_valid = int(y_center - self.cam_top_threshold * height)
+    y_max_valid = int(y_center + self.cam_bot_threshold * height)
+    self.get_logger().info(f"Thresholds for index {index}: y1={self.cam_top_threshold}, y2={self.cam_bot_threshold}")
+    self.get_logger().info(f"Cam center for index {index}: {self.cam_center}")
+    
     for result in results:
-      for box in result.boxes:
-        class_id = box.cls.item()
-        label_name = self.model.names[int(class_id)]
-        hazard_score = hazard_lookup.get(label_name, 4)
-        
-        conf = box.cls.item()
-        xyxy = box.xyxy[0].tolist()
-        x1, y1, x2, y2 = xyxy
-        segmentation_data.append({
-          'label': hazard_score,
-          'conf': conf,
-          'x1': int(x1),
-          'x2': int(x2),
-        })
+      if result.masks is not None:
+        for mask in result.masks.xy:
+          # Filter titik mask yang berada dalam area valid y
+          x1old = int(mask[:, 0].min())
+          x2old = int(mask[:, 0].max())
+          self.get_logger().info(f"Origin segment on index {index}: ({x1old},{x2old})")
+          valid_points = mask[(mask[:, 1] >= y_min_valid) & (mask[:, 1] <= y_max_valid)]
+          if valid_points.size > 0:
+              # Hitung x1 dan x2 dari titik-titik valid tersebut
+              x1 = int(valid_points[:, 0].min())
+              x2 = int(valid_points[:, 0].max())
+              # Ambil label (misal dari result.label atau gunakan hazard_lookup jika diperlukan)
+              segmentation_data.append({
+                  'x1': x1,
+                  'x2': x2,
+                  'conf': getattr(result, 'conf', None),  # contoh pengambilan confidence jika ada
+                  'label': getattr(result, 'label', 'unknown')
+              })
+              self.get_logger().info(f"Valid segment on index {index}: ({x1},{x2})")
 
     width = cv_image.shape[1]
     pixels_per_degree = width//60
