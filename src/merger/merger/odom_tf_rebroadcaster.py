@@ -60,10 +60,6 @@ class OdomTfRebroadcaster(Node):
     def base_scan_callback(self, msg: LaserScan):
         # Update timestamp dari data base_scan
         self.latest_base_scan_stamp = msg.header.stamp
-        t = TransformStamped()
-        t.header.frame_id = 'trash_scan'
-        t.child_frame_id = 'trash_footprint'
-        self.br.sendTransform(t)
         
         maxrange = self.get_parameter('maxrange').value
         limited_msg = LaserScan()
