@@ -32,7 +32,7 @@ class LidarLimiterNode(Node):
         limited_msg.range_min = msg.range_min
         limited_msg.range_max = maxrange
         limited_msg.ranges = [
-            distance if distance <= 1 else float('inf')
+            distance if distance <= maxrange else float('inf')
         		for distance in msg.ranges
         ]
         limited_msg.header.frame_id = 'base_scan'

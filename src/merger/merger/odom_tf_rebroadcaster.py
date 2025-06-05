@@ -10,6 +10,7 @@ class OdomTfRebroadcaster(Node):
         super().__init__('odom_tf_rebroadcaster')
         # Membuat broadcaster untuk mengirim transform
         self.br = tf2_ros.TransformBroadcaster(self)
+        self.declare_parameter('maxrange', 1.0)
         self.create_subscription(Odometry, '/odom', self.odom_callback, 10)
         self.create_subscription(LaserScan, '/velodyne_scan', self.base_scan_callback, 10)
         # Publisher untuk menerbitkan LaserScan dengan frame id yang telah diubah
@@ -64,7 +65,7 @@ class OdomTfRebroadcaster(Node):
         t.child_frame_id = 'trash_footprint'
         self.br.sendTransform(t)
         
-        maxrange=1.0
+        maxrange = self.get_parameter('maxrange').value
         limited_msg = LaserScan()
         limited_msg.header = msg.header
         limited_msg.angle_min = msg.angle_min
