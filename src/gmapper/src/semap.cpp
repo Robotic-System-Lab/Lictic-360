@@ -497,17 +497,45 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
         xmin_ = wmin.x; ymin_ = wmin.y;
         xmax_ = wmax.x; ymax_ = wmax.y;
 
-        RCLCPP_DEBUG(this->get_logger(), "map size is now %dx%d pixels (%f,%f)-(%f, %f)", smap.getMapSizeX(), smap.getMapSizeY(),
-                  xmin_, ymin_, xmax_, ymax_);
-
+        RCLCPP_WARN(this->get_logger(), "Map size changed from (%d, %d) to (%d, %d)",
+                    map_.info.width, map_.info.height,
+                    smap.getMapSizeX(), smap.getMapSizeY());
+        RCLCPP_WARN(this->get_logger(), "Resizing label map ...");
+                  
+        int oldWidth = map_.info.width;
+        int oldHeight = map_.info.height;
+        double old_origin_x = map_.info.origin.position.x;
+        double old_origin_y = map_.info.origin.position.y;
+        
         map_.info.width = static_cast<nav_msgs::msg::MapMetaData::_width_type>(smap.getMapSizeX());
         map_.info.height = static_cast<nav_msgs::msg::MapMetaData::_height_type>(smap.getMapSizeY());
         map_.info.origin.position.x = xmin_;
         map_.info.origin.position.y = ymin_;
         map_.data.resize(map_.info.width * map_.info.height);
-        map_labels_.resize(map_.info.width * map_.info.height, {-1, -1, -1});
 
-        RCLCPP_DEBUG(this->get_logger(), "map origin: (%f, %f)", map_.info.origin.position.x, map_.info.origin.position.y);
+        int cell_offset_x = std::round((old_origin_x - xmin_) / map_.info.resolution);
+        int cell_offset_y = std::round((old_origin_y - ymin_) / map_.info.resolution);
+        int newWidth = map_.info.width;
+        int newHeight = map_.info.height;
+        int totalCells = newWidth * newHeight;
+        
+        std::vector<std::array<int, label_error>> new_map_labels;
+        new_map_labels.resize(totalCells, {-1, -1, -1});
+        for (int x = 0; x < oldWidth; ++x) {
+            for (int y = 0; y < oldHeight; ++y) {
+                int old_index = x + (oldWidth * y);
+                int new_index = (x + cell_offset_x) + newWidth * (y + cell_offset_y);
+                if(new_index < 0 || new_index >= totalCells) {
+                    continue;
+                }
+                new_map_labels[new_index] = map_labels_[old_index];
+            }
+        }
+        map_labels_.swap(new_map_labels);
+        // map_labels_.resize(map_.info.width * map_.info.height, {-1, -1, -1});
+
+        RCLCPP_WARN(this->get_logger(), "Successfully resized label map to (%d, %d)",
+                    map_.info.width, map_.info.height);
     }
 
     for(int x=0; x < smap.getMapSizeX(); x++)
@@ -522,13 +550,13 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
             
             assert(occ <= 1.0);
             if(occ < 0 && map_labels_v[0] == -1) {
+            // if(occ < 0) {
                 map_.data[MAP_IDX(map_.info.width, x, y)] = -1;
             }
             else if(occ > occ_thresh_)
             {
                 // `fill` will be 99 if the cell is unknown (no label)
                 int fill = (label == -1) ? 99 : label;
-
                 if (fill == 99 && std::count(map_labels_v.begin(), map_labels_v.end(), 99) >= 0) {
                     // Sudah ada 3 buah 99, tidak melakukan apa-apa
                 } else {
@@ -539,20 +567,19 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
                         }
                     }
                 }
-                
                 auto it = std::max_element(map_labels_v.begin(), map_labels_v.end(), [](int a, int b) {
                     if(a == -1) return true;
                     if(b == -1) return false;
                     return a < b;
                 });
                 int modus = (it != map_labels_v.end() && *it != -1) ? *it : 99;
-                // map_.data[MAP_IDX(map_.info.width, x, y)] = modus;
                 map_.data[MAP_IDX(map_.info.width, x, y)] = modus;
-            
-                // map_.data[MAP_IDX(map_.info.width, x, y)] = 
-                //     (mode != -1 ? mode : (map_labels_v[0] != -1 ? map_labels_v[0] : fill));
+
+                // int fill = (label == -1) ? 99 : label;
+                // map_.data[MAP_IDX(map_.info.width, x, y)] = fill;
             }
             else if (map_labels_v[0] == -1){
+            // else {
                 map_.data[MAP_IDX(map_.info.width, x, y)] = 0;
             }
         }
