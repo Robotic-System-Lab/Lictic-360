@@ -8,9 +8,9 @@ import launch_ros.actions
 
 def generate_launch_description():
     config_file = os.path.join(
-        get_package_share_directory('yolosed'),
+        get_package_share_directory('lictic'),
         'config',
-        'segmentation_params.yaml'
+        'sim_params.yaml'
     )
     
     turtlebot3_launch = os.path.join(
@@ -22,7 +22,7 @@ def generate_launch_description():
     return LaunchDescription([
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(turtlebot3_launch),
-            launch_arguments={'gui': 'true'}.items(),
+            launch_arguments={'gui': 'false'}.items(),
         ),
         launch_ros.actions.Node(
             package='yolosed',
@@ -31,12 +31,12 @@ def generate_launch_description():
             output='screen',
             parameters=[config_file],
         ),
-        # launch_ros.actions.Node(
-        #     package='gmapper',
-        #     executable='semap',
-        #     name='semap',
-        #     output='screen',
-        # ),
+        launch_ros.actions.Node(
+            package='gmapper',
+            executable='semap',
+            name='semap',
+            output='screen',
+        ),
         launch_ros.actions.Node(
             package='visual',
             executable='qt',
