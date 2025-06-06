@@ -8,6 +8,7 @@ from std_msgs.msg import String
 from cv_bridge import CvBridge
 from ultralytics import YOLO
 import cv2
+import os
 
 import numpy as np
 from math import atan2, degrees
@@ -30,7 +31,8 @@ class YOLOSegnetNode(Node):
     self.segmentation_model = self.get_parameter('segmentation_model').value
     
     self.get_logger().info('Loading Model...')
-    self.model = YOLO(f'./src/model/{self.segmentation_model}.pt')
+    model_path = os.path.join(os.path.dirname(__file__), 'model', f"{self.segmentation_model}")
+    self.model = YOLO(model_path)
     self.get_logger().info(f'Model loaded on: {self.model.device}, ready to perform segmentation.')
     
     self.timestamp = 0
