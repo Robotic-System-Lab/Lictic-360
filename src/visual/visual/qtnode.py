@@ -22,7 +22,7 @@ class GridView(QGraphicsView):
     self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
   
   def wheelEvent(self, event: QWheelEvent):
-    if event.angleDelta().y() < 0:
+    if event.angleDelta().y() >  0:
       factor = 1.25
     else:
       factor = 0.8
@@ -66,16 +66,16 @@ class MainWindow(QMainWindow):
     self.scene = QGraphicsScene()
     self.grid_width = 40
     self.grid_height = 40
-    self.cell_size = 800 / self.grid_width
+    self.cell_size = 500 / self.grid_width
     self.generate_default_grid()
     self.view = GridView(self.scene)
-    self.view.setFixedSize(800, 800)
+    self.view.setFixedSize(500, 500)
     
     left_layout.addWidget(self.view)
     
     # Sidebar legenda
     sidebar = QWidget()
-    sidebar.setFixedSize(200, 850)
+    sidebar.setFixedSize(70, 500)
     sidebar_layout = QVBoxLayout(sidebar)
     sidebar_layout.setContentsMargins(5, 5, 5, 5)
     sidebar_layout.setSpacing(5)
@@ -104,51 +104,22 @@ class MainWindow(QMainWindow):
   
   def generate_default_grid(self):
     self.grid_data = [random.randint(0, 10) for _ in range(self.grid_width * self.grid_height)]
-    self.redraw_grid()
+    pixmap = QPixmap(500, 500)
+    pixmap.fill(Qt.lightGray)
+    painter = QPainter(pixmap)
+    painter.end()
+    self.scene.addPixmap(pixmap)
   
   # filepath: /home/lamp/workspaces/segnet/src/visual/visual/qtnode.py
   def redraw_grid(self):
-    print(f"Redrawing grid (800x800)")
-    # pixmap = QPixmap(800, 800)
-    # pixmap.fill(Qt.white)
-    # painter = QPainter(pixmap)
-    # for row in range(self.grid_height):
-    #     real_row = self.grid_height - 1 - row
-    #     for col in range(self.grid_width):
-    #         index = real_row * self.grid_width + col
-    #         value = self.grid_data[index]
-    #         if value == 99:
-    #             color = QColor(50, 50, 50)
-    #         elif value == -1:
-    #             color = QColor('darkgray')
-    #         elif value == 0:
-    #             color = QColor('lightgray')
-    #         else:
-    #             ratio = (value - 1) / 9
-    #             r = int(ratio * 255)
-    #             b = 255 - r
-    #             color = QColor(r, 100, b)
-    #         rect = QRectF(col * self.cell_size, row * self.cell_size,
-    #                       self.cell_size, self.cell_size)
-    #         painter.fillRect(rect, QBrush(color))
-    # painter.end()
-
-    # Hanya update scene jika visualisasi diaktifkan
-    # if getattr(self, "visual_enabled", True):
-    #     self.scene.clear()
-    #     self.scene.addPixmap(pixmap)
+    print(f"Redrawing grid (500x500)")
 
     self.save_indexer += 1
     if self.save_indexer % 3 == 0:
       print(f"Saving grid {self.save_indexer}")
       self.save_indexer = 0
-      # image = QPixmap(800, 800)
-      # image.fill(Qt.white)
-      # painter = QPainter(image)
-      # self.scene.render(painter)
-      # painter.end()
-      pixmap = QPixmap(800, 800)
-      pixmap.fill(Qt.white)
+      pixmap = QPixmap(500, 500)
+      pixmap.fill(Qt.lightGray)
       painter = QPainter(pixmap)
       for row in range(self.grid_height):
           real_row = self.grid_height - 1 - row
@@ -170,6 +141,8 @@ class MainWindow(QMainWindow):
                             self.cell_size, self.cell_size)
               painter.fillRect(rect, QBrush(color))
       painter.end()
+      self.scene.clear()
+      self.scene.addPixmap(pixmap)
       
       folder = os.path.join(os.path.expanduser("~"), "lictic", "captured_map", str(self.start_time))
       os.makedirs(folder, exist_ok=True)
