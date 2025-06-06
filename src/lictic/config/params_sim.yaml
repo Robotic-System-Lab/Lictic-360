@@ -3,8 +3,8 @@ segmentation:
     use_sim_time: true
     cam_center: 30
     segmentation_model: "yolo11m-seg.pt"
-    cam_top_threshold: 0.001
-    cam_bot_threshold: 0.001
+    view_p: 0.001
+    view_h: 0.001
 lidar_limiter:
   ros__parameters:
     maxrange: 1

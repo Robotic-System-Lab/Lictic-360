@@ -20,11 +20,12 @@ class YOLOSegnetNode(Node):
     self.get_logger().info('Segmentation node has been started.')
     self.bridge = CvBridge()
     
-    self.declare_parameter('cam_top_threshold', 0.001)
-    self.declare_parameter('cam_bot_threshold', 0.001)
+    self.declare_parameter('view_p', 0.5)
+    self.declare_parameter('view_h', 0.2)
+    self.view_p = self.get_parameter('view_p').value
+    self.view_h = self.get_parameter('view_h').value
+    
     self.declare_parameter('cam_center', 150)
-    self.cam_top_threshold = self.get_parameter('cam_top_threshold').value
-    self.cam_bot_threshold = self.get_parameter('cam_bot_threshold').value
     self.cam_center = self.get_parameter('cam_center').value
     
     self.declare_parameter('segmentation_model', "yolo11m-seg")
@@ -80,9 +81,8 @@ class YOLOSegnetNode(Node):
     label_data = []
     segmentation_data = []
     height = cv_image.shape[0]
-    y_center = height // 2
-    y_min_valid = int(y_center - self.cam_top_threshold * height)
-    y_max_valid = int(y_center + self.cam_bot_threshold * height)
+    y_min_valid = int(self.view_p * height)
+    y_max_valid = int(self.view_h * height + y_min_valid)
     
     for result in results:
       if result.boxes is not None:
@@ -111,15 +111,15 @@ class YOLOSegnetNode(Node):
               'name': label_data[idx]['name'],
             })
           else:
-            segmentation_data.append(None)
+            segmentation_data.append({'name': f"INVALID-{label_data[idx]['name']}"})
           idx += 1
 
     width = cv_image.shape[1]
     pixels_per_degree = width//60
     
-    self.get_logger().info("Collected:")
     for data in segmentation_data:
-      if data is None:
+      self.get_logger().info(f"Collected data: {data['name']}")
+      if 'label' not in data:
         continue
       for degree in range(index*60, (index+1)*60):
         if data['x1'] <= (degree-(60*index))*pixels_per_degree < data['x2']:
@@ -167,6 +167,19 @@ class YOLOSegnetNode(Node):
 
         # Gabungkan semua gambar dan border secara horizontal
         combined_image = cv2.hconcat(bordered_images)
+
+        # Tambahkan overlay hitam semi transparan (opacity 50%)
+        overlay = combined_image.copy()
+        h, w = combined_image.shape[:2]
+        alpha = 0.5
+        top_end = int(self.view_p * h)
+        bottom_start = int((self.view_h + self.view_p) * h)
+        cv2.rectangle(overlay, (0, 0), (w, top_end), (0, 0, 0), -1)
+        cv2.rectangle(overlay, (0, bottom_start), (w, h), (0, 0, 0), -1)
+
+        # Gabungkan overlay dengan combined_image
+        combined_image = cv2.addWeighted(overlay, alpha, combined_image, 1 - alpha, 0)
+
         cv2.imshow("Segmented Images", combined_image)
         cv2.waitKey(1)
 
