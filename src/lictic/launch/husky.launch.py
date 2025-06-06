@@ -10,7 +10,7 @@ def generate_launch_description():
     config_file = os.path.join(
         get_package_share_directory('lictic'),
         'config',
-        'husky_params.yaml'
+        'params_husky.yaml'
     )
     
     camera_launch = os.path.join(

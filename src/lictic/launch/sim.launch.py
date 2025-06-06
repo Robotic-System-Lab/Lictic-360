@@ -10,7 +10,7 @@ def generate_launch_description():
     config_file = os.path.join(
         get_package_share_directory('lictic'),
         'config',
-        'sim_params.yaml'
+        'params_sim.yaml'
     )
     
     turtlebot3_launch = os.path.join(
