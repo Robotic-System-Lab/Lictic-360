@@ -28,27 +28,38 @@ This repository focused on applying semantic mapping for Husky Clearpath A200 wh
 ```
 .
 ├──src
-│  ├── lictic
-│  ├── merger
-│  ├── visual
-│  ├── gmapper
-│  ├── yolosed
-│  ├── velodyne
-│  └── ros_deep_learning
+│  ├──lictic
+│  └──utils
+│     ├── merger
+│     ├── visual
+│     ├── gmapper
+│     ├── yolosed
+│     ├── velodyne
+│     └── ros_deep_learning
 │
 └──support
    ├── openslam_gmapping
    └── relay
 ```
 
+This project placed the required packages together inside `utils` folder. The lictic inside `./src` meant to contain launch file only, while the remaining packages are described below:
+1. `merger`: Transforms tf_tree from /odom and /scan to match each other and limit the LiDAR range
+2. `visual`: Visualize mapping results into PNG file inside `~/lictic/captured_map/[timestamp]`
+3. `gmapper`: LiDAR mapper node
+4. `yolosed`: Packages for image processing. (Image detection was deprecated and no longer used)
+5. `velodyne`: LiDAR launcher (only match VLP 16, 32C, 128)
+6. `ros_deep_learning`: Camera launcher for Jetson Devices
+
 ## How To Build
 ### Prerequisite
-- ROS2 Humble at Jetson Orin
+- ROS2 Humble at Jetson AGX Orin
 - ROS1 Noetic at Husky Clearpath A200
 - ROS Bridge for Humble [(GitHub: TommyChangUMD)](https://github.com/TommyChangUMD/ros-humble-ros1-bridge-builder)
-- YOLO by Ultralytics or Jetson Inference
-- Velodyne LiDAR [(yavuzertugrul)](https://yavuzertugrul.com/Lidar_part_1#velodyne-vlp-16-lidar-ros2-humble-test-on-nvidia-jetson-orin-nx-8-gb-jetpack) or another 2D LiDAR
+- LiDAR for ROS, e.g. [(Velodyne)](https://github.com/ros-drivers/velodyne.git) or another 2D LiDAR
+- YOLO by [Ultralytics](https://github.com/ultralytics/ultralytics.git)
 - CMake9 or higher
+- PythonQT 6
+
 ### Installation
 Assuming we already installed the prerequisites and understood the basics of ROS, we can continue on these steps. 
 1. Clone this [Repository](https://github.com/Robotic-System-Lab/Lintic-360.git) into your ROS2 workspace.
@@ -91,7 +102,11 @@ rosrun relay odom
 # Husky's IP should be like this according to the Official Documentation 
 192.168.131.1 husky
 ```
-7. The setups are done, we can navigate into `support/openslam_gmapping/` and we will install customized library that was originally made by [siddarth09](https://github.com/siddarth09/ros2_gmapping)
+7. The setups are done, install `nlohmann` to support GMapper process
+```bash
+sudo apt-get -y install nlohmann-json3-dev
+```
+8. Next, we can navigate into `support/openslam_gmapping/` and we will install customized library that was originally made by [siddarth09](https://github.com/siddarth09/ros2_gmapping)
 ```bash
 # ROS2
 cd ~/lintic_ws/support/
@@ -99,7 +114,7 @@ mkdir build
 cmake ..
 sudo make install
 ```
-8. Installing Ultralytics and PyTorch
+9. Installing Ultralytics and PyTorch
 > Note that the project was built to run in Jetson AGX Orin, the version of PyTorch is need to match JetPack 6.2. See this image docker for details: [ultralytics/ultralytics:latest-jetson-jetpack6](https://hub.docker.com/r/ultralytics/ultralytics/tags?name=jetpack6)
 ```bash
 pip install numpy==1.26.4 https://github.com/ultralytics/assets/releases/download/v0.0.0/onnxruntime_gpu-1.20.0-cp310-cp310-linux_aarch64.whl https://github.com/ultralytics/assets/releases/download/v0.0.0/torch-2.5.0a0+872d972e41.nv24.08-cp310-cp310-linux_aarch64.whl https://github.com/ultralytics/assets/releases/download/v0.0.0/torchvision-0.20.0a0+afc54f7-cp310-cp310-linux_aarch64.whl ultralytics
@@ -108,19 +123,13 @@ pip install numpy==1.26.4 https://github.com/ultralytics/assets/releases/downloa
 ```bash
 pip install ultralytics
 ```
-9. Build the whole packages
+10. Build the whole packages
 > The `ros_deep_learning` package was meant to launch camera for Jetson. If u're meant to run this project only with simulator, create a `COLCON IGNORE` file inside of the packages.
 ```bash
 # ROS2
 cd ~/lintic_ws/
 colcon build
 source install/setup.bash
-```
-
-## Common Issues
-1. `nlohmann` related error encountered frequently, make sure to check every single error occured on ur machine. Run this if you found one.
-```bash
-sudo apt-get -y install nlohmann-json3-dev
 ```
 
 ## How To Run
