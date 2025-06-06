@@ -20,8 +20,8 @@ class YOLOSegnetNode(Node):
     self.get_logger().info('Segmentation node has been started.')
     self.bridge = CvBridge()
     
-    self.declare_parameter('cam_top_threshold', 0.5)
-    self.declare_parameter('cam_bot_threshold', 0.5)
+    self.declare_parameter('cam_top_threshold', 0.001)
+    self.declare_parameter('cam_bot_threshold', 0.001)
     self.declare_parameter('cam_center', 150)
     self.cam_top_threshold = self.get_parameter('cam_top_threshold').value
     self.cam_bot_threshold = self.get_parameter('cam_bot_threshold').value
@@ -70,15 +70,14 @@ class YOLOSegnetNode(Node):
       # yaw = arctan2(2*(w*z + x*y), 1 - 2*(y² + z²))
       yaw_rad = atan2(2 * (q.w * q.z + q.x * q.y), 1 - 2 * (q.y * q.y + q.z * q.z))
       yaw_deg = degrees(yaw_rad)
-      # Normalisasi sehingga berada pada rentang 0-359 derajat:
       self.robot_yaw = int(yaw_deg % 360)
 
   def image_callback(self, msg, index):
-    # self.get_logger().info(f'Received image data, performing segmentation...')
     cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
     self.images[index] = cv_image
 
   def collect_results(self, results, cv_image, index):
+    label_data = []
     segmentation_data = []
     height = cv_image.shape[0]
     y_center = height // 2
@@ -86,25 +85,42 @@ class YOLOSegnetNode(Node):
     y_max_valid = int(y_center + self.cam_bot_threshold * height)
     
     for result in results:
+      if result.boxes is not None:
+        for box in result.boxes:
+          xyxy = box.xyxy[0].tolist()
+          x1, _, x2, _ = xyxy
+          class_id = box.cls.item()
+          label_name = self.model.names[int(class_id)]
+          label_data.append({
+            'label': hazard_lookup.get(label_name, 1),
+            'conf': box.conf.item(),
+            'name': label_name,
+          })
       if result.masks is not None:
+        idx = 0
         for mask in result.masks.xy:
           valid_points = mask[(mask[:, 1] >= y_min_valid) & (mask[:, 1] <= y_max_valid)]
           if valid_points.size > 0:
-              # Hitung x1 dan x2 dari titik-titik valid tersebut
-              x1 = int(valid_points[:, 0].min())
-              x2 = int(valid_points[:, 0].max())
-              # Ambil label (misal dari result.label atau gunakan hazard_lookup jika diperlukan)
-              segmentation_data.append({
-                  'x1': x1,
-                  'x2': x2,
-                  'conf': getattr(result, 'conf', None),  # contoh pengambilan confidence jika ada
-                  'label': getattr(result, 'label', 'unknown')
-              })
+            x1 = int(valid_points[:, 0].min())
+            x2 = int(valid_points[:, 0].max())
+            segmentation_data.append({
+              'x1': x1,
+              'x2': x2,
+              'conf': label_data[idx]['conf'],
+              'label': label_data[idx]['label'],
+              'name': label_data[idx]['name'],
+            })
+          else:
+            segmentation_data.append(None)
+          idx += 1
 
     width = cv_image.shape[1]
     pixels_per_degree = width//60
     
+    self.get_logger().info("Collected:")
     for data in segmentation_data:
+      if data is None:
+        continue
       for degree in range(index*60, (index+1)*60):
         if data['x1'] <= (degree-(60*index))*pixels_per_degree < data['x2']:
           if (self.deg360[degree]['conf'] == 0 or self.deg360[degree]['conf'] < data['conf']):

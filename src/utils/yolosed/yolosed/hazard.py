@@ -8,7 +8,7 @@ hazard_lookup = {
     "train": 10,
     "airplane": 10,
     "boat": 8,
-    "fire hydrant": 7,
+    "fire hydrant": 9,
 
     # Makhluk hidup - Hazard Sedang (4–6)
     "person": 6,
