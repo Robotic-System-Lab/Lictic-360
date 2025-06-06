@@ -30,7 +30,7 @@ class YOLOSegnetNode(Node):
     self.segmentation_model = self.get_parameter('segmentation_model').value
     
     self.get_logger().info('Loading Model...')
-    self.model = YOLO(f'./src/yolosed/model/{self.segmentation_model}.pt')
+    self.model = YOLO(f'./src/model/{self.segmentation_model}.pt')
     self.get_logger().info(f'Model loaded on: {self.model.device}, ready to perform segmentation.')
     
     self.timestamp = 0
