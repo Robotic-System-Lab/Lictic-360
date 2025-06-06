@@ -81,20 +81,13 @@ class YOLOSegnetNode(Node):
   def collect_results(self, results, cv_image, index):
     segmentation_data = []
     height = cv_image.shape[0]
-    # Tentukan batas valid dari mask (10% di atas dan 5% di bawah tengah)
     y_center = height // 2
     y_min_valid = int(y_center - self.cam_top_threshold * height)
     y_max_valid = int(y_center + self.cam_bot_threshold * height)
-    self.get_logger().info(f"Thresholds for index {index}: y1={self.cam_top_threshold}, y2={self.cam_bot_threshold}")
-    self.get_logger().info(f"Cam center for index {index}: {self.cam_center}")
     
     for result in results:
       if result.masks is not None:
         for mask in result.masks.xy:
-          # Filter titik mask yang berada dalam area valid y
-          x1old = int(mask[:, 0].min())
-          x2old = int(mask[:, 0].max())
-          self.get_logger().info(f"Origin segment on index {index}: ({x1old},{x2old})")
           valid_points = mask[(mask[:, 1] >= y_min_valid) & (mask[:, 1] <= y_max_valid)]
           if valid_points.size > 0:
               # Hitung x1 dan x2 dari titik-titik valid tersebut
@@ -107,7 +100,6 @@ class YOLOSegnetNode(Node):
                   'conf': getattr(result, 'conf', None),  # contoh pengambilan confidence jika ada
                   'label': getattr(result, 'label', 'unknown')
               })
-              self.get_logger().info(f"Valid segment on index {index}: ({x1},{x2})")
 
     width = cv_image.shape[1]
     pixels_per_degree = width//60
@@ -134,6 +126,7 @@ class YOLOSegnetNode(Node):
     """Gabungkan dan tampilkan gambar dari semua kamera dengan hasil segmentasi."""
     if all(image is not None for image in self.images):
       try:
+        self.get_logger().info("Performing segmentation on collected images...")
         self.deg360 = [{'label': None, 'conf': 0}] * 360
         self.timestamp = time.time()
 
@@ -178,7 +171,7 @@ class YOLOSegnetNode(Node):
         msg_out = String()
         msg_out.data = json.dumps(payload)
         self.segmentation_publisher.publish(msg_out)
-        self.get_logger().info("Success processing inference!")
+        self.get_logger().info("Successfully performed segmentation!")
 
       except Exception as e:
         self.get_logger().error(f"Error: {e}")
