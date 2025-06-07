@@ -139,7 +139,7 @@ segmentation:
   ros__parameters:
     segmentation_model: "yolo11m-seg.pt" # Segmentation model you want to use
     cam_center: 30  # (int) The center point of camera to match LiDAR's yaw
-    view_p: 0.001   # ( % ) Camera vertical FoV treshold to match 2D LiDAR detection area
+    view_p: 0.001   # ( % ) Camera vertical FoV threshold to match 2D LiDAR detection area
     view_h: 0.001   # ( % ) Camera vertical FoV height to match 2D LiDAR detection area
 lidar_limiter:
   ros__parameters:
