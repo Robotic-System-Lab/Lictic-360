@@ -133,7 +133,19 @@ source install/setup.bash
 ```
 
 ## How To Run
-After all those setups, we can run the launch file:
+1. You can change some parameters used to launch the full project in `./src/lictic/config/[media].yaml`
+```
+segmentation:
+  ros__parameters:
+    segmentation_model: "yolo11m-seg.pt" # Segmentation model you want to use
+    cam_center: 30  # (int) The center point of camera to match LiDAR's yaw
+    view_p: 0.001   # ( % ) Camera vertical FoV treshold to match 2D LiDAR detection area
+    view_h: 0.001   # ( % ) Camera vertical FoV height to match 2D LiDAR detection area
+lidar_limiter:
+  ros__parameters:
+    maxrange: 1     # (int) LiDAR laser scan range limiter
+```
+2. Finally, we can run the launch file:
 ```bash
 # Using Gazebo Simulator
 ros2 launch lictic sim.launch.py
