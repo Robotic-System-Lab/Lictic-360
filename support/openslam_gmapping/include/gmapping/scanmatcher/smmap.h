@@ -19,6 +19,8 @@ struct PointAccumulator{
         inline void update(bool value, const Point& p=Point(0,0), int detected=0);
         inline void labelling(const Point& p=Point(0,0), int detected=0);
         inline int getLabel();
+        inline bool isActive();
+        inline void setInactive();
 	inline Point mean() const {return 1./n*Point(acc.x, acc.y);}
 	inline operator double() const { return visits?(double)n*SIGHT_INC/(double)visits:-1; }
 	inline void add(const PointAccumulator& p) {acc=acc+p.acc; n+=p.n; visits+=p.visits; }
@@ -26,12 +28,14 @@ struct PointAccumulator{
 	static PointAccumulator* unknown_ptr;
 	FloatPoint acc;
 	int n, visits, label = 0;
+	bool active = false;
 	inline double entropy() const;
 };
 
 void PointAccumulator::update(bool value, const Point& p, int detected){
 	if (value) {
 		// Assign Detected Value for Semantic Mapping
+		active = true;
 		label = detected;
 		acc.x+= static_cast<float>(p.x);
 		acc.y+= static_cast<float>(p.y); 
@@ -41,15 +45,23 @@ void PointAccumulator::update(bool value, const Point& p, int detected){
 		visits++;
 }
 
-void PointAccumulator::labelling( const Point& p, int detected){
-	label = detected;
-	acc.x+= static_cast<float>(p.x);
-	acc.y+= static_cast<float>(p.y); 
-	n++; 
-}
+// void PointAccumulator::labelling( const Point& p, int detected){
+// 	label = detected;
+// 	acc.x+= static_cast<float>(p.x);
+// 	acc.y+= static_cast<float>(p.y); 
+// 	n++; 
+// }
 
 int PointAccumulator::getLabel() {
 	return label;
+}
+
+bool PointAccumulator::isActive() {
+	return active;
+}
+
+void PointAccumulator::setInactive() {
+	active = false;
 }
 
 double PointAccumulator::entropy() const{

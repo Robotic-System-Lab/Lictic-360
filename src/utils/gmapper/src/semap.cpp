@@ -37,7 +37,7 @@ void SlamGmapping::init() {
     throttle_scans_ = 1;
     base_frame_ = "base_link";
     map_frame_ = "map";
-    odom_frame_ = "odom";
+    odom_frame_ = "odom_merged";
     transform_publish_period_ = 0.05;
 
     map_update_interval_ = tf2::durationFromSec(0.5);
@@ -598,6 +598,10 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
             }
             else if(occ > occ_thresh_)
             {
+                bool active = smap.cell(p).isActive();
+                if(!active) continue;
+                else smap.cell(p).setInactive();
+                
                 // `fill` will be 99 if the cell is unknown (no label)
                 int fill = label;
 
