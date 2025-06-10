@@ -25,7 +25,7 @@ struct PointAccumulator{
 	static const PointAccumulator& Unknown();
 	static PointAccumulator* unknown_ptr;
 	FloatPoint acc;
-	int n, visits, label = 100;
+	int n, visits, label = 0;
 	inline double entropy() const;
 };
 

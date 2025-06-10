@@ -48,12 +48,10 @@ ScanMatcher::ScanMatcher(): m_laserPose(0,0,0){
 */
 
    m_linePoints = new IntPoint[20000];
-   d_linePoints = new IntPoint[20000];
 }
 
 ScanMatcher::~ScanMatcher(){
 	delete [] m_linePoints;
-	delete [] d_linePoints;
 }
 
 void ScanMatcher::invalidateActiveArea(){
@@ -178,15 +176,11 @@ void ScanMatcher::computeActiveArea(ScanMatcherMap& map, const OrientedPoint& p,
 			//IntPoint linePoints[20000] ;
 			GridLineTraversalLine line;
 			line.points=m_linePoints;
-			line.points=d_linePoints;
 			GridLineTraversal::gridLine(p0, p1, &line);
 			for (int i=0; i<line.num_points-1; i++){
 				assert(map.isInside(m_linePoints[i]));
-				assert(map.isInside(d_linePoints[i]));
 				activeArea.insert(map.storage().patchIndexes(m_linePoints[i]));
-				activeArea.insert(map.storage().patchIndexes(d_linePoints[i]));
 				assert(m_linePoints[i].x>=0 && m_linePoints[i].y>=0);
-				assert(d_linePoints[i].x>=0 && d_linePoints[i].y>=0);
 			}
 			if (d<m_usableRange){
 				IntPoint cp=map.storage().patchIndexes(p1);
@@ -251,7 +245,7 @@ double ScanMatcher::registerScan(ScanMatcherMap& map, const OrientedPoint& p, co
 			for (int i=0; i<line.num_points-1; i++){
 				PointAccumulator& cell=map.cell(line.points[i]);
 				double e=-cell.entropy();
-				cell.update(false, Point(0,0),segnet[counter]);
+				cell.update(false,Point(0,0),0);
 				e+=cell.entropy();
 				esum+=e;
 				// double randomX = static_cast<double>(std::rand()) / RAND_MAX;

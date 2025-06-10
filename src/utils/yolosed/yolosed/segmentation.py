@@ -4,7 +4,7 @@ import rclpy
 from rclpy.node import Node
 from nav_msgs.msg import Odometry
 from sensor_msgs.msg import Image
-from std_msgs.msg import String
+from std_msgs.msg import String, Float64
 from cv_bridge import CvBridge
 from ultralytics import YOLO
 import cv2
@@ -13,6 +13,7 @@ import os
 import numpy as np
 from math import atan2, degrees
 from .hazard import hazard_lookup
+from sensor_msgs.msg import LaserScan
 
 class YOLOSegnetNode(Node):
   def __init__(self):
@@ -43,15 +44,9 @@ class YOLOSegnetNode(Node):
                 'conf': 0,
               }] * 360
     
-    self.robot_yaw = 0
-    self.subscription = self.create_subscription(
-        Odometry,
-        '/odom',
-        self.odom_callback,
-        10)
-    
     self.subscribers = []
-    self.segmentation_publisher = self.create_publisher(String, '/segnet', 10)
+    self.label_start_publisher = self.create_publisher(Float64, '/label_start', 10)
+    self.label_end_publisher = self.create_publisher(String, '/label_end', 10)
     for i in range(6):
       topic_name = f'/camera_{i + 1}/image_raw'
       self.subscribers.append(
@@ -63,16 +58,7 @@ class YOLOSegnetNode(Node):
         )
       )
     self.timer = self.create_timer(0.4, self.display_images)
-    
-  def odom_callback(self, msg: Odometry):
-      # Mengambil quaternion orientasi dari pesan Odometry
-      q = msg.pose.pose.orientation
-      # Menghitung yaw dari quaternion:
-      # yaw = arctan2(2*(w*z + x*y), 1 - 2*(y² + z²))
-      yaw_rad = atan2(2 * (q.w * q.z + q.x * q.y), 1 - 2 * (q.y * q.y + q.z * q.z))
-      yaw_deg = degrees(yaw_rad)
-      self.robot_yaw = int(yaw_deg % 360)
-
+  
   def image_callback(self, msg, index):
     cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
     self.images[index] = cv_image
@@ -91,9 +77,11 @@ class YOLOSegnetNode(Node):
           x1, _, x2, _ = xyxy
           class_id = box.cls.item()
           label_name = self.model.names[int(class_id)]
+          conf = box.conf.item()
+
           label_data.append({
             'label': hazard_lookup.get(label_name, 1),
-            'conf': box.conf.item(),
+            'conf': conf,
             'name': label_name,
           })
       if result.masks is not None:
@@ -118,7 +106,7 @@ class YOLOSegnetNode(Node):
     pixels_per_degree = width//60
     
     for data in segmentation_data:
-      self.get_logger().info(f"Collected data: {data['name']}")
+      # self.get_logger().info(f"Collected data: {data['name']}")
       if 'label' not in data:
         continue
       for degree in range(index*60, (index+1)*60):
@@ -142,10 +130,13 @@ class YOLOSegnetNode(Node):
     """Gabungkan dan tampilkan gambar dari semua kamera dengan hasil segmentasi."""
     if all(image is not None for image in self.images):
       try:
-        self.get_logger().info("Performing segmentation on collected images...")
-        self.deg360 = [{'label': None, 'conf': 0}] * 360
+        # self.get_logger().info("Performing segmentation on collected images...")
         self.timestamp = time.time()
-
+        label_start_msg = Float64()
+        label_start_msg.data = self.timestamp
+        self.label_start_publisher.publish(label_start_msg)
+        
+        self.deg360 = [{'label': None, 'conf': 0}] * 360
         collected_images = [self.segment_image(image, idx) for idx, image in enumerate(self.images)]
         resized_images = []
         target_height = 160
@@ -189,8 +180,8 @@ class YOLOSegnetNode(Node):
         ]
         reversed_detected = detected[::-1]
         translate_detected = [
-          (reversed_detected[((self.cam_center - self.robot_yaw) + i) % 360])
-          if reversed_detected[((self.cam_center - self.robot_yaw) + i) % 360] is not None else -1
+          (reversed_detected[((self.cam_center) + i) % 360])
+          if reversed_detected[((self.cam_center) + i) % 360] is not None else 99
           for i in range(360)
         ]
         payload = {
@@ -199,7 +190,7 @@ class YOLOSegnetNode(Node):
         }
         msg_out = String()
         msg_out.data = json.dumps(payload)
-        self.segmentation_publisher.publish(msg_out)
+        self.label_end_publisher.publish(msg_out)
         self.get_logger().info("Successfully performed segmentation!")
 
       except Exception as e:

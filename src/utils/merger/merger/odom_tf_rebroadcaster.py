@@ -18,6 +18,14 @@ class OdomTfRebroadcaster(Node):
         self.latest_base_scan_stamp = None
         self.timer = self.create_timer(0.1, self.br_footprint_to_baselink)  # 10 Hz
         self.timer = self.create_timer(0.1, self.br_baselink_to_basescan)  # 10 Hz
+        
+        self.temp_odom = Odometry()
+        self.temp_scan = LaserScan()
+    
+    def save_odom(self, msg: Odometry):
+        self.temp_odom = msg
+    def save_scan(self, msg: LaserScan):
+        self.temp_scan = msg
 
     def br_footprint_to_baselink(self):
         t = TransformStamped()

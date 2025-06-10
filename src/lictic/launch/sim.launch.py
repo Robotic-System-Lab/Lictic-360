@@ -22,7 +22,13 @@ def generate_launch_description():
     return LaunchDescription([
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(turtlebot3_launch),
-            launch_arguments={'gui': 'false'}.items(),
+            launch_arguments={'gui': 'true'}.items(),
+        ),
+        launch_ros.actions.Node(
+            package='merger',
+            executable='map',
+            name='map',
+            output='screen',
         ),
         launch_ros.actions.Node(
             package='yolosed',

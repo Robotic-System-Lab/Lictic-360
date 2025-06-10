@@ -85,22 +85,6 @@ void SlamGmapping::startLiveSlam() {
     scan_filter_->registerCallback(std::bind(&SlamGmapping::laserCallback, this, std::placeholders::_1));
     transform_thread_ = std::make_shared<std::thread>
             (std::bind(&SlamGmapping::publishLoop, this, transform_publish_period_));
-    segnet_sub_ = this->create_subscription<std_msgs::msg::String>(
-        "/segnet", rclcpp::SystemDefaultsQoS(),
-        std::bind(&SlamGmapping::segnetCallback, this, std::placeholders::_1)
-    );
-}
-
-void SlamGmapping::segnetCallback(const std_msgs::msg::String::SharedPtr msg)
-{
-    try {
-        nlohmann::json j = nlohmann::json::parse(msg->data);
-        segnetReads_.push_back(j);
-        RCLCPP_DEBUG(this->get_logger(), "Segnet JSON berhasil diparsing dan disimpan");
-    }
-    catch (nlohmann::json::parse_error &e) {
-        RCLCPP_ERROR(this->get_logger(), "JSON parse error: %s", e.what());
-    }
 }
 
 void SlamGmapping::publishLoop(double transform_publish_period){

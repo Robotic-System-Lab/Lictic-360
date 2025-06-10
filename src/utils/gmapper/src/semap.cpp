@@ -81,12 +81,12 @@ void SlamGmapping::startLiveSlam() {
     scan_filter_sub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::LaserScan>>
             (node_, "scan", rclcpp::SensorDataQoS().get_rmw_qos_profile());
     scan_filter_ = std::make_shared<tf2_ros::MessageFilter<sensor_msgs::msg::LaserScan>>
-            (*scan_filter_sub_, *buffer_, odom_frame_, 100, node_);
+            (*scan_filter_sub_, *buffer_, odom_frame_, 10, node_);
     scan_filter_->registerCallback(std::bind(&SlamGmapping::laserCallback, this, std::placeholders::_1));
     transform_thread_ = std::make_shared<std::thread>
             (std::bind(&SlamGmapping::publishLoop, this, transform_publish_period_));
     segnet_sub_ = this->create_subscription<std_msgs::msg::String>(
-        "/segnet", rclcpp::SystemDefaultsQoS(),
+        "/label", rclcpp::SystemDefaultsQoS(),
         std::bind(&SlamGmapping::segnetCallback, this, std::placeholders::_1)
     );
 }
@@ -98,7 +98,7 @@ void SlamGmapping::segnetCallback(const std_msgs::msg::String::SharedPtr msg)
         // Ekstrak timestamp dari pesan segnet (diasumsikan dalam satuan detik)
         double segnet_ts = j["timestamp"].get<double>();
         double scan_ts = last_scan_timestamp_.seconds();
-        const double MAX_TIMESTAMP_DIFF = 2; // ambang batas
+        const double MAX_TIMESTAMP_DIFF = 0.3; // ambang batas
 
         if (std::abs(segnet_ts - scan_ts) > MAX_TIMESTAMP_DIFF) {
             RCLCPP_WARN(this->get_logger(),
@@ -416,8 +416,40 @@ double SlamGmapping::computePoseEntropy()
 
 void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr scan)
 {
-    RCLCPP_WARN(this->get_logger(), "Updating map");
+    RCLCPP_WARN(this->get_logger(), "Trying to update the map");
     map_mutex_.lock();
+
+    GMapping::ScanMatcher matcher;
+
+    matcher.setLaserParameters(static_cast<unsigned int>(scan->ranges.size()), &(laser_angles_[0]),
+                               gsp_laser_->getPose());
+
+    GMapping::GridSlamProcessor::Particle best =
+            gsp_->getParticles()[gsp_->getBestParticleIndex()];
+            
+    // int average_launch_rotation = -1;
+    int rounded_theta = static_cast<int>(std::round(best.pose.theta * 180.0 / M_PI));
+    rounded_theta = ((rounded_theta % 360) + 360) % 360;
+
+    if (launch_pose_rotation.size() < 2) {
+        launch_pose_rotation.push_back(rounded_theta);
+        RCLCPP_WARN(this->get_logger(), "Odometry pose drift is still being collected, size: %zu", launch_pose_rotation.size());
+        map_mutex_.unlock();
+        return;
+    }
+    else if (average_launch_rotation == -1) {
+        RCLCPP_WARN(this->get_logger(), "Calculating average initial rotation from the last 50 elements");
+        // Calculate the average of the last 50 elements
+        int sum = 0;
+        for (size_t i = 0; i < launch_pose_rotation.size(); ++i) {
+            sum += launch_pose_rotation[i];
+        }
+        average_launch_rotation = sum / static_cast<int>(launch_pose_rotation.size());
+        RCLCPP_WARN(this->get_logger(), "Average initial rotation: %d", average_launch_rotation);
+    }
+    else {
+        RCLCPP_WARN(this->get_logger(), "Average initial rotation: %d", average_launch_rotation);
+    }
 
     if (segnetReads_.empty()) {
         RCLCPP_WARN(this->get_logger(), "No segmentation data, skipping..");
@@ -427,21 +459,15 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
     auto &segnetCheck = segnetReads_.back();
     if (!segnetCheck.contains("detected") || !segnetCheck["detected"].is_array() || segnetCheck["detected"].size() != 360) {
         RCLCPP_WARN(this->get_logger(), "Segmentation data is not valid, skipping..");
+        map_mutex_.unlock();
         return;
     }
 
-
-    GMapping::ScanMatcher matcher;
-
-    matcher.setLaserParameters(static_cast<unsigned int>(scan->ranges.size()), &(laser_angles_[0]),
-                               gsp_laser_->getPose());
 
     matcher.setlaserMaxRange(maxRange_);
     matcher.setusableRange(maxUrange_);
     matcher.setgenerateMap(true);
 
-    GMapping::GridSlamProcessor::Particle best =
-            gsp_->getParticles()[gsp_->getBestParticleIndex()];
     std_msgs::msg::Float64 entropy;
     entropy.data = computePoseEntropy();
     if(entropy.data > 0.0)
@@ -484,7 +510,24 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
         for (size_t i = 0; i < 360; ++i) {
             segnet_topic[i] = segnetCheck["detected"][i];
         }
-        matcher.registerScan(smap, n->pose, &((*n->reading)[0]), segnet_topic.data());
+
+        // std::rotate(segnet_topic.begin(),
+        //             segnet_topic.begin() + (360 - rounded_theta),
+        //             segnet_topic.end());
+
+        // std::array<int, 360> rotated_segnet_topic;
+        // for (size_t i = 0; i < 360; ++i) {
+        //     // Geser posisi sebanyak rounded_theta ke kiri secara sirkular.
+        //     rotated_segnet_topic[(i + rounded_theta) % 360] = segnet_topic[i];
+        // }
+
+        int shift = ((rounded_theta - average_launch_rotation) % 360 + 360) % 360;
+        std::array<int, 360> rotated_segnet_topic;
+        for (size_t i = 0; i < 360; ++i) {
+            rotated_segnet_topic[(i + shift) % 360] = segnet_topic[i];
+        }
+
+        matcher.registerScan(smap, n->pose, &((*n->reading)[0]), rotated_segnet_topic.data());
     }
 
     // the map may have expanded, so resize ros message as well
@@ -520,7 +563,7 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
         int totalCells = newWidth * newHeight;
         
         std::vector<std::array<int, label_error>> new_map_labels;
-        new_map_labels.resize(totalCells, {-1, -1, -1});
+        new_map_labels.resize(totalCells, {-1, -1});
         for (int x = 0; x < oldWidth; ++x) {
             for (int y = 0; y < oldHeight; ++y) {
                 int old_index = x + (oldWidth * y);
@@ -549,37 +592,66 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
             auto &map_labels_v = map_labels_[MAP_IDX(map_.info.width, x, y)];
             
             assert(occ <= 1.0);
-            if(occ < 0 && map_labels_v[0] == -1) {
+            if(occ < 0) {
             // if(occ < 0) {
                 map_.data[MAP_IDX(map_.info.width, x, y)] = -1;
             }
             else if(occ > occ_thresh_)
             {
                 // `fill` will be 99 if the cell is unknown (no label)
-                int fill = (label == -1) ? 99 : label;
-                if (fill == 99 && std::count(map_labels_v.begin(), map_labels_v.end(), 99) >= 0) {
-                    // Sudah ada 3 buah 99, tidak melakukan apa-apa
-                } else {
-                    for (auto &val : map_labels_v) {
-                        if (val == -1) {
-                            val = fill;
-                            break;
+                int fill = label;
+
+                // if (fill == 99 && std::count(map_labels_v.begin(), map_labels_v.end(), 99) >= 0) {
+                //     // Sudah ada 3 buah 99, tidak melakukan apa-apa
+                // } else {
+                //     for (auto &val : map_labels_v) {
+                //         if (val == -1) {
+                //             val = fill;
+                //             break;
+                //         }
+                //     }
+                // }
+                // auto it = std::max_element(map_labels_v.begin(), map_labels_v.end(), [](int a, int b) {
+                //     if(a == -1) return true;
+                //     if(b == -1) return false;
+                //     return a < b;
+                // });
+                // int modus = (it != map_labels_v.end() && *it != -1) ? *it : 99;
+                // map_.data[MAP_IDX(map_.info.width, x, y)] = modus;
+
+                if (fill > 0) {
+                    for (size_t loop=0; loop < 6; ++loop) {
+                        for (size_t i = 0; i < label_error - 1; ++i) {
+                            map_labels_v[i] = map_labels_v[i + 1];
                         }
                     }
                 }
-                auto it = std::max_element(map_labels_v.begin(), map_labels_v.end(), [](int a, int b) {
-                    if(a == -1) return true;
-                    if(b == -1) return false;
-                    return a < b;
-                });
-                int modus = (it != map_labels_v.end() && *it != -1) ? *it : 99;
-                map_.data[MAP_IDX(map_.info.width, x, y)] = modus;
+                else {
+                    for (size_t loop=0; loop < 3; ++loop) {
+                        for (size_t i = 0; i < label_error - 1; ++i) {
+                            map_labels_v[i] = map_labels_v[i + 1];
+                        }
+                    }
+                }
+                map_labels_v[label_error - 1] = fill;
+                int mode = fill;
+                int maxCount = 0;
+                std::unordered_map<int, int> freq;
+                for (const auto &val : map_labels_v) {
+                    freq[val]++;
+                    if (freq[val] > maxCount) {
+                        maxCount = freq[val];
+                        mode = val;
+                    }
+                }
+                // Isi map_.data dengan nilai modus
+                map_.data[MAP_IDX(map_.info.width, x, y)] = mode;
 
                 // int fill = (label == -1) ? 99 : label;
                 // map_.data[MAP_IDX(map_.info.width, x, y)] = fill;
             }
-            else if (map_labels_v[0] == -1){
-            // else {
+            // else if (map_labels_v[0] == -1){
+            else {
                 map_.data[MAP_IDX(map_.info.width, x, y)] = 0;
             }
         }

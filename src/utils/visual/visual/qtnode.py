@@ -66,16 +66,16 @@ class MainWindow(QMainWindow):
     self.scene = QGraphicsScene()
     self.grid_width = 40
     self.grid_height = 40
-    self.cell_size = 500 / self.grid_width
+    self.cell_size = 800 / self.grid_width
     self.generate_default_grid()
     self.view = GridView(self.scene)
-    self.view.setFixedSize(500, 500)
+    self.view.setFixedSize(800, 800)
     
     left_layout.addWidget(self.view)
     
     # Sidebar legenda
     sidebar = QWidget()
-    sidebar.setFixedSize(70, 500)
+    sidebar.setFixedSize(70, 800)
     sidebar_layout = QVBoxLayout(sidebar)
     sidebar_layout.setContentsMargins(5, 5, 5, 5)
     sidebar_layout.setSpacing(5)
@@ -104,7 +104,7 @@ class MainWindow(QMainWindow):
   
   def generate_default_grid(self):
     self.grid_data = [random.randint(0, 10) for _ in range(self.grid_width * self.grid_height)]
-    pixmap = QPixmap(500, 500)
+    pixmap = QPixmap(800, 800)
     pixmap.fill(Qt.lightGray)
     painter = QPainter(pixmap)
     painter.end()
@@ -112,13 +112,13 @@ class MainWindow(QMainWindow):
   
   # filepath: /home/lamp/workspaces/segnet/src/visual/visual/qtnode.py
   def redraw_grid(self):
-    print(f"Redrawing grid (500x500)")
+    print(f"Redrawing grid (800x800)")
 
     self.save_indexer += 1
     if self.save_indexer % 3 == 0:
       print(f"Saving grid {self.save_indexer}")
       self.save_indexer = 0
-      pixmap = QPixmap(500, 500)
+      pixmap = QPixmap(800, 800)
       pixmap.fill(Qt.lightGray)
       painter = QPainter(pixmap)
       for row in range(self.grid_height):
@@ -127,7 +127,8 @@ class MainWindow(QMainWindow):
               index = real_row * self.grid_width + col
               value = self.grid_data[index]
               if value == 99:
-                  color = QColor(50, 50, 50)
+                  # color = QColor(50, 50, 50)
+                  color = QColor('lightgray')
               elif value == -1:
                   color = QColor('darkgray')
               elif value == 0:
