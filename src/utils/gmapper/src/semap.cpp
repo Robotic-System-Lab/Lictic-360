@@ -35,7 +35,7 @@ void SlamGmapping::init() {
     got_map_ = false;
 
     throttle_scans_ = 1;
-    base_frame_ = "base_link";
+    base_frame_ = "base_merged";
     map_frame_ = "map";
     odom_frame_ = "odom_merged";
     transform_publish_period_ = 0.05;
@@ -96,17 +96,17 @@ void SlamGmapping::segnetCallback(const std_msgs::msg::String::SharedPtr msg)
     try {
         nlohmann::json j = nlohmann::json::parse(msg->data);
         // Ekstrak timestamp dari pesan segnet (diasumsikan dalam satuan detik)
-        double segnet_ts = j["timestamp"].get<double>();
-        double scan_ts = last_scan_timestamp_.seconds();
-        const double MAX_TIMESTAMP_DIFF = 0.3; // ambang batas
+        // double segnet_ts = j["timestamp"].get<double>();
+        // double scan_ts = last_scan_timestamp_.seconds();
+        // const double MAX_TIMESTAMP_DIFF = 0.3; // ambang batas
 
-        if (std::abs(segnet_ts - scan_ts) > MAX_TIMESTAMP_DIFF) {
-            RCLCPP_WARN(this->get_logger(),
-                        "Selisih timestamp terlalu jauh: segnet=%.3f, scan=%.3f",
-                        segnet_ts, scan_ts);
-            // Abaikan pesan segnet jika perbedaan terlalu tinggi
-            return;
-        }
+        // if (std::abs(segnet_ts - scan_ts) > MAX_TIMESTAMP_DIFF) {
+        //     RCLCPP_WARN(this->get_logger(),
+        //                 "Selisih timestamp terlalu jauh: segnet=%.3f, scan=%.3f",
+        //                 segnet_ts, scan_ts);
+        //     // Abaikan pesan segnet jika perbedaan terlalu tinggi
+        //     return;
+        // }
         segnetReads_.push_back(j);
         RCLCPP_DEBUG(this->get_logger(), "Segnet JSON berhasil diparsing dan disimpan");
     }

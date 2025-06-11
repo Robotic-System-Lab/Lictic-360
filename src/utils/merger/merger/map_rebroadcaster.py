@@ -11,18 +11,19 @@ class MapRebroadcasterNode(Node):
 	def __init__(self):
 		super().__init__('map_rebroadcaster')
 		self.br = tf2_ros.TransformBroadcaster(self)
-		self.latest_header_stamp = Float64()
+		self.static_br = tf2_ros.StaticTransformBroadcaster(self)
+		self.initialized_transform = False
   
 		self.declare_parameter('maxrange', 5.0)
   
-		self.scan_publisher = self.create_publisher(LaserScan, '/scan', 10)
 		self.odom_publisher = self.create_publisher(Odometry, '/odom_merged', 10)
+		self.scan_publisher = self.create_publisher(LaserScan, '/scan', 10)
 		self.label_publisher = self.create_publisher(String, '/label', 10)
   
 		self.create_subscription(Odometry, '/odom', self.callback_odom, 10)
 		self.create_subscription(LaserScan, '/velodyne_scan', self.callback_scan, 10)
 		self.create_subscription(Float64, '/label_start', self.callback_start, 10)
-		self.create_subscription(String, '/label_end', self.callback_all, 10)
+		self.create_subscription(String, '/label_end', self.callback_restart, 10)
 
 		self.base_foot_print = TransformStamped()
 		self.base_link = TransformStamped()
@@ -35,21 +36,87 @@ class MapRebroadcasterNode(Node):
 		self.temp_scan = LaserScan()
 		self.save_scan = LaserScan()
 		self.limited_scan = LaserScan()
+	
+	def init_merged_frames(self, msg: Odometry):
+		if not self.initialized_transform:
+			static_fp_to_merged_tf = TransformStamped()
+			static_fp_to_merged_tf.header.stamp = msg.header.stamp
+			static_fp_to_merged_tf.header.frame_id = 'base_footprint'
+			static_fp_to_merged_tf.child_frame_id = 'base_merged'
+			static_fp_to_merged_tf.transform.translation.x = msg.pose.pose.position.x
+			static_fp_to_merged_tf.transform.translation.y = msg.pose.pose.position.y
+			static_fp_to_merged_tf.transform.translation.z = msg.pose.pose.position.z
+			static_fp_to_merged_tf.transform.rotation.x = msg.pose.pose.orientation.x
+			static_fp_to_merged_tf.transform.rotation.y = msg.pose.pose.orientation.y
+			static_fp_to_merged_tf.transform.rotation.z = msg.pose.pose.orientation.z
+			static_fp_to_merged_tf.transform.rotation.w = msg.pose.pose.orientation.w
+   
+			static_merged_to_scan_tf = TransformStamped()
+			static_merged_to_scan_tf.header.stamp = msg.header.stamp
+			static_merged_to_scan_tf.header.frame_id = 'base_merged'
+			static_merged_to_scan_tf.child_frame_id = 'base_scan'
+			static_merged_to_scan_tf.transform.translation.x = msg.pose.pose.position.x
+			static_merged_to_scan_tf.transform.translation.y = msg.pose.pose.position.y
+			static_merged_to_scan_tf.transform.translation.z = msg.pose.pose.position.z
+			static_merged_to_scan_tf.transform.rotation.x = msg.pose.pose.orientation.x
+			static_merged_to_scan_tf.transform.rotation.y = msg.pose.pose.orientation.y
+			static_merged_to_scan_tf.transform.rotation.z = msg.pose.pose.orientation.z
+			static_merged_to_scan_tf.transform.rotation.w = msg.pose.pose.orientation.w
+
+			self.static_br.sendTransform([static_fp_to_merged_tf, static_merged_to_scan_tf])
+			self.initialized_transform = True
+			self.get_logger().warn('Static merged transform initialized.')
   
 	def callback_odom(self, msg: Odometry):
 		self.temp_odom = msg
+		self.init_merged_frames(msg=msg)
+  
+		self.save_odom.header.stamp = msg.header.stamp
+		self.odom_publisher.publish(self.save_odom)
+  
+  	#############################################
+  	#### odom_manipulation
+		tempdata = self.save_odom
+  	#############################################
+  	#### base_foot_print inherited from save_odom
+		self.trash_odom = TransformStamped()
+		self.trash_odom.header.stamp = msg.header.stamp
+		self.trash_odom.header.frame_id = 'odom'
+		self.trash_odom.child_frame_id = 'trash_footprint'
+		self.trash_odom.transform.translation.x = tempdata.pose.pose.position.x
+		self.trash_odom.transform.translation.y = tempdata.pose.pose.position.y
+		self.trash_odom.transform.translation.z = tempdata.pose.pose.position.z
+		self.trash_odom.transform.rotation = tempdata.pose.pose.orientation
+  	#############################################
+  	#### base_foot_print inherited from save_odom
+		self.odom_tf = TransformStamped()
+		self.odom_tf.header.stamp = msg.header.stamp
+		self.odom_tf.header.frame_id = 'odom_merged'
+		self.odom_tf.child_frame_id = 'base_footprint'
+		self.odom_tf.transform.translation.x = tempdata.pose.pose.position.x
+		self.odom_tf.transform.translation.y = tempdata.pose.pose.position.y
+		self.odom_tf.transform.translation.z = tempdata.pose.pose.position.z
+		self.odom_tf.transform.rotation = tempdata.pose.pose.orientation
+  
+  	#############################################
+  	#### all transform broadcasted
+		self.br.sendTransform(self.trash_odom)
+		self.br.sendTransform(self.odom_tf)
+  
 	def callback_scan(self, msg: LaserScan):
 		self.temp_scan = msg
+  
+		self.limited_scan.header.stamp = msg.header.stamp
+		self.scan_publisher.publish(self.limited_scan)
+  
 	def callback_start(self, msg: Float64):
   	#############################################
   	#### Segmentation Timestamp saved
 		timestamp = Time()
 		timestamp.sec = int(msg.data)
 		timestamp.nanosec = int((msg.data - int(msg.data)) * 1e9)
-		self.latest_header_stamp = timestamp
   	#############################################
   	#### Temp Data saved
-		self.odom_tf = TransformStamped()
 		self.save_odom = self.temp_odom
   
 		self.scan_tf = TransformStamped()
@@ -59,51 +126,12 @@ class MapRebroadcasterNode(Node):
   
   	#############################################
   	#### Odom saved
-		self.save_odom.header.stamp = self.latest_header_stamp
 		self.save_odom.header.frame_id = 'odom_merged'
 		self.save_odom.child_frame_id = 'base_footprint'
-		self.odom_tf.header.stamp = self.latest_header_stamp
-		self.odom_tf.header.frame_id = 'odom_merged'
-		self.odom_tf.child_frame_id = 'base_footprint'
-		self.odom_tf.transform.translation.x = self.save_odom.pose.pose.position.x
-		self.odom_tf.transform.translation.y = self.save_odom.pose.pose.position.y
-		self.odom_tf.transform.translation.z = self.save_odom.pose.pose.position.z
-		self.odom_tf.transform.rotation = self.save_odom.pose.pose.orientation
-		# self.br.sendTransform(self.odom_tf)
-  	#############################################
-   
-  	#############################################
-  	#### base_foot_print saved
-		self.base_foot_print = TransformStamped()
-		self.base_foot_print.header.stamp = self.latest_header_stamp
-		self.base_foot_print.header.frame_id = 'base_footprint'
-		self.base_foot_print.child_frame_id = 'base_link'
-		self.base_foot_print.transform.translation.x = self.save_odom.pose.pose.position.x
-		self.base_foot_print.transform.translation.y = self.save_odom.pose.pose.position.y
-		self.base_foot_print.transform.translation.z = self.save_odom.pose.pose.position.z
-		self.base_foot_print.transform.rotation = self.save_odom.pose.pose.orientation
-  	#############################################
-   
-  	#############################################
-  	#### base_link saved
-		self.base_link = TransformStamped()
-		self.base_link.header.stamp = self.latest_header_stamp
-		self.base_link.header.frame_id = 'base_footprint'
-		self.base_link.child_frame_id = 'base_link'
-		self.base_link.transform.translation.x = self.save_odom.pose.pose.position.x
-		self.base_link.transform.translation.y = self.save_odom.pose.pose.position.y
-		self.base_link.transform.translation.z = self.save_odom.pose.pose.position.z
-		self.base_link.transform.rotation = self.save_odom.pose.pose.orientation
-  	#############################################
   
   	#############################################
   	#### Scan saved
-		# self.scan_tf.header.stamp = self.latest_header_stamp
-		# self.scan_tf.header.frame_id = 'trash_scan'
-		# self.scan_tf.child_frame_id = 'trash_footprint'
-		# # self.br.sendTransform(scan_tf)
 		maxrange = self.get_parameter('maxrange').value
-		self.limited_scan.header.stamp = self.latest_header_stamp
 		self.limited_scan.header.frame_id = 'base_scan'
 		self.limited_scan.angle_min = self.save_scan.angle_min
 		self.limited_scan.angle_max = self.save_scan.angle_max
@@ -119,22 +147,12 @@ class MapRebroadcasterNode(Node):
 		# self.scan_publisher.publish(limited_scan)
   	#############################################
    
-   
-	def callback_all(self, msg: String):
+	def callback_restart(self, msg: String):
 		#############################################
 		#### Whole republish
 		label_msg = String()
 		label_msg.data = msg.data
 		self.label_publisher.publish(label_msg)
-  
-		self.odom_publisher.publish(self.save_odom)
-		self.br.sendTransform(self.odom_tf)
-  
-		self.br.sendTransform(self.base_foot_print)
-		self.br.sendTransform(self.base_link)
-  
-		self.scan_publisher.publish(self.limited_scan)
-		# self.br.sendTransform(self.scan_tf)
 
 def main(args=None):
 	rclpy.init(args=args)

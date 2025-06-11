@@ -26,18 +26,18 @@ class Watcher(Node):
 
 	def odom_callback(self, msg: Odometry):
 		timestamp = msg.header.stamp.sec + msg.header.stamp.nanosec / 1e9
-		self.get_logger().info(f'/odom_..: {timestamp}')
+		self.get_logger().info(f'/odom: -{timestamp}-')
  
 	def scan_callback(self, msg: LaserScan):
 		timestamp = msg.header.stamp.sec + msg.header.stamp.nanosec / 1e9
-		self.get_logger().info(f'/scan: {timestamp}')
+		self.get_logger().info(f'/scan: [{timestamp}]')
 
 	def label_callback(self, msg: String):
 		try:
 			data = json.loads(msg.data)
 			if 'timestamp' in data:
 				timestamp = data['timestamp']
-				self.get_logger().info(f'/label: {timestamp}')
+				# self.get_logger().info(f'/label: {timestamp}')
 			else:
 				self.get_logger().warn('Key "timestamp" not found in JSON data.')
 		except json.JSONDecodeError:
