@@ -23,6 +23,7 @@ setup(
             'tkinter = visual.tknode:main', # Visualize Segmentation
             'kivy = visual.kvnode:main', # Visualize Segmentation with Kivy
             'qt = visual.qtnode:main', # Visualize Segmentation with QT
+            'vid = visual.qtvid:main', # Convert PNGs to MP4 with QT
         ],
     },
 )
