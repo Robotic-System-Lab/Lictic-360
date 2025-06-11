@@ -127,8 +127,8 @@ class MainWindow(QMainWindow):
               index = real_row * self.grid_width + col
               value = self.grid_data[index]
               if value == 99:
-                  # color = QColor(50, 50, 50)
-                  color = QColor('lightgray')
+                  color = QColor(50, 50, 50)
+                  # color = QColor('lightgray')
               elif value == -1:
                   color = QColor('darkgray')
               elif value == 0:
