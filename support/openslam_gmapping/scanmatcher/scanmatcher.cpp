@@ -213,7 +213,7 @@ void ScanMatcher::computeActiveArea(ScanMatcherMap& map, const OrientedPoint& p,
 }
 
 // double ScanMatcher::registerScan(ScanMatcherMap& map, const OrientedPoint& p, const double* readings){
-double ScanMatcher::registerScan(ScanMatcherMap& map, const OrientedPoint& p, const double* readings, const int* segnet){
+double ScanMatcher::registerScan(ScanMatcherMap& map, const OrientedPoint& p, const double* readings, const std::vector<int>& labelReads_){
 	if (!m_activeAreaComputed)
 		computeActiveArea(map, p, readings);
 		
@@ -230,6 +230,10 @@ double ScanMatcher::registerScan(ScanMatcherMap& map, const OrientedPoint& p, co
 	const double * angle=m_laserAngles+m_initialBeamsSkip;
 	double esum=0;
 	int counter = 0;
+	// cout << "====================================" << endl;
+	// cout << "labelReads_=========================" << labelReads_[0] << endl;
+	// cout << "labelReads_=========================" << labelReads_[359] << endl;
+	// cout << "====================================" << endl;
 	for (const double* r=readings+m_initialBeamsSkip; r<readings+m_laserBeams; r++, angle++) {
 		if (m_generateMap){
 			double d=*r;
@@ -255,7 +259,7 @@ double ScanMatcher::registerScan(ScanMatcherMap& map, const OrientedPoint& p, co
 			}
 			if (d<m_usableRange){
 				double e=-map.cell(p1).entropy();
-				map.cell(p1).update(true,phit,segnet[counter]);
+				map.cell(p1).update(true,phit,labelReads_[counter]);
 				e+=map.cell(p1).entropy();
 				esum+=e;
 			}
@@ -270,18 +274,6 @@ double ScanMatcher::registerScan(ScanMatcherMap& map, const OrientedPoint& p, co
 		}
 		counter++;
 	}
-
-	// for (const double* r=readings+m_initialBeamsSkip; r<readings+m_laserBeams; r++, angle++) {
-	// 	if (m_generateMap){
-	// 		double d=*r;
-	// 		if (d>m_usableRange)
-	// 			d=m_usableRange;
-	// 		Point phit=lp+Point(d*cos(lp.theta+*angle),d*sin(lp.theta+*angle));
-	// 		IntPoint p1=map.world2map(phit);
-	// 		map.cell(p1).labelling(phit,segnet[counter]);
-	// 	}
-	// }
-	//cout  << "informationGain=" << -esum << endl;
 	return esum;
 }
 

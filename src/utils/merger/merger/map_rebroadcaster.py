@@ -24,6 +24,8 @@ class MapRebroadcasterNode(Node):
 		self.create_subscription(LaserScan, '/velodyne_scan', self.callback_scan, 10)
 		self.create_subscription(Float64, '/label_start', self.callback_start, 10)
 		self.create_subscription(String, '/label_end', self.callback_restart, 10)
+  
+		self.latest_stamp = None
 
 		self.base_foot_print = TransformStamped()
 		self.base_link = TransformStamped()
@@ -41,58 +43,64 @@ class MapRebroadcasterNode(Node):
 		if not self.initialized_transform:
 			static_fp_to_merged_tf = TransformStamped()
 			static_fp_to_merged_tf.header.stamp = msg.header.stamp
-			static_fp_to_merged_tf.header.frame_id = 'base_footprint'
-			static_fp_to_merged_tf.child_frame_id = 'base_merged'
-			static_fp_to_merged_tf.transform.translation.x = msg.pose.pose.position.x
-			static_fp_to_merged_tf.transform.translation.y = msg.pose.pose.position.y
-			static_fp_to_merged_tf.transform.translation.z = msg.pose.pose.position.z
-			static_fp_to_merged_tf.transform.rotation.x = msg.pose.pose.orientation.x
-			static_fp_to_merged_tf.transform.rotation.y = msg.pose.pose.orientation.y
-			static_fp_to_merged_tf.transform.rotation.z = msg.pose.pose.orientation.z
-			static_fp_to_merged_tf.transform.rotation.w = msg.pose.pose.orientation.w
+			static_fp_to_merged_tf.header.frame_id = 'lictic_footprint'
+			static_fp_to_merged_tf.child_frame_id = 'lictic_link'
+			static_fp_to_merged_tf.transform.translation.x = 0.0
+			static_fp_to_merged_tf.transform.translation.y = 0.0
+			static_fp_to_merged_tf.transform.translation.z = 0.0
+			static_fp_to_merged_tf.transform.rotation.x = 0.0
+			static_fp_to_merged_tf.transform.rotation.y = 0.0
+			static_fp_to_merged_tf.transform.rotation.z = 0.0
+			static_fp_to_merged_tf.transform.rotation.w = 1.0
+			# static_fp_to_merged_tf.transform.translation.x = msg.pose.pose.position.x
+			# static_fp_to_merged_tf.transform.translation.y = msg.pose.pose.position.y
+			# static_fp_to_merged_tf.transform.translation.z = msg.pose.pose.position.z
+			# static_fp_to_merged_tf.transform.rotation.x = msg.pose.pose.orientation.x
+			# static_fp_to_merged_tf.transform.rotation.y = msg.pose.pose.orientation.y
+			# static_fp_to_merged_tf.transform.rotation.z = msg.pose.pose.orientation.z
+			# static_fp_to_merged_tf.transform.rotation.w = msg.pose.pose.orientation.w
    
 			static_merged_to_scan_tf = TransformStamped()
 			static_merged_to_scan_tf.header.stamp = msg.header.stamp
-			static_merged_to_scan_tf.header.frame_id = 'base_merged'
-			static_merged_to_scan_tf.child_frame_id = 'base_scan'
-			static_merged_to_scan_tf.transform.translation.x = msg.pose.pose.position.x
-			static_merged_to_scan_tf.transform.translation.y = msg.pose.pose.position.y
-			static_merged_to_scan_tf.transform.translation.z = msg.pose.pose.position.z
-			static_merged_to_scan_tf.transform.rotation.x = msg.pose.pose.orientation.x
-			static_merged_to_scan_tf.transform.rotation.y = msg.pose.pose.orientation.y
-			static_merged_to_scan_tf.transform.rotation.z = msg.pose.pose.orientation.z
-			static_merged_to_scan_tf.transform.rotation.w = msg.pose.pose.orientation.w
+			static_merged_to_scan_tf.header.frame_id = 'lictic_link'
+			static_merged_to_scan_tf.child_frame_id = 'lictic_scan'
+			static_merged_to_scan_tf.transform.translation.x = 0.0
+			static_merged_to_scan_tf.transform.translation.y = 0.0
+			static_merged_to_scan_tf.transform.translation.z = 0.0
+			static_merged_to_scan_tf.transform.rotation.x = 0.0
+			static_merged_to_scan_tf.transform.rotation.y = 0.0
+			static_merged_to_scan_tf.transform.rotation.z = 0.0
+			static_merged_to_scan_tf.transform.rotation.w = 1.0
+			# static_merged_to_scan_tf.transform.translation.x = msg.pose.pose.position.x
+			# static_merged_to_scan_tf.transform.translation.y = msg.pose.pose.position.y
+			# static_merged_to_scan_tf.transform.translation.z = msg.pose.pose.position.z
+			# static_merged_to_scan_tf.transform.rotation.x = msg.pose.pose.orientation.x
+			# static_merged_to_scan_tf.transform.rotation.y = msg.pose.pose.orientation.y
+			# static_merged_to_scan_tf.transform.rotation.z = msg.pose.pose.orientation.z
+			# static_merged_to_scan_tf.transform.rotation.w = msg.pose.pose.orientation.w
 
 			self.static_br.sendTransform([static_fp_to_merged_tf, static_merged_to_scan_tf])
 			self.initialized_transform = True
 			self.get_logger().warn('Static merged transform initialized.')
   
 	def callback_odom(self, msg: Odometry):
+		self.latest_stamp = self.get_clock().now().to_msg()
+  
 		self.temp_odom = msg
 		self.init_merged_frames(msg=msg)
   
-		self.save_odom.header.stamp = msg.header.stamp
+		self.save_odom.header.stamp = self.latest_stamp
 		self.odom_publisher.publish(self.save_odom)
   
   	#############################################
   	#### odom_manipulation
 		tempdata = self.save_odom
   	#############################################
-  	#### base_foot_print inherited from save_odom
-		self.trash_odom = TransformStamped()
-		self.trash_odom.header.stamp = msg.header.stamp
-		self.trash_odom.header.frame_id = 'odom'
-		self.trash_odom.child_frame_id = 'trash_footprint'
-		self.trash_odom.transform.translation.x = tempdata.pose.pose.position.x
-		self.trash_odom.transform.translation.y = tempdata.pose.pose.position.y
-		self.trash_odom.transform.translation.z = tempdata.pose.pose.position.z
-		self.trash_odom.transform.rotation = tempdata.pose.pose.orientation
-  	#############################################
-  	#### base_foot_print inherited from save_odom
+  	#### odom_tf inherited from save_odom
 		self.odom_tf = TransformStamped()
-		self.odom_tf.header.stamp = msg.header.stamp
-		self.odom_tf.header.frame_id = 'odom_merged'
-		self.odom_tf.child_frame_id = 'base_footprint'
+		self.odom_tf.header.stamp = self.latest_stamp
+		self.odom_tf.header.frame_id = 'lictic_odom'
+		self.odom_tf.child_frame_id = 'lictic_footprint'
 		self.odom_tf.transform.translation.x = tempdata.pose.pose.position.x
 		self.odom_tf.transform.translation.y = tempdata.pose.pose.position.y
 		self.odom_tf.transform.translation.z = tempdata.pose.pose.position.z
@@ -100,14 +108,14 @@ class MapRebroadcasterNode(Node):
   
   	#############################################
   	#### all transform broadcasted
-		self.br.sendTransform(self.trash_odom)
 		self.br.sendTransform(self.odom_tf)
   
 	def callback_scan(self, msg: LaserScan):
 		self.temp_scan = msg
-  
-		self.limited_scan.header.stamp = msg.header.stamp
-		self.scan_publisher.publish(self.limited_scan)
+
+		if (self.latest_stamp is not None):
+			self.limited_scan.header.stamp = self.latest_stamp
+			self.scan_publisher.publish(self.limited_scan)
   
 	def callback_start(self, msg: Float64):
   	#############################################
@@ -132,7 +140,7 @@ class MapRebroadcasterNode(Node):
   	#############################################
   	#### Scan saved
 		maxrange = self.get_parameter('maxrange').value
-		self.limited_scan.header.frame_id = 'base_scan'
+		self.limited_scan.header.frame_id = 'lictic_scan'
 		self.limited_scan.angle_min = self.save_scan.angle_min
 		self.limited_scan.angle_max = self.save_scan.angle_max
 		self.limited_scan.angle_increment = self.save_scan.angle_increment

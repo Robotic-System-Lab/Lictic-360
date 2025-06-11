@@ -1,0 +1,1 @@
+cd ~/workspaces/segnet/support/openslam_gmapping/build && sudo make uninstall && rm -rf * && cmake .. && sudo make install && cd ~/workspaces/segnet && colcon build --packages-select gmapper && source install/setup.bash && ros2 run gmapper semap

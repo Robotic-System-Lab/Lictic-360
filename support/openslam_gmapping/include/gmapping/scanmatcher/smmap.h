@@ -35,8 +35,10 @@ struct PointAccumulator{
 void PointAccumulator::update(bool value, const Point& p, int detected){
 	if (value) {
 		// Assign Detected Value for Semantic Mapping
-		active = true;
 		label = detected;
+		if (detected >= 1 && detected <= 10) {
+			active = true;
+		}
 		acc.x+= static_cast<float>(p.x);
 		acc.y+= static_cast<float>(p.y); 
 		n++; 

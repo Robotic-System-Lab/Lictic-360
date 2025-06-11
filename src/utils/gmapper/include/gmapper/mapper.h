@@ -45,7 +45,7 @@ private:
     rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr entropy_publisher_;
     rclcpp::Publisher<nav_msgs::msg::OccupancyGrid>::SharedPtr sst_;
     rclcpp::Publisher<nav_msgs::msg::MapMetaData>::SharedPtr sstm_;
-    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr segnet_sub_;
+    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr label_sub_;
 
     std::shared_ptr<tf2_ros::Buffer> buffer_;
     std::shared_ptr<tf2_ros::TransformListener> tfl_;
@@ -53,7 +53,9 @@ private:
     std::shared_ptr<message_filters::Subscriber<sensor_msgs::msg::LaserScan>> scan_filter_sub_;
     std::shared_ptr<tf2_ros::MessageFilter<sensor_msgs::msg::LaserScan >> scan_filter_;
     std::shared_ptr<tf2_ros::TransformBroadcaster> tfB_;
-    std::vector<nlohmann::json> segnetReads_;
+    std::vector<nlohmann::json> labelJSON_;
+    std::vector<int> labelReads_;
+    std::vector<std::vector<int>> labelReadsCollection_;
     
     GMapping::GridSlamProcessor* gsp_;
     GMapping::RangeSensor* gsp_laser_;
@@ -94,7 +96,7 @@ private:
     std::string map_frame_;
     std::string odom_frame_;
 
-    void segnetCallback(const std_msgs::msg::String::SharedPtr msg);
+    void labelCallback(const std_msgs::msg::String::SharedPtr msg);
     void updateMap(sensor_msgs::msg::LaserScan::ConstSharedPtr scan);
     bool getOdomPose(GMapping::OrientedPoint& gmap_pose, const rclcpp::Time& t);
     bool initMapper(sensor_msgs::msg::LaserScan::ConstSharedPtr scan);

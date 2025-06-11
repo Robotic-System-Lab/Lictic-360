@@ -35,9 +35,9 @@ void SlamGmapping::init() {
     got_map_ = false;
 
     throttle_scans_ = 1;
-    base_frame_ = "base_merged";
+    base_frame_ = "lictic_link";
     map_frame_ = "map";
-    odom_frame_ = "odom_merged";
+    odom_frame_ = "lictic_odom";
     transform_publish_period_ = 0.05;
 
     map_update_interval_ = tf2::durationFromSec(0.5);
@@ -85,30 +85,18 @@ void SlamGmapping::startLiveSlam() {
     scan_filter_->registerCallback(std::bind(&SlamGmapping::laserCallback, this, std::placeholders::_1));
     transform_thread_ = std::make_shared<std::thread>
             (std::bind(&SlamGmapping::publishLoop, this, transform_publish_period_));
-    segnet_sub_ = this->create_subscription<std_msgs::msg::String>(
+    label_sub_ = this->create_subscription<std_msgs::msg::String>(
         "/label", rclcpp::SystemDefaultsQoS(),
-        std::bind(&SlamGmapping::segnetCallback, this, std::placeholders::_1)
+        std::bind(&SlamGmapping::labelCallback, this, std::placeholders::_1)
     );
 }
 
-void SlamGmapping::segnetCallback(const std_msgs::msg::String::SharedPtr msg)
+void SlamGmapping::labelCallback(const std_msgs::msg::String::SharedPtr msg)
 {
     try {
         nlohmann::json j = nlohmann::json::parse(msg->data);
-        // Ekstrak timestamp dari pesan segnet (diasumsikan dalam satuan detik)
-        // double segnet_ts = j["timestamp"].get<double>();
-        // double scan_ts = last_scan_timestamp_.seconds();
-        // const double MAX_TIMESTAMP_DIFF = 0.3; // ambang batas
-
-        // if (std::abs(segnet_ts - scan_ts) > MAX_TIMESTAMP_DIFF) {
-        //     RCLCPP_WARN(this->get_logger(),
-        //                 "Selisih timestamp terlalu jauh: segnet=%.3f, scan=%.3f",
-        //                 segnet_ts, scan_ts);
-        //     // Abaikan pesan segnet jika perbedaan terlalu tinggi
-        //     return;
-        // }
-        segnetReads_.push_back(j);
-        RCLCPP_DEBUG(this->get_logger(), "Segnet JSON berhasil diparsing dan disimpan");
+        labelJSON_.push_back(j);
+        RCLCPP_DEBUG(this->get_logger(), "labelJSON berhasil diparsing dan disimpan");
     }
     catch (nlohmann::json::parse_error &e) {
         RCLCPP_ERROR(this->get_logger(), "JSON parse error: %s", e.what());
@@ -430,14 +418,16 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
     // int average_launch_rotation = -1;
     int rounded_theta = static_cast<int>(std::round(best.pose.theta * 180.0 / M_PI));
     rounded_theta = ((rounded_theta % 360) + 360) % 360;
+    RCLCPP_WARN(this->get_logger(), "Robot view angle: %d degrees", rounded_theta);
 
     if (launch_pose_rotation.size() < 2) {
         launch_pose_rotation.push_back(rounded_theta);
         RCLCPP_WARN(this->get_logger(), "Odometry pose drift is still being collected, size: %zu", launch_pose_rotation.size());
         map_mutex_.unlock();
+        labelReadsCollection_.push_back(std::vector<int>(360));
         return;
     }
-    else if (average_launch_rotation == -1) {
+    else {
         RCLCPP_WARN(this->get_logger(), "Calculating average initial rotation from the last 50 elements");
         // Calculate the average of the last 50 elements
         int sum = 0;
@@ -445,24 +435,33 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
             sum += launch_pose_rotation[i];
         }
         average_launch_rotation = sum / static_cast<int>(launch_pose_rotation.size());
-        RCLCPP_WARN(this->get_logger(), "Average initial rotation: %d", average_launch_rotation);
     }
-    else {
-        RCLCPP_WARN(this->get_logger(), "Average initial rotation: %d", average_launch_rotation);
-    }
+    RCLCPP_WARN(this->get_logger(), "Average initial rotation: %d", average_launch_rotation);
 
-    if (segnetReads_.empty()) {
+    if (labelJSON_.empty()) {
         RCLCPP_WARN(this->get_logger(), "No segmentation data, skipping..");
         map_mutex_.unlock();
+        labelReadsCollection_.push_back(std::vector<int>(360));
         return;
     }
-    auto &segnetCheck = segnetReads_.back();
-    if (!segnetCheck.contains("detected") || !segnetCheck["detected"].is_array() || segnetCheck["detected"].size() != 360) {
+    auto &labelCheck = labelJSON_.back();
+    if (!labelCheck.contains("detected") || !labelCheck["detected"].is_array() || labelCheck["detected"].size() != 360) {
         RCLCPP_WARN(this->get_logger(), "Segmentation data is not valid, skipping..");
         map_mutex_.unlock();
+        labelReadsCollection_.push_back(std::vector<int>(360));
         return;
     }
 
+    // Segmentation data shifting based on the robot's quaternion
+    // We assume that the label data is in the same order as the laser scan
+    // and that it is 360 elements long, corresponding to the 360 degrees of the laser scan.
+    labelReads_ = labelCheck["detected"].get<std::vector<int>>();
+    int shift = ((rounded_theta - average_launch_rotation) % 360 + 360) % 360;
+    std::vector<int> rotated_labelReads(360);
+    for (size_t i = 0; i < 360; ++i) {
+        rotated_labelReads[(i + shift) % 360] = labelReads_[i];
+    }
+    labelReadsCollection_.push_back(rotated_labelReads);
 
     matcher.setlaserMaxRange(maxRange_);
     matcher.setusableRange(maxUrange_);
@@ -491,6 +490,8 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
     GMapping::ScanMatcherMap smap(center, xmin_, ymin_, xmax_, ymax_,
                                   delta_);
 
+    int indexer = 0;
+    int collection_length = static_cast<int>(labelReadsCollection_.size());
     RCLCPP_DEBUG(this->get_logger(), "Trajectory tree:");
     for(GMapping::GridSlamProcessor::TNode* n = best.node; n; n = n->parent)
     {
@@ -503,32 +504,15 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
             RCLCPP_DEBUG(this->get_logger(), "Reading is NULL");
             continue;
         }
+        indexer++;
         matcher.invalidateActiveArea();
         matcher.computeActiveArea(smap, n->pose, &((*n->reading)[0]));
-        
-        std::array<int, 360> segnet_topic;
-        for (size_t i = 0; i < 360; ++i) {
-            segnet_topic[i] = segnetCheck["detected"][i];
-        }
-
-        // std::rotate(segnet_topic.begin(),
-        //             segnet_topic.begin() + (360 - rounded_theta),
-        //             segnet_topic.end());
-
-        // std::array<int, 360> rotated_segnet_topic;
-        // for (size_t i = 0; i < 360; ++i) {
-        //     // Geser posisi sebanyak rounded_theta ke kiri secara sirkular.
-        //     rotated_segnet_topic[(i + rounded_theta) % 360] = segnet_topic[i];
-        // }
-
-        int shift = ((rounded_theta - average_launch_rotation) % 360 + 360) % 360;
-        std::array<int, 360> rotated_segnet_topic;
-        for (size_t i = 0; i < 360; ++i) {
-            rotated_segnet_topic[(i + shift) % 360] = segnet_topic[i];
-        }
-
-        matcher.registerScan(smap, n->pose, &((*n->reading)[0]), rotated_segnet_topic.data());
+        matcher.registerScan(smap, n->pose, &((*n->reading)[0]), labelReadsCollection_[collection_length - indexer]);
     }
+    RCLCPP_WARN(this->get_logger(), "============================");
+    RCLCPP_WARN(this->get_logger(), "===========valid nodes: %d", indexer);
+    RCLCPP_WARN(this->get_logger(), "===========total label: %d", collection_length);
+    RCLCPP_WARN(this->get_logger(), "============================");
 
     // the map may have expanded, so resize ros message as well
     if(map_.info.width != (unsigned int) smap.getMapSizeX() || map_.info.height != (unsigned int) smap.getMapSizeY()) {
@@ -539,11 +523,6 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
         GMapping::Point wmax = smap.map2world(GMapping::IntPoint(smap.getMapSizeX(), smap.getMapSizeY()));
         xmin_ = wmin.x; ymin_ = wmin.y;
         xmax_ = wmax.x; ymax_ = wmax.y;
-
-        RCLCPP_WARN(this->get_logger(), "Map size changed from (%d, %d) to (%d, %d)",
-                    map_.info.width, map_.info.height,
-                    smap.getMapSizeX(), smap.getMapSizeY());
-        RCLCPP_WARN(this->get_logger(), "Resizing label map ...");
                   
         int oldWidth = map_.info.width;
         int oldHeight = map_.info.height;
@@ -563,7 +542,7 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
         int totalCells = newWidth * newHeight;
         
         std::vector<std::array<int, label_error>> new_map_labels;
-        new_map_labels.resize(totalCells, {-1, -1});
+        new_map_labels.resize(totalCells, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1});
         for (int x = 0; x < oldWidth; ++x) {
             for (int y = 0; y < oldHeight; ++y) {
                 int old_index = x + (oldWidth * y);
@@ -576,11 +555,9 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
         }
         map_labels_.swap(new_map_labels);
         // map_labels_.resize(map_.info.width * map_.info.height, {-1, -1, -1});
-
-        RCLCPP_WARN(this->get_logger(), "Successfully resized label map to (%d, %d)",
-                    map_.info.width, map_.info.height);
     }
 
+    int active_cells = 0;
     for(int x=0; x < smap.getMapSizeX(); x++)
     {
         for(int y=0; y < smap.getMapSizeY(); y++)
@@ -599,8 +576,11 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
             else if(occ > occ_thresh_)
             {
                 bool active = smap.cell(p).isActive();
-                if(!active) continue;
-                else smap.cell(p).setInactive();
+                if(!active) {
+                    active_cells++;
+                    continue;
+                }
+                smap.cell(p).setInactive();
                 
                 // `fill` will be 99 if the cell is unknown (no label)
                 int fill = label;
@@ -669,7 +649,6 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
     sst_->publish(map_);
     sstm_->publish(map_.info);
 
-    segnetReads_.clear();
     map_mutex_.unlock();
     RCLCPP_WARN(this->get_logger(), "Updated map successfully!");
 }
