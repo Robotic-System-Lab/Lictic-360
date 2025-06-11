@@ -575,13 +575,6 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
             }
             else if(occ > occ_thresh_)
             {
-                bool active = smap.cell(p).isActive();
-                if(!active) {
-                    active_cells++;
-                    continue;
-                }
-                smap.cell(p).setInactive();
-                
                 // `fill` will be 99 if the cell is unknown (no label)
                 int fill = label;
 
