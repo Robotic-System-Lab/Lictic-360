@@ -52,13 +52,6 @@ class MapRebroadcasterNode(Node):
 			static_fp_to_merged_tf.transform.rotation.y = 0.0
 			static_fp_to_merged_tf.transform.rotation.z = 0.0
 			static_fp_to_merged_tf.transform.rotation.w = 1.0
-			# static_fp_to_merged_tf.transform.translation.x = msg.pose.pose.position.x
-			# static_fp_to_merged_tf.transform.translation.y = msg.pose.pose.position.y
-			# static_fp_to_merged_tf.transform.translation.z = msg.pose.pose.position.z
-			# static_fp_to_merged_tf.transform.rotation.x = msg.pose.pose.orientation.x
-			# static_fp_to_merged_tf.transform.rotation.y = msg.pose.pose.orientation.y
-			# static_fp_to_merged_tf.transform.rotation.z = msg.pose.pose.orientation.z
-			# static_fp_to_merged_tf.transform.rotation.w = msg.pose.pose.orientation.w
    
 			static_merged_to_scan_tf = TransformStamped()
 			static_merged_to_scan_tf.header.stamp = msg.header.stamp
@@ -71,13 +64,6 @@ class MapRebroadcasterNode(Node):
 			static_merged_to_scan_tf.transform.rotation.y = 0.0
 			static_merged_to_scan_tf.transform.rotation.z = 0.0
 			static_merged_to_scan_tf.transform.rotation.w = 1.0
-			# static_merged_to_scan_tf.transform.translation.x = msg.pose.pose.position.x
-			# static_merged_to_scan_tf.transform.translation.y = msg.pose.pose.position.y
-			# static_merged_to_scan_tf.transform.translation.z = msg.pose.pose.position.z
-			# static_merged_to_scan_tf.transform.rotation.x = msg.pose.pose.orientation.x
-			# static_merged_to_scan_tf.transform.rotation.y = msg.pose.pose.orientation.y
-			# static_merged_to_scan_tf.transform.rotation.z = msg.pose.pose.orientation.z
-			# static_merged_to_scan_tf.transform.rotation.w = msg.pose.pose.orientation.w
 
 			self.static_br.sendTransform([static_fp_to_merged_tf, static_merged_to_scan_tf])
 			self.initialized_transform = True
