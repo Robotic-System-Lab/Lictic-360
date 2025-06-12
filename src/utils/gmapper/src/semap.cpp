@@ -535,25 +535,25 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
         map_.info.origin.position.y = ymin_;
         map_.data.resize(map_.info.width * map_.info.height);
 
-        int cell_offset_x = std::round((old_origin_x - xmin_) / map_.info.resolution);
-        int cell_offset_y = std::round((old_origin_y - ymin_) / map_.info.resolution);
-        int newWidth = map_.info.width;
-        int newHeight = map_.info.height;
-        int totalCells = newWidth * newHeight;
+        // int cell_offset_x = std::round((old_origin_x - xmin_) / map_.info.resolution);
+        // int cell_offset_y = std::round((old_origin_y - ymin_) / map_.info.resolution);
+        // int newWidth = map_.info.width;
+        // int newHeight = map_.info.height;
+        // int totalCells = newWidth * newHeight;
         
-        std::vector<std::array<int, label_error>> new_map_labels;
-        new_map_labels.resize(totalCells, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1});
-        for (int x = 0; x < oldWidth; ++x) {
-            for (int y = 0; y < oldHeight; ++y) {
-                int old_index = x + (oldWidth * y);
-                int new_index = (x + cell_offset_x) + newWidth * (y + cell_offset_y);
-                if(new_index < 0 || new_index >= totalCells) {
-                    continue;
-                }
-                new_map_labels[new_index] = map_labels_[old_index];
-            }
-        }
-        map_labels_.swap(new_map_labels);
+        // std::vector<std::array<int, label_error>> new_map_labels;
+        // new_map_labels.resize(totalCells, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1});
+        // for (int x = 0; x < oldWidth; ++x) {
+        //     for (int y = 0; y < oldHeight; ++y) {
+        //         int old_index = x + (oldWidth * y);
+        //         int new_index = (x + cell_offset_x) + newWidth * (y + cell_offset_y);
+        //         if(new_index < 0 || new_index >= totalCells) {
+        //             continue;
+        //         }
+        //         new_map_labels[new_index] = map_labels_[old_index];
+        //     }
+        // }
+        // map_labels_.swap(new_map_labels);
         // map_labels_.resize(map_.info.width * map_.info.height, {-1, -1, -1});
     }
 
@@ -566,68 +566,15 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
             GMapping::IntPoint p(x, y);
             double occ=smap.cell(p);
             int label = smap.cell(p).getLabel();
-            auto &map_labels_v = map_labels_[MAP_IDX(map_.info.width, x, y)];
             
             assert(occ <= 1.0);
             if(occ < 0) {
-            // if(occ < 0) {
                 map_.data[MAP_IDX(map_.info.width, x, y)] = -1;
             }
             else if(occ > occ_thresh_)
             {
-                // `fill` will be 99 if the cell is unknown (no label)
-                int fill = label;
-
-                // if (fill == 99 && std::count(map_labels_v.begin(), map_labels_v.end(), 99) >= 0) {
-                //     // Sudah ada 3 buah 99, tidak melakukan apa-apa
-                // } else {
-                //     for (auto &val : map_labels_v) {
-                //         if (val == -1) {
-                //             val = fill;
-                //             break;
-                //         }
-                //     }
-                // }
-                // auto it = std::max_element(map_labels_v.begin(), map_labels_v.end(), [](int a, int b) {
-                //     if(a == -1) return true;
-                //     if(b == -1) return false;
-                //     return a < b;
-                // });
-                // int modus = (it != map_labels_v.end() && *it != -1) ? *it : 99;
-                // map_.data[MAP_IDX(map_.info.width, x, y)] = modus;
-
-                if (fill > 0) {
-                    for (size_t loop=0; loop < 6; ++loop) {
-                        for (size_t i = 0; i < label_error - 1; ++i) {
-                            map_labels_v[i] = map_labels_v[i + 1];
-                        }
-                    }
-                }
-                else {
-                    for (size_t loop=0; loop < 3; ++loop) {
-                        for (size_t i = 0; i < label_error - 1; ++i) {
-                            map_labels_v[i] = map_labels_v[i + 1];
-                        }
-                    }
-                }
-                map_labels_v[label_error - 1] = fill;
-                int mode = fill;
-                int maxCount = 0;
-                std::unordered_map<int, int> freq;
-                for (const auto &val : map_labels_v) {
-                    freq[val]++;
-                    if (freq[val] > maxCount) {
-                        maxCount = freq[val];
-                        mode = val;
-                    }
-                }
-                // Isi map_.data dengan nilai modus
-                map_.data[MAP_IDX(map_.info.width, x, y)] = mode;
-
-                // int fill = (label == -1) ? 99 : label;
-                // map_.data[MAP_IDX(map_.info.width, x, y)] = fill;
+                map_.data[MAP_IDX(map_.info.width, x, y)] = label;
             }
-            // else if (map_labels_v[0] == -1){
             else {
                 map_.data[MAP_IDX(map_.info.width, x, y)] = 0;
             }

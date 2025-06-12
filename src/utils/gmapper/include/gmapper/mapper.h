@@ -74,8 +74,8 @@ private:
 
     bool got_map_;
     nav_msgs::msg::OccupancyGrid map_;
-    static constexpr int label_error = 12;
-    std::vector<std::array<int, label_error>> map_labels_;
+    // static constexpr int label_error = 12;
+    // std::vector<std::array<int, label_error>> map_labels_;
 
     std::vector<int> launch_pose_rotation;
     int average_launch_rotation = -1;
