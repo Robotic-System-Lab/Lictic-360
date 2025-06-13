@@ -21,8 +21,8 @@ class YOLOSegnetNode(Node):
     self.get_logger().info('Segmentation node has been started.')
     self.bridge = CvBridge()
     
-    self.declare_parameter('view_p', 0.5)
-    self.declare_parameter('view_h', 0.2)
+    self.declare_parameter('view_p', 0.30)
+    self.declare_parameter('view_h', 0.25)
     self.view_p = self.get_parameter('view_p').value
     self.view_h = self.get_parameter('view_h').value
     
