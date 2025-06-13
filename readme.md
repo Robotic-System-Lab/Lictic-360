@@ -42,7 +42,7 @@ This repository focused on applying semantic mapping for Husky Clearpath A200 wh
    └── relay
 ```
 
-This project placed the required packages together inside `utils` folder. The lictic inside `./src` meant to contain launch file only, while the remaining packages are described below:
+This project placed the required packages together inside `utils` folder. The lictic inside `./src` meant to only contain launch files and their configuration, while the remaining packages are described below:
 1. `merger`: Transforms tf_tree from /odom and /scan to match each other and limit the LiDAR range
 2. `visual`: Visualize mapping results into PNG file inside `~/lictic/captured_map/[timestamp]`
 3. `gmapper`: LiDAR mapper node
@@ -134,16 +134,20 @@ source install/setup.bash
 
 ## How To Run
 1. You can change some parameters used to launch the full project in `./src/lictic/config/[media].yaml`
-```
+```yaml
+# Segmentation configuration
 segmentation:
   ros__parameters:
     segmentation_model: "yolo11m-seg.pt" # Segmentation model you want to use
     cam_center: 30  # (int) The center point of camera to match LiDAR's yaw
-    view_p: 0.001   # ( % ) Camera vertical FoV threshold to match 2D LiDAR detection area
-    view_h: 0.001   # ( % ) Camera vertical FoV height to match 2D LiDAR detection area
+    cam_count: 6    # (int) Number of cameras used for 360 degrees array camera
+    view_p: 0.35    # ( float ) Percentage of valid camera vertical FoV, used as threshold to match 2D LiDAR detection area
+    view_h: 0.20    # ( float ) Percentage of valid camera vertical FoV height, used to match 2D LiDAR detection area
+    fov_h: 0.001    # ( float ) Horizontal FoV of the camera (referring to the specification)
+# LiDAR configuration
 lidar_limiter:
   ros__parameters:
-    maxrange: 1     # (int) LiDAR laser scan range limiter
+    maxrange: 5     # (int) LiDAR laser scan range limiter
 ```
 2. Finally, we can run the launch file:
 ```bash
