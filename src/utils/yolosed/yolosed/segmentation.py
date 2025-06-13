@@ -21,13 +21,18 @@ class YOLOSegnetNode(Node):
     self.get_logger().info('Segmentation node has been started.')
     self.bridge = CvBridge()
     
+    self.declare_parameter('fov_h', 60.0)
     self.declare_parameter('view_p', 0.30)
     self.declare_parameter('view_h', 0.25)
+    self.fov_h = self.get_parameter('fov_h').value
     self.view_p = self.get_parameter('view_p').value
     self.view_h = self.get_parameter('view_h').value
     
+    self.declare_parameter('cam_count', 6)
     self.declare_parameter('cam_center', 150)
+    self.cam_count = self.get_parameter('cam_count').value
     self.cam_center = self.get_parameter('cam_center').value
+    self.angle_default = round(360 / self.cam_count)
     
     self.declare_parameter('segmentation_model', "yolo11m-seg")
     self.segmentation_model = self.get_parameter('segmentation_model').value
@@ -38,7 +43,7 @@ class YOLOSegnetNode(Node):
     self.get_logger().info(f'Model loaded on: {self.model.device}, ready to perform segmentation.')
     
     self.timestamp = 0
-    self.images = [None] * 6
+    self.images = [None] * self.cam_count
     self.deg360 = [{
                 'label': None,
                 'conf': 0,
@@ -47,7 +52,7 @@ class YOLOSegnetNode(Node):
     self.subscribers = []
     self.label_start_publisher = self.create_publisher(Float64, '/label_start', 10)
     self.label_end_publisher = self.create_publisher(String, '/label_end', 10)
-    for i in range(6):
+    for i in range(self.cam_count):
       topic_name = f'/camera_{i + 1}/image_raw'
       self.subscribers.append(
         self.create_subscription(
@@ -67,6 +72,16 @@ class YOLOSegnetNode(Node):
     label_data = []
     segmentation_data = []
     height = cv_image.shape[0]
+    width = cv_image.shape[1]
+    pixels_per_degree = width//round(self.fov_h)
+    
+    gaps = self.angle_default - self.fov_h
+    inner_gap = round(gaps / 2) if gaps > 0 else 0
+    outer_gap = 0 if gaps > 0 else abs(round(gaps / 2))
+    offset_pixel = round(outer_gap * pixels_per_degree)
+    
+    x_min_valid = offset_pixel
+    x_max_valid = width - offset_pixel
     y_min_valid = int(self.view_p * height)
     y_max_valid = int(self.view_h * height + y_min_valid)
     
@@ -87,7 +102,12 @@ class YOLOSegnetNode(Node):
       if result.masks is not None:
         idx = 0
         for mask in result.masks.xy:
-          valid_points = mask[(mask[:, 1] >= y_min_valid) & (mask[:, 1] <= y_max_valid)]
+          valid_points = mask[
+            (mask[:, 1] >= y_min_valid) &
+            (mask[:, 1] <= y_max_valid) &
+            (mask[:, 0] >= x_min_valid) &
+            (mask[:, 0] <= x_max_valid)
+          ]
           if valid_points.size > 0:
             x1 = int(valid_points[:, 0].min())
             x2 = int(valid_points[:, 0].max())
@@ -101,16 +121,16 @@ class YOLOSegnetNode(Node):
           else:
             segmentation_data.append({'name': f"INVALID-{label_data[idx]['name']}"})
           idx += 1
-
-    width = cv_image.shape[1]
-    pixels_per_degree = width//60
     
     for data in segmentation_data:
       # self.get_logger().info(f"Collected data: {data['name']}")
       if 'label' not in data:
         continue
-      for degree in range(index*60, (index+1)*60):
-        if data['x1'] <= (degree-(60*index))*pixels_per_degree < data['x2']:
+      for degree in range(
+        (index * self.angle_default) + inner_gap, 
+        ((index+1) * self.angle_default) - inner_gap
+      ):
+        if data['x1'] <= (degree-(self.angle_default*index))*pixels_per_degree < data['x2']:
           if (self.deg360[degree]['conf'] == 0 or self.deg360[degree]['conf'] < data['conf']):
             self.deg360[degree] = {
               'label': data['label'],
@@ -197,7 +217,7 @@ class YOLOSegnetNode(Node):
         self.get_logger().error(f"Error: {e}")
     else:
       self.get_logger().warning("Not all camera feeds are available.")
-    self.images = [None] * 6
+    self.images = [None] * self.cam_count
     
 
 def main(args=None):
