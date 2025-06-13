@@ -2,7 +2,6 @@ import time
 import json
 import rclpy
 from rclpy.node import Node
-from nav_msgs.msg import Odometry
 from sensor_msgs.msg import Image
 from std_msgs.msg import String, Float64
 from cv_bridge import CvBridge
@@ -11,9 +10,7 @@ import cv2
 import os
 
 import numpy as np
-from math import atan2, degrees
 from .hazard import hazard_lookup
-from sensor_msgs.msg import LaserScan
 
 class YOLOSegnetNode(Node):
   def __init__(self):
