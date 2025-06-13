@@ -143,7 +143,7 @@ segmentation:
     cam_count: 6    # (int) Number of cameras used for 360 degrees array camera
     view_p: 0.35    # ( float ) Percentage of valid camera vertical FoV, used as threshold to match 2D LiDAR detection area
     view_h: 0.20    # ( float ) Percentage of valid camera vertical FoV height, used to match 2D LiDAR detection area
-    fov_h: 0.001    # ( float ) Horizontal FoV of the camera (referring to the specification)
+    fov_h: 56.2     # ( float ) Horizontal FoV of the camera (referring to the specification)
 # LiDAR configuration
 lidar_limiter:
   ros__parameters:
