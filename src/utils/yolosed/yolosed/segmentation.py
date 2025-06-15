@@ -60,7 +60,7 @@ class YOLOSegnetNode(Node):
           10
         )
       )
-    self.timer = self.create_timer(0.4, self.display_images)
+    # self.timer = self.create_timer(0.1, self.display_images)
   
   def image_callback(self, msg, index):
     cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
@@ -212,20 +212,26 @@ class YOLOSegnetNode(Node):
         msg_out.data = json.dumps(payload)
         self.label_end_publisher.publish(msg_out)
         self.get_logger().info(f"Successfully performed segmentation for counter: {self.segmentation_counter}")
-
       except Exception as e:
         self.get_logger().error(f"Error: {e}")
-    else:
-      self.get_logger().warning("Not all camera feeds are available.")
-    self.images = [None] * self.cam_count
+      self.images = [None] * self.cam_count
+    # else:
+    #   self.get_logger().warning("Not all camera feeds are available.")
     
-
 def main(args=None):
   rclpy.init(args=args)
   node = YOLOSegnetNode()
-  rclpy.spin(node)
-  node.destroy_node()
-  rclpy.shutdown()
+  try:
+    while rclpy.ok():
+      # Proses callback subscription
+      rclpy.spin_once(node, timeout_sec=0.1)
+      # Panggil display_images secara berurutan setelah callback selesai
+      node.display_images()
+  except KeyboardInterrupt:
+    node.get_logger().info('KeyboardInterrupt, shutting down node.')
+  finally:
+    node.destroy_node()
+    rclpy.shutdown()
 
 if __name__ == '__main__':
   main()
