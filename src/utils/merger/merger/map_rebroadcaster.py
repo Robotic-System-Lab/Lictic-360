@@ -38,23 +38,24 @@ class MapRebroadcasterNode(Node):
     self.base_link = TransformStamped()
   
     self.odom_tf = TransformStamped()
-    self.temp_odom = Odometry()
+    self.temp_odom = None
     self.save_odom = Odometry()
   
     self.scan_tf = TransformStamped()
-    self.temp_scan = LaserScan()
+    self.temp_scan = None
     self.save_scan = LaserScan()
     self.limited_scan = LaserScan()
    
   def callback_end(self, msg: String):
-    if (self.init_merging == False): return
-    
-    label_msg = String()
-    label_msg.data = msg.data
-    if (self.latest_map2 == True):
-      self.latest_map2 = False
-      self.save_segmentation = label_msg
-    self.label_publisher.publish(self.save_segmentation)
+    if (self.init_merging):
+      label_msg = String()
+      label_msg.data = msg.data
+      if (self.latest_map2 == True):
+        self.latest_map2 = False
+        self.save_segmentation = label_msg
+        received = json.loads(msg.data)
+        self.get_logger().info(f'Map rebroadcaster updated with segmentation #{received["count"]}')
+      self.label_publisher.publish(self.save_segmentation)
   
   def callback_map(self, _: OccupancyGrid):
     self.latest_map = True
@@ -91,82 +92,84 @@ class MapRebroadcasterNode(Node):
       self.get_logger().warn('Static merged transform initialized.')
   
   def callback_odom(self, msg: Odometry):
-    self.latest_stamp = self.get_clock().now().to_msg()
-  
-    self.temp_odom = msg
-    self.init_merged_frames(msg=msg)
-  
-    self.save_odom.header.stamp = self.latest_stamp
-    self.odom_publisher.publish(self.save_odom)
-  
-    #############################################
-    #### odom_manipulation
-    tempdata = self.save_odom
-    #############################################
-    #### odom_tf inherited from save_odom
-    self.odom_tf = TransformStamped()
-    self.odom_tf.header.stamp = self.latest_stamp
-    self.odom_tf.header.frame_id = 'lictic_odom'
-    self.odom_tf.child_frame_id = 'lictic_footprint'
-    self.odom_tf.transform.translation.x = tempdata.pose.pose.position.x
-    self.odom_tf.transform.translation.y = tempdata.pose.pose.position.y
-    self.odom_tf.transform.translation.z = tempdata.pose.pose.position.z
-    self.odom_tf.transform.rotation = tempdata.pose.pose.orientation
-  
-    #############################################
-    #### all transform broadcasted
-    self.br.sendTransform(self.odom_tf)
+    if (self.init_merging):
+      self.latest_stamp = self.get_clock().now().to_msg()
+    
+      self.temp_odom = msg
+      self.init_merged_frames(msg=msg)
+    
+      self.save_odom.header.stamp = self.latest_stamp
+      self.odom_publisher.publish(self.save_odom)
+    
+      #############################################
+      #### odom_manipulation
+      tempdata = self.save_odom
+      #############################################
+      #### odom_tf inherited from save_odom
+      self.odom_tf = TransformStamped()
+      self.odom_tf.header.stamp = self.latest_stamp
+      self.odom_tf.header.frame_id = 'lictic_odom'
+      self.odom_tf.child_frame_id = 'lictic_footprint'
+      self.odom_tf.transform.translation.x = tempdata.pose.pose.position.x
+      self.odom_tf.transform.translation.y = tempdata.pose.pose.position.y
+      self.odom_tf.transform.translation.z = tempdata.pose.pose.position.z
+      self.odom_tf.transform.rotation = tempdata.pose.pose.orientation
+    
+      #############################################
+      #### all transform broadcasted
+      self.br.sendTransform(self.odom_tf)
   
   def callback_scan(self, msg: LaserScan):
-    self.temp_scan = msg
+    if (self.init_merging):
+      self.temp_scan = msg
 
-    if (self.latest_stamp is not None):
-      self.limited_scan.header.stamp = self.latest_stamp
-      self.scan_publisher.publish(self.limited_scan)
+      if (self.latest_stamp is not None):
+        self.limited_scan.header.stamp = self.latest_stamp
+        self.scan_publisher.publish(self.limited_scan)
   
   def callback_start(self, msg: Float64):
     if (self.init_merging == False):
       self.init_merging = True
       self.get_logger().info('Map rebroadcaster initialized.')
     
-    if (self.latest_map == False): return
-    else:self.latest_map = False
-    #############################################
-    #### Segmentation Timestamp saved
-    timestamp = Time()
-    timestamp.sec = int(msg.data)
-    timestamp.nanosec = int((msg.data - int(msg.data)) * 1e9)
-    #############################################
-    #### Temp Data saved
-    self.save_odom = self.temp_odom
-    self.save_scan = self.temp_scan
-  
-    self.scan_tf = TransformStamped()
-    self.limited_scan = LaserScan()
-    #############################################
-  
-    #############################################
-    #### Odom saved
-    self.save_odom.header.frame_id = 'odom_merged'
-    self.save_odom.child_frame_id = 'base_footprint'
-  
-    #############################################
-    #### Scan saved
-    maxrange = self.get_parameter('maxrange').value
-    self.limited_scan.header.frame_id = 'lictic_scan'
-    self.limited_scan.angle_min = self.save_scan.angle_min
-    self.limited_scan.angle_max = self.save_scan.angle_max
-    self.limited_scan.angle_increment = self.save_scan.angle_increment
-    self.limited_scan.time_increment = self.save_scan.time_increment
-    self.limited_scan.scan_time = self.save_scan.scan_time
-    self.limited_scan.range_min = self.save_scan.range_min
-    self.limited_scan.range_max = maxrange
-    self.limited_scan.ranges = [
-      distance if distance <= maxrange else float('inf')
-      for distance in self.save_scan.ranges
-    ]
-    # self.scan_publisher.publish(limited_scan)
-    #############################################
+    if (self.latest_map and self.temp_odom is not None and self.temp_scan is not None):
+      self.latest_map = False
+      #############################################
+      #### Segmentation Timestamp saved
+      timestamp = Time()
+      timestamp.sec = int(msg.data)
+      timestamp.nanosec = int((msg.data - int(msg.data)) * 1e9)
+      #############################################
+      #### Temp Data saved
+      self.save_odom = self.temp_odom
+      self.save_scan = self.temp_scan
+    
+      self.scan_tf = TransformStamped()
+      self.limited_scan = LaserScan()
+      #############################################
+    
+      #############################################
+      #### Odom saved
+      self.save_odom.header.frame_id = 'odom_merged'
+      self.save_odom.child_frame_id = 'base_footprint'
+    
+      #############################################
+      #### Scan saved
+      maxrange = self.get_parameter('maxrange').value
+      self.limited_scan.header.frame_id = 'lictic_scan'
+      self.limited_scan.angle_min = self.save_scan.angle_min
+      self.limited_scan.angle_max = self.save_scan.angle_max
+      self.limited_scan.angle_increment = self.save_scan.angle_increment
+      self.limited_scan.time_increment = self.save_scan.time_increment
+      self.limited_scan.scan_time = self.save_scan.scan_time
+      self.limited_scan.range_min = self.save_scan.range_min
+      self.limited_scan.range_max = maxrange
+      self.limited_scan.ranges = [
+        distance if distance <= maxrange else float('inf')
+        for distance in self.save_scan.ranges
+      ]
+      # self.scan_publisher.publish(limited_scan)
+      #############################################
     
 
 def main(args=None):
