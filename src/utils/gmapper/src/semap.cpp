@@ -96,7 +96,6 @@ void SlamGmapping::labelCallback(const std_msgs::msg::String::SharedPtr msg)
     try {
         nlohmann::json j = nlohmann::json::parse(msg->data);
         labelJSON_.push_back(j);
-        RCLCPP_DEBUG(this->get_logger(), "labelJSON berhasil diparsing dan disimpan");
     }
     catch (nlohmann::json::parse_error &e) {
         RCLCPP_ERROR(this->get_logger(), "JSON parse error: %s", e.what());
@@ -509,10 +508,14 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
         matcher.computeActiveArea(smap, n->pose, &((*n->reading)[0]));
         matcher.registerScan(smap, n->pose, &((*n->reading)[0]), labelReadsCollection_[collection_length - indexer]);
     }
-    RCLCPP_WARN(this->get_logger(), "============================");
-    RCLCPP_WARN(this->get_logger(), "===========valid nodes: %d", indexer);
-    RCLCPP_WARN(this->get_logger(), "===========total label: %d", collection_length);
-    RCLCPP_WARN(this->get_logger(), "============================");
+    
+    RCLCPP_WARN(this->get_logger(), "=====================================");
+    RCLCPP_WARN(this->get_logger(), "Label number %d received", labelCheck["count"].get<int>());
+    RCLCPP_WARN(this->get_logger(), "=====================================");
+    // RCLCPP_WARN(this->get_logger(), "============================");
+    // RCLCPP_WARN(this->get_logger(), "===========valid nodes: %d", indexer);
+    // RCLCPP_WARN(this->get_logger(), "===========total label: %d", collection_length);
+    // RCLCPP_WARN(this->get_logger(), "============================");
 
     // the map may have expanded, so resize ros message as well
     if(map_.info.width != (unsigned int) smap.getMapSizeX() || map_.info.height != (unsigned int) smap.getMapSizeY()) {

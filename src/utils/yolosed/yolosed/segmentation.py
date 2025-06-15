@@ -17,10 +17,11 @@ class YOLOSegnetNode(Node):
     super().__init__('segmentation')
     self.get_logger().info('Segmentation node has been started.')
     self.bridge = CvBridge()
+    self.segmentation_counter = 0
     
     self.declare_parameter('fov_h', 60.0)
-    self.declare_parameter('view_p', 0.30)
-    self.declare_parameter('view_h', 0.25)
+    self.declare_parameter('view_p', 0.25)
+    self.declare_parameter('view_h', 0.10)
     self.fov_h = self.get_parameter('fov_h').value
     self.view_p = self.get_parameter('view_p').value
     self.view_h = self.get_parameter('view_h').value
@@ -148,6 +149,7 @@ class YOLOSegnetNode(Node):
     if all(image is not None for image in self.images):
       try:
         # self.get_logger().info("Performing segmentation on collected images...")
+        self.segmentation_counter += 1
         self.timestamp = time.time()
         label_start_msg = Float64()
         label_start_msg.data = self.timestamp
@@ -202,13 +204,14 @@ class YOLOSegnetNode(Node):
           for i in range(360)
         ]
         payload = {
+          'count': self.segmentation_counter,
           'timestamp': self.timestamp,
           'detected': translate_detected
         }
         msg_out = String()
         msg_out.data = json.dumps(payload)
         self.label_end_publisher.publish(msg_out)
-        self.get_logger().info("Successfully performed segmentation!")
+        self.get_logger().info(f"Successfully performed segmentation for counter: {self.segmentation_counter}")
 
       except Exception as e:
         self.get_logger().error(f"Error: {e}")

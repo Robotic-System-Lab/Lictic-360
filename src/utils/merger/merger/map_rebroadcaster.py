@@ -6,12 +6,14 @@ from nav_msgs.msg import Odometry, OccupancyGrid
 from geometry_msgs.msg import TransformStamped
 from builtin_interfaces.msg import Time
 import tf2_ros
+import json
 
 class MapRebroadcasterNode(Node):
   def __init__(self):
     super().__init__('map_rebroadcaster')
     self.br = tf2_ros.TransformBroadcaster(self)
     self.static_br = tf2_ros.StaticTransformBroadcaster(self)
+    self.init_merging = False
     self.initialized_transform = False
   
     self.declare_parameter('maxrange', 5.0)
@@ -26,8 +28,11 @@ class MapRebroadcasterNode(Node):
     self.create_subscription(String, '/label_end', self.callback_end, 10)
   
     self.create_subscription(OccupancyGrid, '/map', self.callback_map, 10)
-    self.latest_map = False
+    self.latest_map = True
+    self.latest_map2 = True
     self.latest_stamp = None
+    self.temp_segmetation = None
+    self.save_segmentation = None
 
     self.base_foot_print = TransformStamped()
     self.base_link = TransformStamped()
@@ -42,14 +47,18 @@ class MapRebroadcasterNode(Node):
     self.limited_scan = LaserScan()
    
   def callback_end(self, msg: String):
-    #############################################
-    #### Whole republish
+    if (self.init_merging == False): return
+    
     label_msg = String()
     label_msg.data = msg.data
-    self.label_publisher.publish(label_msg)
+    if (self.latest_map2 == True):
+      self.latest_map2 = False
+      self.save_segmentation = label_msg
+    self.label_publisher.publish(self.save_segmentation)
   
-  def callback_map(self, msg: OccupancyGrid):
+  def callback_map(self, _: OccupancyGrid):
     self.latest_map = True
+    self.latest_map2 = True
   
   def init_merged_frames(self, msg: Odometry):
     if not self.initialized_transform:
@@ -116,6 +125,12 @@ class MapRebroadcasterNode(Node):
       self.scan_publisher.publish(self.limited_scan)
   
   def callback_start(self, msg: Float64):
+    if (self.init_merging == False):
+      self.init_merging = True
+      self.get_logger().info('Map rebroadcaster initialized.')
+    
+    if (self.latest_map == False): return
+    else:self.latest_map = False
     #############################################
     #### Segmentation Timestamp saved
     timestamp = Time()
@@ -124,9 +139,9 @@ class MapRebroadcasterNode(Node):
     #############################################
     #### Temp Data saved
     self.save_odom = self.temp_odom
+    self.save_scan = self.temp_scan
   
     self.scan_tf = TransformStamped()
-    self.save_scan = self.temp_scan
     self.limited_scan = LaserScan()
     #############################################
   

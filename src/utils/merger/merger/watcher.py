@@ -2,7 +2,7 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import LaserScan
 from std_msgs.msg import String
-from nav_msgs.msg import Odometry
+from nav_msgs.msg import Odometry, OccupancyGrid
 import json
 
 class Watcher(Node):
@@ -23,25 +23,39 @@ class Watcher(Node):
 			'/odom_merged',
 			self.odom_callback,
 			10)
+		self.create_subscription(
+			OccupancyGrid,
+			'/map',
+			self.map_callback,
+			10)
+		self.odom_data = None
+		self.scan_data = None
+		self.label_data = None
+		self.map_data = None
 
 	def odom_callback(self, msg: Odometry):
+		self.odom_data = msg
 		timestamp = msg.header.stamp.sec + msg.header.stamp.nanosec / 1e9
-		self.get_logger().info(f'/odom: -{timestamp}-')
+		# self.get_logger().info(f'/odom: -{timestamp}-')
  
 	def scan_callback(self, msg: LaserScan):
+		self.scan_data = msg
 		timestamp = msg.header.stamp.sec + msg.header.stamp.nanosec / 1e9
-		self.get_logger().info(f'/scan: [{timestamp}]')
+		# self.get_logger().info(f'/scan: [{timestamp}]')
 
 	def label_callback(self, msg: String):
-		try:
-			data = json.loads(msg.data)
-			if 'timestamp' in data:
-				timestamp = data['timestamp']
-				# self.get_logger().info(f'/label: {timestamp}')
-			else:
-				self.get_logger().warn('Key "timestamp" not found in JSON data.')
-		except json.JSONDecodeError:
-			self.get_logger().error('Invalid JSON received on /label.')
+		data = json.loads(msg.data)
+		self.label_data = data
+		if 'timestamp' in data:
+			timestamp = data['timestamp']
+			# self.get_logger().info(f'/label: {timestamp}')
+ 
+	def map_callback(self, msg: OccupancyGrid):
+		self.map_data = msg
+		timestamp = msg.header.stamp.sec + msg.header.stamp.nanosec / 1e9
+  
+		print(f'/label: {timestamp}')
+		# self.get_logger().info(f'/scan: [{timestamp}]')
 
 def main(args=None):
 	rclpy.init(args=args)
