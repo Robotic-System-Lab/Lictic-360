@@ -419,7 +419,7 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
     rounded_theta = ((rounded_theta % 360) + 360) % 360;
     RCLCPP_WARN(this->get_logger(), "Robot view angle: %d degrees", rounded_theta);
 
-    if (launch_pose_rotation.size() < 2) {
+    if (launch_pose_rotation.size() < 10) {
         launch_pose_rotation.push_back(rounded_theta);
         RCLCPP_WARN(this->get_logger(), "Odometry pose drift is still being collected, size: %zu", launch_pose_rotation.size());
         map_mutex_.unlock();

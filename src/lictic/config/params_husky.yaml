@@ -2,11 +2,11 @@
 segmentation:
   ros__parameters:
     segmentation_model: "yolo11m-seg.pt"
-    cam_center: 30
+    cam_center: 133
     cam_count: 6
     view_p: 0.30
-    view_h: 0.25
-    fov_h: 56.2
+    view_h: 0.3
+    fov_h: 85.0
 # LiDAR configuration
 lidar_limiter:
   ros__parameters:

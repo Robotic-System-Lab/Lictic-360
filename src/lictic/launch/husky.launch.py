@@ -34,8 +34,8 @@ def generate_launch_description():
         ),
         launch_ros.actions.Node(
             package='merger',
-            executable='odom',
-            name='odom',
+            executable='map',
+            name='map',
             output='screen',
             parameters=[config_file],
         ),
