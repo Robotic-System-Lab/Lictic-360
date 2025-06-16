@@ -526,38 +526,12 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
         GMapping::Point wmax = smap.map2world(GMapping::IntPoint(smap.getMapSizeX(), smap.getMapSizeY()));
         xmin_ = wmin.x; ymin_ = wmin.y;
         xmax_ = wmax.x; ymax_ = wmax.y;
-                  
-        int oldWidth = map_.info.width;
-        int oldHeight = map_.info.height;
-        double old_origin_x = map_.info.origin.position.x;
-        double old_origin_y = map_.info.origin.position.y;
         
         map_.info.width = static_cast<nav_msgs::msg::MapMetaData::_width_type>(smap.getMapSizeX());
         map_.info.height = static_cast<nav_msgs::msg::MapMetaData::_height_type>(smap.getMapSizeY());
         map_.info.origin.position.x = xmin_;
         map_.info.origin.position.y = ymin_;
         map_.data.resize(map_.info.width * map_.info.height);
-
-        // int cell_offset_x = std::round((old_origin_x - xmin_) / map_.info.resolution);
-        // int cell_offset_y = std::round((old_origin_y - ymin_) / map_.info.resolution);
-        // int newWidth = map_.info.width;
-        // int newHeight = map_.info.height;
-        // int totalCells = newWidth * newHeight;
-        
-        // std::vector<std::array<int, label_error>> new_map_labels;
-        // new_map_labels.resize(totalCells, {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1});
-        // for (int x = 0; x < oldWidth; ++x) {
-        //     for (int y = 0; y < oldHeight; ++y) {
-        //         int old_index = x + (oldWidth * y);
-        //         int new_index = (x + cell_offset_x) + newWidth * (y + cell_offset_y);
-        //         if(new_index < 0 || new_index >= totalCells) {
-        //             continue;
-        //         }
-        //         new_map_labels[new_index] = map_labels_[old_index];
-        //     }
-        // }
-        // map_labels_.swap(new_map_labels);
-        // map_labels_.resize(map_.info.width * map_.info.height, {-1, -1, -1});
     }
 
     int active_cells = 0;
