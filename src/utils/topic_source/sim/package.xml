@@ -1,16 +1,14 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>turtlebot3_gazebo</name>
-  <version>2.2.6</version>
+  <name>sim_lictic</name>
+  <version>0.0.0</version>
   <description>
-    Gazebo simulation package for the TurtleBot3
+    Gazebo simulation package for the Lictic (Originally TurtleBot3).
   </description>
-  <maintainer email="willson@robotis.com">Will Son</maintainer>
+  <maintainer email="salamp@salamp.id">LamP</maintainer>
   <license>Apache 2.0</license>
-  <url type="website">http://turtlebot3.robotis.com</url>
-  <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_simulations</url>
-  <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_simulations/issues</url>
+  <url type="repository">https://github.com/Robotic-System-Lab/Lictic-360</url>
   <author email="thlim@robotis.com">Darby Lim</author>
   <author email="pyo@robotis.com">Pyo</author>
   <author>Ryan Shim</author>

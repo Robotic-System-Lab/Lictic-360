@@ -26,7 +26,7 @@ from launch.substitutions import LaunchConfiguration
 
 
 def generate_launch_description():
-    launch_file_dir = os.path.join(get_package_share_directory('turtlebot3_gazebo'), 'launch')
+    launch_file_dir = os.path.join(get_package_share_directory('sim_lictic'), 'launch')
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
@@ -47,9 +47,9 @@ def generate_launch_description():
     # )
 
     world = os.path.join(
-        get_package_share_directory('turtlebot3_gazebo'),
+        get_package_share_directory('lictic'),
         'worlds',
-        'callibrate_cam.world'
+        'lictic.world'
     )
 
     gazebo_launch = IncludeLaunchDescription(

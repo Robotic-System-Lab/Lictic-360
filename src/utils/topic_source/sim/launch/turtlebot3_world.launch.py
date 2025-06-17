@@ -26,30 +26,37 @@ from launch.substitutions import LaunchConfiguration
 
 
 def generate_launch_description():
-    launch_file_dir = os.path.join(get_package_share_directory('turtlebot3_gazebo'), 'launch')
+    launch_file_dir = os.path.join(get_package_share_directory('sim_lictic'), 'launch')
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
-    x_pose = LaunchConfiguration('x_pose', default='0.0')
-    y_pose = LaunchConfiguration('y_pose', default='0.0')
+    x_pose = LaunchConfiguration('x_pose', default='-2.0')
+    y_pose = LaunchConfiguration('y_pose', default='-0.5')
+
+    # gzserver_cmd = IncludeLaunchDescription(
+    #     PythonLaunchDescriptionSource(
+    #         os.path.join(pkg_gazebo_ros, 'launch', 'gzserver.launch.py')
+    #     ),
+    #     launch_arguments={'world': world}.items()
+    # )
+
+    # gzclient_cmd = IncludeLaunchDescription(
+    #     PythonLaunchDescriptionSource(
+    #         os.path.join(pkg_gazebo_ros, 'launch', 'gzclient.launch.py')
+    #     )
+    # )
 
     world = os.path.join(
-        get_package_share_directory('turtlebot3_gazebo'),
+        get_package_share_directory('sim_lictic'),
         'worlds',
-        'turtlebot3_dqn_stage2.world'
+        'turtlebot3_world.world'
     )
 
-    gzserver_cmd = IncludeLaunchDescription(
+    gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(pkg_gazebo_ros, 'launch', 'gzserver.launch.py')
+            os.path.join(pkg_gazebo_ros, 'launch', 'gazebo.launch.py')
         ),
         launch_arguments={'world': world}.items()
-    )
-
-    gzclient_cmd = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(pkg_gazebo_ros, 'launch', 'gzclient.launch.py')
-        )
     )
 
     robot_state_publisher_cmd = IncludeLaunchDescription(
@@ -72,8 +79,9 @@ def generate_launch_description():
     ld = LaunchDescription()
 
     # Add the commands to the launch description
-    ld.add_action(gzserver_cmd)
-    ld.add_action(gzclient_cmd)
+    # ld.add_action(gzserver_cmd)
+    # ld.add_action(gzclient_cmd)
+    ld.add_action(gazebo_launch)
     ld.add_action(robot_state_publisher_cmd)
     ld.add_action(spawn_turtlebot_cmd)
 

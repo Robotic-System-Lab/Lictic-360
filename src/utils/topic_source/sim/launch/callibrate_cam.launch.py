@@ -26,12 +26,12 @@ from launch.substitutions import LaunchConfiguration
 
 
 def generate_launch_description():
-    launch_file_dir = os.path.join(get_package_share_directory('turtlebot3_gazebo'), 'launch')
+    launch_file_dir = os.path.join(get_package_share_directory('sim_lictic'), 'launch')
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
-    x_pose = LaunchConfiguration('x_pose', default='-2.0')
-    y_pose = LaunchConfiguration('y_pose', default='-0.5')
+    x_pose = LaunchConfiguration('x_pose', default='0')
+    y_pose = LaunchConfiguration('y_pose', default='0')
 
     # gzserver_cmd = IncludeLaunchDescription(
     #     PythonLaunchDescriptionSource(
@@ -47,16 +47,18 @@ def generate_launch_description():
     # )
 
     world = os.path.join(
-        get_package_share_directory('turtlebot3_gazebo'),
+        get_package_share_directory('sim_lictic'),
         'worlds',
-        'turtlebot3_world.world'
+        'callibrate_cam.world'
     )
 
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg_gazebo_ros, 'launch', 'gazebo.launch.py')
         ),
-        launch_arguments={'world': world}.items()
+        launch_arguments={
+            'world': world,
+        }.items()
     )
 
     robot_state_publisher_cmd = IncludeLaunchDescription(
