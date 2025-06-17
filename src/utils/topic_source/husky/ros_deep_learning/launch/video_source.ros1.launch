@@ -1,0 +1,93 @@
+<launch>
+    <!-- Kamera CSI Pertama -->
+    <arg name="input_camera_6" default="csi://0"/>
+    <arg name="input_width" default="640"/>
+    <arg name="input_height" default="480"/>
+    <arg name="input_codec" default="unknown"/>
+    <arg name="input_loop" default="0"/>
+
+    <!-- Node untuk video_source dengan nama unik -->
+    <node pkg="ros_deep_learning" type="video_source" name="$(anon video_source)" output="screen">
+        <param name="resource" value="$(arg input_camera_1)"/>
+        <param name="width" value="$(arg input_width)"/>
+        <param name="height" value="$(arg input_height)"/>
+        <param name="codec" value="$(arg input_codec)"/>
+        <param name="loop" value="$(arg input_loop)"/>
+    </node>
+
+    <!-- Kamera CSI Kedua -->
+    <arg name="input_camera_5" default="csi://1"/>
+    <!-- <arg name="input_width_2" default="640"/>
+    <arg name="input_height_2" default="480"/>
+    <arg name="input_codec_2" default="unknown"/>
+    <arg name="input_loop_2" default="0"/> -->
+
+    <node pkg="ros_deep_learning" type="video_source" name="$(anon video_source)" output="screen">
+        <param name="resource" value="$(arg input_camera_2)"/>
+        <param name="width" value="$(arg input_width)"/>
+        <param name="height" value="$(arg input_height)"/>
+        <param name="codec" value="$(arg input_codec)"/>
+        <param name="loop" value="$(arg input_loop)"/>
+    </node>
+
+    <!-- Kamera CSI Ketiga -->
+    <arg name="input_camera_4" default="csi://2"/>
+    <!-- <arg name="input_width_3" default="640"/>
+    <arg name="input_height_3" default="480"/>
+    <arg name="input_codec_3" default="unknown"/>
+    <arg name="input_loop_3" default="0"/> -->
+
+    <node pkg="ros_deep_learning" type="video_source" name="$(anon video_source)" output="screen">
+        <param name="resource" value="$(arg input_camera_3)"/>
+        <param name="width" value="$(arg input_width)"/>
+        <param name="height" value="$(arg input_height)"/>
+        <param name="codec" value="$(arg input_codec)"/>
+        <param name="loop" value="$(arg input_loop)"/>
+    </node>
+
+    <!-- Kamera CSI Keempat -->
+    <arg name="input_camera_3" default="csi://3"/>
+    <!-- <arg name="input_width_4" default="640"/>
+    <arg name="input_height_4" default="480"/>
+    <arg name="input_codec_4" default="unknown"/>
+    <arg name="input_loop_4" default="0"/> -->
+
+    <node pkg="ros_deep_learning" type="video_source" name="$(anon video_source)" output="screen">
+        <param name="resource" value="$(arg input_camera_4)"/>
+        <param name="width" value="$(arg input_width)"/>
+        <param name="height" value="$(arg input_height)"/>
+        <param name="codec" value="$(arg input_codec)"/>
+        <param name="loop" value="$(arg input_loop)"/>
+    </node>
+
+    <!-- Kamera CSI Kelima -->
+	<arg name="input_camera_2" default="csi://4"/>
+    <!-- <arg name="input_width_5" default="640"/>
+    <arg name="input_height_5" default="480"/>
+    <arg name="input_codec_5" default="unknown"/>
+    <arg name="input_loop_5" default="0"/> -->
+
+    <node pkg="ros_deep_learning" type="video_source" name="$(anon video_source)" output="screen">
+        <param name="resource" value="$(arg input_camera_5)"/>
+        <param name="width" value="$(arg input_width)"/>
+        <param name="height" value="$(arg input_height)"/>
+        <param name="codec" value="$(arg input_codec)"/>
+        <param name="loop" value="$(arg input_loop)"/>
+    </node>
+
+    <!-- Kamera CSI Keenam -->
+	<arg name="input_camera_1" default="csi://5"/>
+    <!-- <arg name="input_width_6" default="640"/>
+    <arg name="input_height_6" default="480"/>
+    <arg name="input_codec_6" default="unknown"/>
+    <arg name="input_loop_6" default="0"/> -->
+
+    <node pkg="ros_deep_learning" type="video_source" name="$(anon video_source)" output="screen">
+        <param name="resource" value="$(arg input_camera_6)"/>
+        <param name="width" value="$(arg input_width)"/>
+        <param name="height" value="$(arg input_height)"/>
+        <param name="codec" value="$(arg input_codec)"/>
+        <param name="loop" value="$(arg input_loop)"/>
+    </node>
+    
+</launch>

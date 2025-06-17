@@ -1,0 +1,86 @@
+<launch>
+    <arg name="input_cam_6" default="csi://0"/>
+    <arg name="input_width" default="320"/>
+    <arg name="input_height" default="240"/>
+    <arg name="input_codec" default="unknown"/>
+    <arg name="input_loop" default="0"/>
+    <arg name="input_latency" default="2000"/>
+    
+    <!-- Node untuk Kamera 1 -->
+    <node pkg="ros_deep_learning" exec="video_source" name="video_source_6" output="screen">
+        <param name="resource" value="$(var input_cam_6)"/>
+        <param name="width" value="$(var input_width)"/>
+        <param name="height" value="$(var input_height)"/>
+        <param name="codec" value="$(var input_codec)"/>
+        <param name="loop" value="$(var input_loop)"/>
+        <param name="latency" value="$(var input_latency)"/>
+        <!-- Remap topik video_source/raw ke kamera 1 -->
+        <remap from="/video_source/raw" to="/camera_6/raw" />
+    </node>
+
+    <!-- Node untuk Kamera 2 -->
+	<arg name="input_cam_5" default="csi://1"/>
+    <node pkg="ros_deep_learning" exec="video_source" name="video_source_5" output="screen">
+        <param name="resource" value="$(var input_cam_5)"/>
+        <param name="width" value="$(var input_width)"/>
+        <param name="height" value="$(var input_height)"/>
+        <param name="codec" value="$(var input_codec)"/>
+        <param name="loop" value="$(var input_loop)"/>
+        <param name="latency" value="$(var input_latency)"/>
+        <!-- Remap topik video_source/raw ke kamera 2 -->
+        <remap from="/video_source/raw" to="/camera_5/raw" />
+    </node>
+
+    <!-- Node untuk Kamera 3 -->
+	<arg name="input_cam_4" default="csi://2"/>
+    <node pkg="ros_deep_learning" exec="video_source" name="video_source_4" output="screen">
+        <param name="resource" value="$(var input_cam_4)"/>
+        <param name="width" value="$(var input_width)"/>
+        <param name="height" value="$(var input_height)"/>
+        <param name="codec" value="$(var input_codec)"/>
+        <param name="loop" value="$(var input_loop)"/>
+        <param name="latency" value="$(var input_latency)"/>
+        <!-- Remap topik video_source/raw ke kamera 3 -->
+        <remap from="/video_source/raw" to="/camera_4/raw" />
+    </node>
+
+    <!-- Node untuk Kamera 4 -->
+	<arg name="input_cam_3" default="csi://3"/>
+    <node pkg="ros_deep_learning" exec="video_source" name="video_source_3" output="screen">
+        <param name="resource" value="$(var input_cam_3)"/>
+        <param name="width" value="$(var input_width)"/>
+        <param name="height" value="$(var input_height)"/>
+        <param name="codec" value="$(var input_codec)"/>
+        <param name="loop" value="$(var input_loop)"/>
+        <param name="latency" value="$(var input_latency)"/>
+        <!-- Remap topik video_source/raw ke kamera 4 -->
+        <remap from="/video_source/raw" to="/camera_3/raw" />
+    </node>
+
+    <!-- Node untuk Kamera 5 -->
+	<arg name="input_cam_2" default="csi://4"/>
+    <node pkg="ros_deep_learning" exec="video_source" name="video_source_2" output="screen">
+        <param name="resource" value="$(var input_cam_2)"/>
+        <param name="width" value="$(var input_width)"/>
+        <param name="height" value="$(var input_height)"/>
+        <param name="codec" value="$(var input_codec)"/>
+        <param name="loop" value="$(var input_loop)"/>
+        <param name="latency" value="$(var input_latency)"/>
+        <!-- Remap topik video_source/raw ke kamera 5 -->
+        <remap from="/video_source/raw" to="/camera_2/raw" />
+    </node>
+
+    <!-- Node untuk Kamera 6 -->
+	<arg name="input_cam_1" default="csi://5"/>
+    <node pkg="ros_deep_learning" exec="video_source" name="video_source_1" output="screen">
+        <param name="resource" value="$(var input_cam_1)"/>
+        <param name="width" value="$(var input_width)"/>
+        <param name="height" value="$(var input_height)"/>
+        <param name="codec" value="$(var input_codec)"/>
+        <param name="loop" value="$(var input_loop)"/>
+        <param name="latency" value="$(var input_latency)"/>
+        <!-- Remap topik video_source/raw ke kamera 6 -->
+        <remap from="/video_source/raw" to="/camera_1/raw" />
+    </node>
+
+</launch>

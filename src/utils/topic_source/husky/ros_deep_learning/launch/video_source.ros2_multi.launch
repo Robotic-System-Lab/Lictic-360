@@ -1,0 +1,11 @@
+<launch>
+
+    <!-- VIDEO SOURCE -->
+    <include file="$(find-pkg-share ros_deep_learning)/launch/video_source.ros2.launch"/>
+
+
+    <!-- MULTI CAMERA DISPLAY -->
+    <!-- <node pkg="multi_camera_display_pkg" exec="multi_camera_display" name="multi_camera_display" output="screen"/> -->
+    <node pkg="multi_camera_display_pkg" exec="multi_camera_display" name="multi_camera_display" output="screen"/>
+ 
+</launch>

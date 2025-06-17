@@ -1,0 +1,259 @@
+<?xml version="1.0" ?>
+<robot name="turtlebot3_multicam">
+  <link name="base_footprint">
+    <inertial>
+      <origin rpy="0 -0 0" xyz="0 0 0"/>
+      <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>
+      <mass value="1"/>
+    </inertial>
+    <enable_wind>0</enable_wind>
+    <kinematic>0</kinematic>
+    <origin rpy="0 -0 0" xyz="0 0 0"/>
+  </link>
+  <link name="base_link">
+    <inertial>
+      <origin rpy="0 -0 0" xyz="-0.032 0 0.07"/>
+      <inertia ixx="0.00269736" ixy="0" ixz="0" iyy="0.00269736" iyz="0" izz="0.00269736"/>
+      <mass value="0.825722"/>
+    </inertial>
+    <enable_wind>0</enable_wind>
+    <kinematic>0</kinematic>
+    <origin rpy="0 -0 0" xyz="0.002512 0.00247 -5e-05"/>
+    <visual>
+      <origin rpy="0 -0 0" xyz="-0.032 0 0"/>
+      <geometry>
+        <mesh filename="package://turtlebot3_common/meshes/burger_base.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material>
+        <shader type="pixel"/>
+      </material>
+      <transparency>0</transparency>
+      <cast_shadows>1</cast_shadows>
+    </visual>
+  </link>
+  <link name="base_scan">
+    <inertial>
+      <origin rpy="0 -0 0" xyz="-0.02 0 0.161"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      <mass value="0.114"/>
+    </inertial>
+    <enable_wind>0</enable_wind>
+    <kinematic>0</kinematic>
+    <origin rpy="0 -0 0" xyz="0 0 0"/>
+    <visual>
+      <origin rpy="0 -0 0" xyz="-0.032 0 0.171"/>
+      <geometry>
+        <mesh filename="package://turtlebot3_common/meshes/lds.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material>
+        <shader type="pixel"/>
+      </material>
+      <transparency>0</transparency>
+      <cast_shadows>1</cast_shadows>
+    </visual>
+  </link>
+  <link name="camera_link">
+    <inertial>
+      <origin rpy="0 -0 0" xyz="0 0 0"/>
+      <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>
+      <mass value="1"/>
+    </inertial>
+    <enable_wind>0</enable_wind>
+    <kinematic>0</kinematic>
+    <origin rpy="0 -0 0" xyz="0 0 0.079659"/>
+  </link>
+  <link name="camera_rgb_frame_6">
+    <inertial>
+      <origin rpy="0 -0 0" xyz="0.05 0 0"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      <mass value="0.035"/>
+    </inertial>
+    <origin rpy="0 -0 0" xyz="0.05 0 0.107"/>
+    <enable_wind>0</enable_wind>
+    <kinematic>0</kinematic>
+  </link>
+  <link name="camera_rgb_frame_5">
+    <inertial>
+      <origin rpy="0 -0 0" xyz="0.025 0.0433 0"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      <mass value="0.035"/>
+    </inertial>
+    <origin rpy="0 -0 1.03665" xyz="0.010497 0.073641 0.107"/>
+    <enable_wind>0</enable_wind>
+    <kinematic>0</kinematic>
+  </link>
+  <link name="camera_rgb_frame_4">
+    <inertial>
+      <origin rpy="0 -0 0" xyz="-0.025 0.0433 0"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      <mass value="0.035"/>
+    </inertial>
+    <origin rpy="0 -0 2.07330" xyz="-0.065071 0.078138 0.107"/>
+    <enable_wind>0</enable_wind>
+    <kinematic>0</kinematic>
+  </link>
+  <link name="camera_rgb_frame_3">
+    <inertial>
+      <origin rpy="0 -0 0" xyz="-0.05 0 0"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      <mass value="0.035"/>
+    </inertial>
+    <origin rpy="0 -0 3.10996" xyz="-0.115546 -8.6e-05 0.107"/>
+    <enable_wind>0</enable_wind>
+    <kinematic>0</kinematic>
+  </link>
+  <link name="camera_rgb_frame_2">
+    <inertial>
+      <origin rpy="0 -0 0" xyz="-0.025 -0.0433 0"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      <mass value="0.035"/>
+    </inertial>
+    <origin rpy="-0 -0 -2.07330" xyz="-0.073168 -0.063325 0.107"/>
+    <enable_wind>0</enable_wind>
+    <kinematic>0</kinematic>
+  </link>
+  <link name="camera_rgb_frame_1">
+    <inertial>
+      <origin rpy="0 -0 0" xyz="0.025 -0.0433 0"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      <mass value="0.035"/>
+    </inertial>
+    <origin rpy="0 0 -1.03665" xyz="0.013362 -0.062457 0.107"/>
+    <enable_wind>0</enable_wind>
+    <kinematic>0</kinematic>
+  </link>
+  <link name="caster_back_right_link">
+    <origin rpy="-1.57 -0 -0" xyz="-0.067 -0.032 -0.004"/>
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="1e-05" ixy="0" ixz="0" iyy="1e-05" iyz="0" izz="1e-05"/>
+      <origin rpy="0 -0 0" xyz="0 0 0"/>
+    </inertial>
+    <enable_wind>0</enable_wind>
+    <kinematic>0</kinematic>
+  </link>
+  <link name="imu_link">
+    <inertial>
+      <origin rpy="0 -0 0" xyz="0 0 0"/>
+      <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>
+      <mass value="1"/>
+    </inertial>
+    <enable_wind>0</enable_wind>
+    <kinematic>0</kinematic>
+    <origin rpy="0 -0 0" xyz="0 0 0"/>
+  </link>
+  <link name="wheel_left_link">
+    <inertial>
+      <origin rpy="-1.57 0 0" xyz="0 0.08 0.023"/>
+      <inertia ixx="0.00181582" ixy="-9.3392e-12" ixz="1.04909e-11" iyy="0.00329221" iyz="5.75694e-11" izz="0.00181582"/>
+      <mass value="0.0284989"/>
+    </inertial>
+    <enable_wind>0</enable_wind>
+    <kinematic>0</kinematic>
+    <origin rpy="0 -0 0" xyz="0 0 0"/>
+    <visual>
+      <origin rpy="0 -0 0" xyz="0 0.08 0.023"/>
+      <geometry>
+        <mesh filename="package://turtlebot3_common/meshes/tire.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material>
+        <shader type="pixel"/>
+      </material>
+      <transparency>0</transparency>
+      <cast_shadows>1</cast_shadows>
+    </visual>
+  </link>
+  <link name="wheel_right_link">
+    <inertial>
+      <origin rpy="-1.57 0 0" xyz="0 -0.08 0.023"/>
+      <inertia ixx="0.00181582" ixy="-9.3392e-12" ixz="1.04909e-11" iyy="0.00329221" iyz="5.75694e-11" izz="0.00181582"/>
+      <mass value="0.0284989"/>
+    </inertial>
+    <enable_wind>0</enable_wind>
+    <kinematic>0</kinematic>
+    <origin rpy="0 -0 0" xyz="0 0 0"/>
+    <visual>
+      <origin rpy="0 -0 0" xyz="0 -0.08 0.023"/>
+      <geometry>
+        <mesh filename="package://turtlebot3_common/meshes/tire.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material>
+        <shader type="pixel"/>
+      </material>
+      <transparency>0</transparency>
+      <cast_shadows>1</cast_shadows>
+    </visual>
+  </link>
+  <joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin rpy="0 -0 0" xyz="0 0 0.01"/>
+  </joint>
+  <joint name="camera_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="camera_link"/>
+    <origin rpy="0 -0 0" xyz="0.064 -0.065 0.094"/>
+  </joint>
+  <joint name="camera_rgb_joint_1" type="fixed">
+    <parent link="camera_link"/>
+    <child link="camera_rgb_frame_1"/>
+    <origin rpy="0 -0 0" xyz="0.05 0 0"/>
+  </joint>
+  <joint name="camera_rgb_joint_2" type="fixed">
+    <parent link="camera_link"/>
+    <child link="camera_rgb_frame_2"/>
+    <origin rpy="0 -0 0" xyz="0.025 0.0433 0"/>
+  </joint>
+  <joint name="camera_rgb_joint_3" type="fixed">
+    <parent link="camera_link"/>
+    <child link="camera_rgb_frame_3"/>
+    <origin rpy="0 -0 0" xyz="-0.025 0.0433 0"/>
+  </joint>
+  <joint name="camera_rgb_joint_4" type="fixed">
+    <parent link="camera_link"/>
+    <child link="camera_rgb_frame_4"/>
+    <origin rpy="0 -0 0" xyz="0.025 0.0433 0"/>
+  </joint>
+  <joint name="camera_rgb_joint_5" type="fixed">
+    <parent link="camera_link"/>
+    <child link="camera_rgb_frame_5"/>
+    <origin rpy="0 -0 0" xyz="0.025 0.0433 0"/>
+  </joint>
+  <joint name="camera_rgb_joint_6" type="fixed">
+    <parent link="camera_link"/>
+    <child link="camera_rgb_frame_6"/>
+    <origin rpy="0 -0 0" xyz="0.025 0.0433 0"/>
+  </joint>
+  <joint name="caster_back_right_joint" type="ball">
+    <parent link="base_link"/>
+    <child link="caster_back_right_link"/>
+    <origin rpy="0 -0 0" xyz="0 0 0"/>
+  </joint>
+  <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <origin rpy="0 -0 0" xyz="-0.032 0 0.068"/>
+  </joint>
+  <joint name="lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="base_scan"/>
+    <origin rpy="0 -0 0" xyz="-0.032 0 0.171"/>
+  </joint>
+  <joint name="wheel_left_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="wheel_left_link"/>
+    <origin rpy="-1.57 0 0" xyz="0 0.08 0.023"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="-1" lower="-1e+16" upper="1e+16" velocity="-1"/>
+    <dynamics damping="0" friction="0" spring_reference="0" spring_stiffness="0"/>
+  </joint>
+  <joint name="wheel_right_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="wheel_right_link"/>
+    <origin rpy="-1.57 0 0" xyz="0 -0.08 0.023"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="-1" lower="-1e+16" upper="1e+16" velocity="-1"/>
+    <dynamics damping="0" friction="0" spring_reference="0" spring_stiffness="0"/>
+  </joint>
+  <allow_auto_disable>1</allow_auto_disable>
+</robot>

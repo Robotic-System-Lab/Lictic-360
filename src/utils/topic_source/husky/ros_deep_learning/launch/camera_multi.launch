@@ -1,0 +1,104 @@
+<launch>
+
+    <!-- Kamera CSI Pertama -->
+    <arg name="input_camera_1" default="csi://0"/>
+    <arg name="input_width" default="640"/>
+    <arg name="input_height" default="480"/>
+    <arg name="input_codec" default="unknown"/>
+    <arg name="input_loop" default="0"/>
+
+    <include file="$(find ros_deep_learning)/launch/video_source.ros1.launch">
+        <arg name="input" value="$(arg input_camera_1)"/>
+        <arg name="input_width" value="$(arg input_width)"/>
+        <arg name="input_height" value="$(arg input_height)"/>
+        <arg name="input_codec" value="$(arg input_codec)"/>
+        <arg name="input_loop" value="$(arg input_loop)"/>
+    </include>
+
+    <!-- Kamera CSI Kedua -->
+    <arg name="input_camera_2" default="csi://1"/>
+    <!-- <arg name="input_width_2" default="640"/>
+    <arg name="input_height_2" default="480"/>
+    <arg name="input_codec_2" default="unknown"/>
+    <arg name="input_loop_2" default="0"/> -->
+
+    <include file="$(find ros_deep_learning)/launch/video_source.ros1.launch">
+        <arg name="input" value="$(arg input_camera_2)"/>
+        <arg name="input_width" value="$(arg input_width)"/>
+        <arg name="input_height" value="$(arg input_height)"/>
+        <arg name="input_codec" value="$(arg input_codec)"/>
+        <arg name="input_loop" value="$(arg input_loop)"/>
+    </include>
+
+    <!-- Kamera CSI Ketiga -->
+    <arg name="input_camera_3" default="csi://2"/>
+    <!-- <arg name="input_width_3" default="640"/>
+    <arg name="input_height_3" default="480"/>
+    <arg name="input_codec_3" default="unknown"/>
+    <arg name="input_loop_3" default="0"/> -->
+
+    <include file="$(find ros_deep_learning)/launch/video_source.ros1.launch">
+        <arg name="input" value="$(arg input_camera_3)"/>
+        <arg name="input_width" value="$(arg input_width)"/>
+        <arg name="input_height" value="$(arg input_height)"/>
+        <arg name="input_codec" value="$(arg input_codec)"/>
+        <arg name="input_loop" value="$(arg input_loop)"/>
+    </include>
+
+        <!-- Kamera CSI Ketiga -->
+    <arg name="input_camera_4" default="csi://3"/>
+    <!-- <arg name="input_width_4" default="640"/>
+    <arg name="input_height_4" default="480"/>
+    <arg name="input_codec_4" default="unknown"/>
+    <arg name="input_loop_4" default="0"/> -->
+
+    <include file="$(find ros_deep_learning)/launch/video_source.ros1.launch">
+        <arg name="input" value="$(arg input_camera_4)"/>
+        <arg name="input_width" value="$(arg input_width)"/>
+        <arg name="input_height" value="$(arg input_height)"/>
+        <arg name="input_codec" value="$(arg input_codec)"/>
+        <arg name="input_loop" value="$(arg input_loop)"/>
+    </include>
+
+        <arg name="input_camera_5" default="csi://4"/>
+    <!-- <arg name="input_width_4" default="640"/>
+    <arg name="input_height_4" default="480"/>
+    <arg name="input_codec_4" default="unknown"/>
+    <arg name="input_loop_4" default="0"/> -->
+
+    <include file="$(find ros_deep_learning)/launch/video_source.ros1.launch">
+        <arg name="input" value="$(arg input_camera_5)"/>
+        <arg name="input_width" value="$(arg input_width)"/>
+        <arg name="input_height" value="$(arg input_height)"/>
+        <arg name="input_codec" value="$(arg input_codec)"/>
+        <arg name="input_loop" value="$(arg input_loop)"/>
+    </include>
+
+        <arg name="input_camera_6" default="csi://5"/>
+    <!-- <arg name="input_width_4" default="640"/>
+    <arg name="input_height_4" default="480"/>
+    <arg name="input_codec_4" default="unknown"/>
+    <arg name="input_loop_4" default="0"/> -->
+
+    <include file="$(find ros_deep_learning)/launch/video_source.ros1.launch">
+        <arg name="input" value="$(arg input_camera_6)"/>
+        <arg name="input_width" value="$(arg input_width)"/>
+        <arg name="input_height" value="$(arg input_height)"/>
+        <arg name="input_codec" value="$(arg input_codec)"/>
+        <arg name="input_loop" value="$(arg input_loop)"/>
+    </include>
+
+    <!-- Gabungkan Gambar dari Ketiga Kamera
+    <node name="image_stitcher" pkg="ros_deep_learning" type="image_stitcher" output="screen">
+        <param name="input_topic_1" value="/camera1/image_raw"/>
+        <param name="input_topic_2" value="/camera2/image_raw"/>
+        <param name="input_topic_3" value="/camera3/image_raw"/>
+        <param name="output_topic" value="/combined_image"/>
+    </node> -->
+
+    <!-- Tampilkan gambar gabungan pada satu layar
+    <node name="$image_view" pkg="ros_deep_learning" type="image_view" output="screen">
+        <param name="image_topic" value="/combined_image"/>
+    </node> -->
+
+</launch>
