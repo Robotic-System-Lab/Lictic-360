@@ -534,7 +534,6 @@ void SlamGmapping::updateMap(const sensor_msgs::msg::LaserScan::ConstSharedPtr s
         map_.data.resize(map_.info.width * map_.info.height);
     }
 
-    int active_cells = 0;
     for(int x=0; x < smap.getMapSizeX(); x++)
     {
         for(int y=0; y < smap.getMapSizeY(); y++)
