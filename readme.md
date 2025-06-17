@@ -28,18 +28,19 @@ This repository focused on applying semantic mapping for Husky Clearpath A200 wh
 ```
 .
 ├──src
-│  ├──lictic
-│  └──utils
-│     ├── merger
-│     ├── visual
-│     ├── gmapper
-│     ├── yolosed
-│     ├── velodyne
-│     └── ros_deep_learning
+│  ├─lictic
+│  └─utils
+│    ├─merger
+│    ├─visual
+│    ├─gmapper
+│    ├─yolosed
+│    └─topic_source
+│       ├─husky
+│       └─sim
 │
 └──support
-   ├── openslam_gmapping
-   └── relay
+   ├─openslam_gmapping
+   └─relay
 ```
 
 This project placed the required packages together inside `utils` folder. The lictic inside `./src` meant to only contain launch files and their configuration, while the remaining packages are described below:
@@ -47,8 +48,7 @@ This project placed the required packages together inside `utils` folder. The li
 2. `visual`: Visualize mapping results into PNG file inside `~/lictic/captured_map/[timestamp]`
 3. `gmapper`: LiDAR mapper node
 4. `yolosed`: Packages for image processing. (Image detection was deprecated and no longer used)
-5. `velodyne`: LiDAR launcher (only match VLP 16, 32C, 128)
-6. `ros_deep_learning`: Camera launcher for Jetson Devices
+5. `topic_source`: Topic publisher node for GMapping. You can determine to build the `husky` to work with Clearpath A200 or the `sim` to use Gazebo. You can put an empty file named COLCON_IGNORE to avoid building the unnecessary package
 
 ## How To Build
 ### Prerequisite
@@ -64,7 +64,7 @@ This project placed the required packages together inside `utils` folder. The li
 Assuming we already installed the prerequisites and understood the basics of ROS, we can continue on these steps. 
 1. Clone this [Repository](https://github.com/Robotic-System-Lab/Lintic-360.git) into your ROS2 workspace.
 ```bash
-mkdir -p ~/lintic_ws && cd ~/lintic_ws
+mkdir -p ~/lictic_ws && cd ~/lictic_ws
 git clone https://github.com/Robotic-System-Lab/Lintic-360.git .
 ```
 2. We're using 2 main devices (Husky and Jetson), so we need to create a connection between them. In this case, I already set-up the connection by using a Ethernet Cable. We need to do some basic preparations in this case.
@@ -109,7 +109,7 @@ sudo apt-get -y install nlohmann-json3-dev
 8. Next, we can navigate into `support/openslam_gmapping/` and we will install customized library that was originally made by [siddarth09](https://github.com/siddarth09/ros2_gmapping)
 ```bash
 # ROS2
-cd ~/lintic_ws/support/
+cd ~/lictic_ws/support/
 mkdir build
 cmake ..
 sudo make install
@@ -124,10 +124,9 @@ pip install numpy==1.26.4 https://github.com/ultralytics/assets/releases/downloa
 pip install ultralytics
 ```
 10. Build the whole packages
-> The `ros_deep_learning` package was meant to launch camera for Jetson. If u're meant to run this project only with simulator, create a `COLCON IGNORE` file inside of the packages.
 ```bash
 # ROS2
-cd ~/lintic_ws/
+cd ~/lictic_ws/
 colcon build
 source install/setup.bash
 ```
