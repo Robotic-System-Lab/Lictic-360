@@ -14,7 +14,7 @@ def generate_launch_description():
     )
     
     turtlebot3_launch = os.path.join(
-        get_package_share_directory('sim_lictic'),
+        get_package_share_directory('lictic_sim'),
         'launch',
         'lictic.launch.py'
     )
