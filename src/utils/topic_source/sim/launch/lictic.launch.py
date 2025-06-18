@@ -47,7 +47,7 @@ def generate_launch_description():
     # )
 
     world = os.path.join(
-        get_package_share_directory('lictic'),
+        get_package_share_directory('sim_lictic'),
         'worlds',
         'lictic.world'
     )
