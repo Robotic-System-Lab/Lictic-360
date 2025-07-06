@@ -115,7 +115,7 @@ class MainWindow(QMainWindow):
   def redraw_grid(self):
     print(f"Redrawing grid (800x800)")
     pixmap = QPixmap(800, 800)
-    pixmap.fill(Qt.lightGray)
+    pixmap.fill(Qt.transparent)
     painter = QPainter(pixmap)
     for row in range(self.grid_height):
         real_row = self.grid_height - 1 - row
@@ -126,7 +126,7 @@ class MainWindow(QMainWindow):
                 color = QColor(50, 50, 50)
                 # color = QColor('lightgray')
             elif value == -1:
-                color = QColor('darkgray')
+                color = QColor(0, 0, 0, 0)
             elif value == 0:
                 color = QColor('lightgray')
             else:
@@ -153,7 +153,7 @@ class MainWindow(QMainWindow):
   def redraw_plain_grid(self):
     print(f"Redrawing plain grid (800x800)")
     pixmap = QPixmap(800, 800)
-    pixmap.fill(Qt.lightGray)
+    pixmap.fill(Qt.transparent)
     painter = QPainter(pixmap)
     for row in range(self.grid_height):
         real_row = self.grid_height - 1 - row
@@ -161,7 +161,7 @@ class MainWindow(QMainWindow):
             index = real_row * self.grid_width + col
             value = self.grid_data[index]
             if value == -1:
-                color = QColor('darkgray')
+                color = QColor(0, 0, 0, 0)
             elif value == 0:
                 color = QColor('lightgray')
             else:
