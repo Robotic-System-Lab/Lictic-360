@@ -70,6 +70,8 @@ class MainWindow(QMainWindow):
     self.generate_default_grid()
     self.view = GridView(self.scene)
     self.view.setFixedSize(800, 800)
+    self.painted_counter = 0
+    self.plain_counter = 0
     
     left_layout.addWidget(self.view)
     
@@ -110,7 +112,6 @@ class MainWindow(QMainWindow):
     painter.end()
     self.scene.addPixmap(pixmap)
   
-  # filepath: /home/lamp/workspaces/segnet/src/visual/visual/qtnode.py
   def redraw_grid(self):
     print(f"Redrawing grid (800x800)")
     pixmap = QPixmap(800, 800)
@@ -138,18 +139,42 @@ class MainWindow(QMainWindow):
             painter.fillRect(rect, QBrush(color))
     painter.end()
     
-    folder = os.path.join(os.path.expanduser("~"), "lictic", "captured_map", str(self.start_time))
+    folder = os.path.join(os.path.expanduser("~"), "lictic", "captured_map", str(self.start_time), "painted")
     os.makedirs(folder, exist_ok=True)
-    timestamp_now = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-    full_path = f"{folder}/{timestamp_now}.png"
+    full_path = f"{folder}/{self.save_indexer}.png"
     pixmap.save(full_path, "PNG")
     
-    self.save_indexer += 1
     if self.save_indexer % 3 == 0:
       self.save_indexer = 0
       loaded_pixmap = QPixmap(full_path)
       self.scene.clear()
       self.scene.addPixmap(loaded_pixmap)
+  
+  def redraw_plain_grid(self):
+    print(f"Redrawing plain grid (800x800)")
+    pixmap = QPixmap(800, 800)
+    pixmap.fill(Qt.lightGray)
+    painter = QPainter(pixmap)
+    for row in range(self.grid_height):
+        real_row = self.grid_height - 1 - row
+        for col in range(self.grid_width):
+            index = real_row * self.grid_width + col
+            value = self.grid_data[index]
+            if value == -1:
+                color = QColor('darkgray')
+            elif value == 0:
+                color = QColor('lightgray')
+            else:
+                color = QColor(50, 50, 50)
+            rect = QRectF(col * self.cell_size, row * self.cell_size,
+                          self.cell_size, self.cell_size)
+            painter.fillRect(rect, QBrush(color))
+    painter.end()
+    
+    folder = os.path.join(os.path.expanduser("~"), "lictic", "captured_map", str(self.start_time), "plain")
+    os.makedirs(folder, exist_ok=True)
+    full_path = f"{folder}/{self.save_indexer}.png"
+    pixmap.save(full_path, "PNG")
   
   def update_grid_from_map(self, msg):
     self.grid_width = msg.info.width
@@ -157,6 +182,8 @@ class MainWindow(QMainWindow):
     if self.grid_width > 0:
       self.cell_size = 800 / self.grid_width
     self.grid_data = list(msg.data)
+    self.save_indexer += 1
+    self.redraw_plain_grid()
     self.redraw_grid()
   
   def create_legend_item(self, value):
