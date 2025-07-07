@@ -145,7 +145,6 @@ class MainWindow(QMainWindow):
     pixmap.save(full_path, "PNG")
     
     if self.save_indexer % 3 == 0:
-      self.save_indexer = 0
       loaded_pixmap = QPixmap(full_path)
       self.scene.clear()
       self.scene.addPixmap(loaded_pixmap)
