@@ -3347,7 +3347,7 @@
         <kinematic>0</kinematic>
       </link>
     </model>
-    <model name='cardboard_box_clone_clone_0'>
+    <model name='cardboard_box_clone_clone_1'>
       <pose>12.8991 10.5599 0.550718 0 -0 0</pose>
       <link name='link'>
         <inertial>
