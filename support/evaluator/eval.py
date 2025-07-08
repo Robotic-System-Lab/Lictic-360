@@ -4,7 +4,7 @@ import yaml
 
 def image_rmse(img1, img2, normalize=False):
     """
-    Calculate RMSE between two images pixel by pixel
+    Calculate RMSE between two images pixel by pixel, ignoring pixels that are transparent in both images
     
     Args:
         img1: First image (numpy array or PIL Image)
@@ -27,13 +27,40 @@ def image_rmse(img1, img2, normalize=False):
     img1 = img1.astype(np.float64)
     img2 = img2.astype(np.float64)
     
+    # Handle transparency (alpha channel)
+    if img1.shape[-1] == 4:  # RGBA
+        # Get alpha channels
+        alpha1 = img1[..., 3]
+        alpha2 = img2[..., 3]
+        
+        # Create mask: pixels where at least one image is non-transparent
+        # (alpha > 0 means non-transparent)
+        mask = (alpha1 > 0) | (alpha2 > 0)
+        
+        # Only use RGB channels for comparison
+        img1_rgb = img1[..., :3]
+        img2_rgb = img2[..., :3]
+        
+        # Apply mask to get only relevant pixels
+        if np.sum(mask) == 0:
+            # No non-transparent pixels found
+            return 0.0
+            
+        img1_masked = img1_rgb[mask]
+        img2_masked = img2_rgb[mask]
+        
+    else:  # RGB or Grayscale
+        # No alpha channel, use all pixels
+        img1_masked = img1.flatten()
+        img2_masked = img2.flatten()
+    
     # Normalize to 0-1 if requested
     if normalize:
-        img1 = img1 / 255.0
-        img2 = img2 / 255.0
+        img1_masked = img1_masked / 255.0
+        img2_masked = img2_masked / 255.0
     
-    # Calculate RMSE
-    mse = np.mean((img1 - img2) ** 2)
+    # Calculate RMSE on masked pixels only
+    mse = np.mean((img1_masked - img2_masked) ** 2)
     return np.sqrt(mse)
 
 def evaluate_images_from_yaml(yaml_path, normalize=False):
