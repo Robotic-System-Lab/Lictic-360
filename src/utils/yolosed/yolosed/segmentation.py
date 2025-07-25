@@ -1,13 +1,14 @@
 import time
 import json
 import rclpy
+import cv2
+import os
+import torch
 from rclpy.node import Node
 from sensor_msgs.msg import Image
 from std_msgs.msg import String, Float64
 from cv_bridge import CvBridge
 from ultralytics import YOLO
-import cv2
-import os
 
 import numpy as np
 from .hazard import hazard_lookup
@@ -37,7 +38,9 @@ class YOLOSegnetNode(Node):
     
     self.get_logger().info('Loading Model...')
     model_path = os.path.join(os.path.dirname(__file__), 'model', f"{self.segmentation_model}")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     self.model = YOLO(model_path)
+    self.model.to(device)
     self.get_logger().info(f'Model loaded on: {self.model.device}, ready to perform segmentation.')
     
     self.timestamp = 0
