@@ -11,3 +11,12 @@ segmentation:
 lidar_limiter:
   ros__parameters:
     maxrange: 5
+# Autonomous Exploration configuration
+autonomous_exploration:
+  ros__parameters:
+    lookahead_distance: 0.28
+    speed: 0.18
+    angular_limiter: 10
+    expansion_size: 18
+    target_error: 0.12
+    robot_r: 1.2
