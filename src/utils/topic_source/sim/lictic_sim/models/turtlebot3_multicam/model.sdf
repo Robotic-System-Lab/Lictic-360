@@ -310,7 +310,7 @@
       <pose>0.010497 0.073641 0.107 0 -0 1.03665</pose>
       <sensor name='camera_5' type='camera'>
         <always_on>1</always_on>
-        <visualize>1</visualize>
+        <visualize>0</visualize>
         <update_rate>5</update_rate>
         <camera name='intel_realsense_r200'>
           <horizontal_fov>1.02974</horizontal_fov>
@@ -353,7 +353,7 @@
       <pose>-0.065071 0.078138 0.107 0 -0 2.07330</pose>
       <sensor name='camera_4' type='camera'>
         <always_on>1</always_on>
-        <visualize>1</visualize>
+        <visualize>0</visualize>
         <update_rate>5</update_rate>
         <camera name='intel_realsense_r200'>
           <horizontal_fov>1.02974</horizontal_fov>
@@ -396,7 +396,7 @@
       <pose>-0.115546 -8.6e-05 0.107 0 -0 3.10996</pose>
       <sensor name='camera_3' type='camera'>
         <always_on>1</always_on>
-        <visualize>1</visualize>
+        <visualize>0</visualize>
         <update_rate>5</update_rate>
         <camera name='intel_realsense_r200'>
           <horizontal_fov>1.02974</horizontal_fov>
@@ -440,7 +440,7 @@
       <pose>-0.073168 -0.063325 0.107 -0 -0 -2.07330</pose>
       <sensor name='camera_2' type='camera'>
         <always_on>1</always_on>
-        <visualize>1</visualize>
+        <visualize>0</visualize>
         <update_rate>5</update_rate>
         <camera name='intel_realsense_r200'>
           <horizontal_fov>1.02974</horizontal_fov>
@@ -483,7 +483,7 @@
       <pose>0.013362 -0.062457 0.107 0 0 -1.03665</pose>
       <sensor name='camera_1' type='camera'>
         <always_on>1</always_on>
-        <visualize>1</visualize>
+        <visualize>0</visualize>
         <update_rate>5</update_rate>
         <camera name='intel_realsense_r200'>
           <horizontal_fov>1.0472</horizontal_fov>
