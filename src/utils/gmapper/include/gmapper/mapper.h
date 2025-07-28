@@ -5,7 +5,6 @@
 #include <mutex>
 #include <thread>
 #include <memory>
-#include <array>
 
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/laser_scan.hpp"
@@ -96,7 +95,6 @@ private:
     std::string map_frame_;
     std::string odom_frame_;
 
-    void labelCallback(const std_msgs::msg::String::SharedPtr msg);
     void updateMap(sensor_msgs::msg::LaserScan::ConstSharedPtr scan);
     bool getOdomPose(GMapping::OrientedPoint& gmap_pose, const rclcpp::Time& t);
     bool initMapper(sensor_msgs::msg::LaserScan::ConstSharedPtr scan);
