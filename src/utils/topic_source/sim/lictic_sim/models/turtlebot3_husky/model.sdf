@@ -101,7 +101,7 @@
 
     <link name="base_scan">
       <inertial>
-        <pose>0.395 0 0.830 0 0 0</pose>
+        <pose>0.195 0 0.830 0 0 0</pose>
         <inertia>
           <ixx>0.001</ixx>
           <ixy>0.000</ixy>
@@ -110,11 +110,11 @@
           <iyz>0.000</iyz>
           <izz>0.001</izz>
         </inertia>
-        <mass>0.114</mass>
+        <mass>0.000001</mass>
       </inertial>
 
       <collision name="lidar_sensor_collision">
-        <pose>0.395 0 0.830 0 0 0</pose>
+        <pose>0.195 0 0.830 0 0 0</pose>
         <geometry>
           <cylinder>
             <radius>0.0508</radius>
@@ -124,7 +124,7 @@
       </collision>
 
       <visual name="lidar_sensor_visual">
-        <pose>0.395 0 0.830 0 0 0</pose>
+        <pose>0.195 0 0.830 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>model://turtlebot3_common/meshes/lds.dae</uri>
@@ -136,7 +136,7 @@
       <sensor name="hls_lfcd_lds" type="ray">
         <always_on>true</always_on>
         <visualize>true</visualize>
-        <pose>0.395 0 0.830 0 0 0</pose>
+        <pose>0.195 0 0.830 0 0 0</pose>
         <update_rate>5</update_rate>
         <ray>
           <scan>
@@ -167,6 +167,290 @@
           <frame_name>base_scan</frame_name>
         </plugin>
       </sensor>
+    </link>
+
+    <link name='camera_link'>
+      <self_collide>0</self_collide>
+      <inertial>
+        <pose>0 0 0 0 -0 0</pose>
+        <inertia>
+          <ixx>1</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1</iyy>
+          <iyz>0</iyz>
+          <izz>1</izz>
+        </inertia>
+        <mass>0.000001</mass>
+      </inertial>
+      <enable_wind>0</enable_wind>
+      <kinematic>0</kinematic>
+      <pose>0.195 0 0.755 0 -0 0</pose>
+    </link>
+
+    <link name='camera_rgb_frame_1'>
+      <inertial>
+        <pose>0.075 0 0 0 -0 0</pose>
+        <inertia>
+          <ixx>0.001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.001</iyy>
+          <iyz>0</iyz>
+          <izz>0.001</izz>
+        </inertia>
+        <mass>0.000001</mass>
+      </inertial>
+      <pose>0.270 0 0.755 0 -0 0</pose>
+      <sensor name='camera_1' type='camera'>
+        <always_on>1</always_on>
+        <visualize>1</visualize>
+        <update_rate>5</update_rate>
+        <camera name='intel_realsense_r200'>
+          <horizontal_fov>1.0472</horizontal_fov>
+          <image>
+            <width>1920</width>
+            <height>1080</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.02</near>
+            <far>300</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0</mean>
+            <stddev>0.007</stddev>
+          </noise>
+        </camera>
+        <plugin name='camera_driver_1' filename='libgazebo_ros_camera.so'>
+          <ros/>
+        </plugin>
+      </sensor>
+      <self_collide>0</self_collide>
+      <enable_wind>0</enable_wind>
+      <kinematic>0</kinematic>
+    </link>
+
+    <link name='camera_rgb_frame_2'>
+      <inertial>
+        <pose>0.0375 0.065 0 0 -0 0</pose>
+        <inertia>
+          <ixx>0.001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.001</iyy>
+          <iyz>0</iyz>
+          <izz>0.001</izz>
+        </inertia>
+        <mass>0.000001</mass>
+      </inertial>
+      <pose>0.2325 0.065 0.755 0 -0 1.0472</pose>
+      <sensor name='camera_2' type='camera'>
+        <always_on>1</always_on>
+        <visualize>0</visualize>
+        <update_rate>5</update_rate>
+        <camera name='intel_realsense_r200'>
+          <horizontal_fov>1.0472</horizontal_fov>
+          <image>
+            <width>1920</width>
+            <height>1080</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.02</near>
+            <far>300</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0</mean>
+            <stddev>0.007</stddev>
+          </noise>
+        </camera>
+        <plugin name='camera_driver_2' filename='libgazebo_ros_camera.so'>
+          <ros/>
+        </plugin>
+      </sensor>
+      <self_collide>0</self_collide>
+      <enable_wind>0</enable_wind>
+      <kinematic>0</kinematic>
+    </link>
+
+    <link name='camera_rgb_frame_3'>
+      <inertial>
+        <pose>-0.0375 0.065 0 0 -0 0</pose>
+        <inertia>
+          <ixx>0.001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.001</iyy>
+          <iyz>0</iyz>
+          <izz>0.001</izz>
+        </inertia>
+        <mass>0.000001</mass>
+      </inertial>
+      <pose>0.1575 0.065 0.755 0 -0 2.0944</pose>
+      <sensor name='camera_3' type='camera'>
+        <always_on>1</always_on>
+        <visualize>0</visualize>
+        <update_rate>5</update_rate>
+        <camera name='intel_realsense_r200'>
+          <horizontal_fov>1.0472</horizontal_fov>
+          <image>
+            <width>1920</width>
+            <height>1080</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.02</near>
+            <far>300</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0</mean>
+            <stddev>0.007</stddev>
+          </noise>
+        </camera>
+        <plugin name='camera_driver_3' filename='libgazebo_ros_camera.so'>
+          <ros/>
+        </plugin>
+      </sensor>
+      <self_collide>0</self_collide>
+      <enable_wind>0</enable_wind>
+      <kinematic>0</kinematic>
+      <gravity>1</gravity>
+    </link>
+
+    <link name='camera_rgb_frame_4'>
+      <inertial>
+        <pose>-0.075 0 0 0 -0 0</pose>
+        <inertia>
+          <ixx>0.001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.001</iyy>
+          <iyz>0</iyz>
+          <izz>0.001</izz>
+        </inertia>
+        <mass>0.000001</mass>
+      </inertial>
+      <pose>0.120 0 0.755 0 -0 3.1416</pose>
+      <sensor name='camera_4' type='camera'>
+        <always_on>1</always_on>
+        <visualize>0</visualize>
+        <update_rate>5</update_rate>
+        <camera name='intel_realsense_r200'>
+          <horizontal_fov>1.0472</horizontal_fov>
+          <image>
+            <width>1920</width>
+            <height>1080</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.02</near>
+            <far>300</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0</mean>
+            <stddev>0.007</stddev>
+          </noise>
+        </camera>
+        <plugin name='camera_driver_4' filename='libgazebo_ros_camera.so'>
+          <ros/>
+        </plugin>
+      </sensor>
+      <self_collide>0</self_collide>
+      <enable_wind>0</enable_wind>
+      <kinematic>0</kinematic>
+    </link>
+
+    <link name='camera_rgb_frame_5'>
+      <inertial>
+        <pose>-0.0375 -0.065 0 0 -0 0</pose>
+        <inertia>
+          <ixx>0.001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.001</iyy>
+          <iyz>0</iyz>
+          <izz>0.001</izz>
+        </inertia>
+        <mass>0.000001</mass>
+      </inertial>
+      <pose>0.1575 -0.065 0.755 -0 -0 -2.0944</pose>
+      <sensor name='camera_5' type='camera'>
+        <always_on>1</always_on>
+        <visualize>0</visualize>
+        <update_rate>5</update_rate>
+        <camera name='intel_realsense_r200'>
+          <horizontal_fov>1.0472</horizontal_fov>
+          <image>
+            <width>1920</width>
+            <height>1080</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.02</near>
+            <far>300</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0</mean>
+            <stddev>0.007</stddev>
+          </noise>
+        </camera>
+        <plugin name='camera_driver_5' filename='libgazebo_ros_camera.so'>
+          <ros/>
+        </plugin>
+      </sensor>
+      <self_collide>0</self_collide>
+      <enable_wind>0</enable_wind>
+      <kinematic>0</kinematic>
+    </link>
+
+    <link name='camera_rgb_frame_6'>
+      <inertial>
+        <pose>0.0375 -0.065 0 0 -0 0</pose>
+        <inertia>
+          <ixx>0.001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.001</iyy>
+          <iyz>0</iyz>
+          <izz>0.001</izz>
+        </inertia>
+        <mass>0.000001</mass>
+      </inertial>
+      <pose>0.2325 -0.065 0.755 0 0 -1.0472</pose>
+      <sensor name='camera_6' type='camera'>
+        <always_on>1</always_on>
+        <visualize>0</visualize>
+        <update_rate>5</update_rate>
+        <camera name='intel_realsense_r200'>
+          <horizontal_fov>1.0472</horizontal_fov>
+          <image>
+            <width>1920</width>
+            <height>1080</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.02</near>
+            <far>300</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0</mean>
+            <stddev>0.007</stddev>
+          </noise>
+        </camera>
+        <plugin name='camera_driver_6' filename='libgazebo_ros_camera.so'>
+          <ros/>
+        </plugin>
+      </sensor>
+      <self_collide>0</self_collide>
+      <enable_wind>0</enable_wind>
+      <kinematic>0</kinematic>
     </link>
 
     <link name="wheel_left_link">
@@ -441,10 +725,136 @@
     <joint name="lidar_joint" type="fixed">
       <parent>base_link</parent>
       <child>base_scan</child>
-      <pose>0.395 0 0.830 0 0 0</pose>
+      <pose>0.195 0 0.830 0 0 0</pose>
       <axis>
         <xyz>0 0 1</xyz>
       </axis>
+    </joint>
+
+    <joint name='camera_joint' type='fixed'>
+      <parent>base_link</parent>
+      <child>camera_link</child>
+      <pose>0.195 0 0.755 0 -0 0</pose>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </limit>
+          <suspension>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </suspension>
+        </ode>
+      </physics>
+    </joint>
+
+    <joint name='camera_rgb_joint_1' type='fixed'>
+      <parent>camera_link</parent>
+      <child>camera_rgb_frame_1</child>
+      <pose>0.075 0 0 0 -0 0</pose>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </limit>
+          <suspension>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </suspension>
+        </ode>
+      </physics>
+    </joint>
+
+    <joint name='camera_rgb_joint_2' type='fixed'>
+      <parent>camera_link</parent>
+      <child>camera_rgb_frame_2</child>
+      <pose>0.0375 0.065 0 0 -0 1.0472</pose>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </limit>
+          <suspension>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </suspension>
+        </ode>
+      </physics>
+    </joint>
+
+    <joint name='camera_rgb_joint_3' type='fixed'>
+      <parent>camera_link</parent>
+      <child>camera_rgb_frame_3</child>
+      <pose>-0.0375 0.065 0 0 -0 2.0944</pose>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </limit>
+          <suspension>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </suspension>
+        </ode>
+      </physics>
+    </joint>
+
+    <joint name='camera_rgb_joint_4' type='fixed'>
+      <parent>camera_link</parent>
+      <child>camera_rgb_frame_4</child>
+      <pose>-0.075 0 0 0 -0 3.1416</pose>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </limit>
+          <suspension>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </suspension>
+        </ode>
+      </physics>
+    </joint>
+
+    <joint name='camera_rgb_joint_5' type='fixed'>
+      <parent>camera_link</parent>
+      <child>camera_rgb_frame_5</child>
+      <pose>-0.0375 -0.065 0 0 -0 -2.0944</pose>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </limit>
+          <suspension>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </suspension>
+        </ode>
+      </physics>
+    </joint>
+
+    <joint name='camera_rgb_joint_6' type='fixed'>
+      <parent>camera_link</parent>
+      <child>camera_rgb_frame_6</child>
+      <pose>0.0375 -0.065 0 0 -0 -1.0472</pose>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </limit>
+          <suspension>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </suspension>
+        </ode>
+      </physics>
     </joint>
 
     <plugin name="turtlebot3_diff_drive" filename="libgazebo_ros_diff_drive.so">
